@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shift_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('shift_name');
+            $table->string('shift_name')->nullable();
             $table->string('wo_number')->nullable();
             $table->string('asset_no')->nullable();
             $table->longText('asset_description')->nullable();
