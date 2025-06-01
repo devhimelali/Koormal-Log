@@ -129,15 +129,6 @@
     </div>
 </div>
 
-<div class="customizer-setting d-none d-md-block">
-    <div class="p-2 shadow-lg btn btn-info text-uppercase rounded-end-0" data-bs-toggle="offcanvas"
-         data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
-        <i class="mb-1 bi bi-gear"></i> Customizer
-    </div>
-</div>
-
-<!-- Theme Settings -->
-@include('layouts.partials.theme-setting')
 
 <!-- JAVASCRIPT -->
 <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
