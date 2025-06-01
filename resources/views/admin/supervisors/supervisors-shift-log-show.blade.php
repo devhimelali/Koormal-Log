@@ -10,23 +10,23 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">WO Number</label>
-                        <input type="text" class="form-control" value="WO-1001">
+                        <input type="text" class="form-control" value="{{ $log->wo_number }}">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Asset Number</label>
-                        <input type="text" class="form-control" value="AS-321">
+                        <input type="text" class="form-control" value="{{ $log->asset_no }}">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Priority</label>
-                        <input type="text" class="form-control" value="High">
+                        <input type="text" class="form-control" value="{{ $log->priority }}">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Department</label>
-                        <input type="text" class="form-control" value="Maintenance">
+                        <input type="text" class="form-control" value="{{ $log->department }}">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Duration (hrs)</label>
-                        <input type="text" class="form-control" value="3">
+                        <input type="text" class="form-control" value="{{ $log->duration }}">
                     </div>
                 </div>
 
@@ -34,18 +34,18 @@
                 <div class="row g-3 mt-3">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Workorder Description</label>
-                        <textarea class="form-control" rows="3">Oil change on generator</textarea>
+                        <textarea class="form-control" rows="3">{{ $log->work_description }}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Asset Description</label>
-                        <textarea class="form-control" rows="3">Diesel powered gen-set</textarea>
+                        <textarea class="form-control" rows="3">{{ $log->asset_description }}</textarea>
                     </div>
                 </div>
 
                 <!-- Notes -->
                 <div class="mt-4">
                     <label class="form-label fw-semibold">Supervisor Notes</label>
-                    <textarea class="form-control" rows="4">Supervisor can enter notes here.</textarea>
+                    <textarea class="form-control" rows="4"></textarea>
                 </div>
 
                 <div class="mt-4">

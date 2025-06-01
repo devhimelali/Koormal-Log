@@ -8,12 +8,11 @@ class ShiftLog extends Model
 {
     protected $fillable = [
         'shift_name',
+
         'wo_number',
-        'asset_no',
-        'asset_description',
         'work_description',
-        'labour',
         'duration',
+        'asset_no',
         'trades',
         'due_start',
         'status',
@@ -25,7 +24,10 @@ class ShiftLog extends Model
         'material_cost',
         'labor_cost',
         'other_cost',
-        'is_excel_upload',
+        'asset_description',
+
+        'labour',
+        'is_excel_upload', // if it is excel uploaded user can not edit
     ];
 
     public function scopeDayShift($query)

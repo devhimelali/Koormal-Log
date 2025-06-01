@@ -2,100 +2,84 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Imports\ShiftLogImport;
+use App\Http\Controllers\Controller;
+use App\Models\ShiftLog;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SupervisorsShiftLog extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $jobs = [
-            [
-                'id' => '1',
-                'shift' => 'Day',
-                'wo_number' => 'WO1001',
-                'asset_no' => 'A-123',
-                'description' => 'Inspect Pump',
-                'labour' => 'John',
-            ],
-            [
-                'id' => '2',
-                'shift' => 'Night',
-                'wo_number' => 'WO1002',
-                'asset_no' => 'A-456',
-                'description' => 'Clean Filter',
-                'labour' => 'Jane',
-            ],
-            [
-                'id' => '3',
-                'shift' => 'Day',
-                'wo_number' => 'WO1003',
-                'asset_no' => 'A-789',
-                'description' => 'Replace Valve',
-                'labour' => 'Mark',
-            ],
-            [
-                'id' => '4',
-                'shift' => 'Night',
-                'wo_number' => 'WO1004',
-                'asset_no' => 'B-111',
-                'description' => 'Check Motor',
-                'labour' => 'Albert',
-            ],
-            [
-                'id' => '5',
-                'shift' => 'Day',
-                'wo_number' => 'WO1005',
-                'asset_no' => 'C-222',
-                'description' => 'Oil Change',
-                'labour' => 'Steven',
-            ],
-            [
-                'id' => '6',
-                'shift' => 'Night',
-                'wo_number' => 'WO1006',
-                'asset_no' => 'D-333',
-                'description' => 'Inspect Conveyor',
-                'labour' => 'Ralph',
-            ],
-            [
-                'id' => '7',
-                'shift' => 'Day',
-                'wo_number' => 'WO1007',
-                'asset_no' => 'E-444',
-                'description' => 'Adjust Belt',
-                'labour' => 'Bill',
-            ],
-            [
-                'id' => '8',
-                'shift' => 'Night',
-                'wo_number' => 'WO1008',
-                'asset_no' => 'F-555',
-                'description' => 'Test Generator',
-                'labour' => 'John',
-            ],
-            [
-                'id' => '9',
-                'shift' => 'Day',
-                'wo_number' => 'WO1009',
-                'asset_no' => 'G-666',
-                'description' => 'Clean Vent',
-                'labour' => 'Alex',
-            ],
-            [
-                'id' => '10',
-                'shift' => 'Night',
-                'wo_number' => 'WO1010',
-                'asset_no' => 'H-777',
-                'description' => 'Fix Wiring',
-                'labour' => 'Albert',
-            ],
-        ];
-        return view('admin.supervisors.supervisors-shift-log', compact('jobs'));
-    }
+        $filter = $request->query('filter', 'both');
 
+        $query = ShiftLog::query();
+
+        if ($filter === 'day') {
+            $query->where('shift_name', 'Day');
+        } elseif ($filter === 'night') {
+            $query->where('shift_name', 'Night');
+        }
+
+        $jobs = $query->get();
+        return view('admin.supervisors.supervisors-shift-log', compact('jobs', 'filter'));
+    }
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'shift_name' => 'nullable|string',
+            'wo_number' => 'nullable|string',
+            'asset_no' => 'nullable|string',
+            'work_description' => 'nullable|string',
+            'labour' => 'nullable|string',
+        ]);
+
+        $log = ShiftLog::create($validated);
+
+        return response()->json(['id' => $log->id]);
+    }
     public function show($id)
     {
-        return view('admin.supervisors.supervisors-shift-log-show');
+        $log = ShiftLog::find($id);
+        return view('admin.supervisors.supervisors-shift-log-show', compact('log'));
+    }
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'field' => 'required|string',
+            'value' => 'nullable|string'
+        ]);
+
+        $allowedFields = ['shift_name', 'wo_number', 'asset_no', 'work_description', 'labour'];
+
+        if (!in_array($request->field, $allowedFields)) {
+            return response()->json(['error' => 'Invalid field'], 400);
+        }
+
+        $log = ShiftLog::find($id);
+        $log->{$request->field} = $request->value;
+        $log->save();
+        return response()->json(['success' => true, 'message' => 'Field updated successfully']);
+    }
+    public function destroy($id)
+    {
+        $log = ShiftLog::find($id);
+        if (!$log) {
+            return response()->json(['error' => 'Job not found.'], 404);
+        }
+
+        $log->delete();
+
+        return response()->json(['success' => true]);
+    }
+    public function importShiftLog(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt,xlsx',
+        ]);
+
+        Excel::import(new ShiftLogImport, $request->file('csv_file'));
+        return back()->with('success', 'Shift log CSV imported successfully!');
     }
 }
