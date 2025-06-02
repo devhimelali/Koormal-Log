@@ -3,18 +3,18 @@
     <div class="navbar-brand-box">
         <a href="{{ route('admin.dashboard') }}" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="{{ asset('assets/images/logo.png') }}" alt="logo" height="36">
+                <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="logo" height="36">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset('assets/images/logo.png') }}" alt="" height="36">
+                <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="" height="36">
             </span>
         </a>
         <a href="{{ route('admin.dashboard') }}" class="logo logo-light">
             <span class="logo-sm">
-                <img src="{{ asset('assets/images/logo.png') }}" alt="" height="22">
+                <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="" height="22">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset('assets/images/logo.png') }}" alt="" height="22">
+                <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="" height="22">
             </span>
         </a>
         <button type="button" class="btn btn-sm p-0 fs-3xl header-item float-end btn-vertical-sm-hover"

@@ -65,7 +65,16 @@
                         <td class="line-no text-center">
                             <span class="line-no-text"> {{ $index + 1 }}</span>
                         </td>
-                        <td contenteditable=true data-field="shift_name">{{ $job->shift_name }}</td>
+                        <td style="width: 95px">
+                            <select data-field="shift_name" class="form-control"
+                                style="text-transform: capitalize; width: 68px;">
+                                <option value="">Select Shift</option>
+                                <option value="day" {{ $job->shift_name == 'day' ? 'selected' : '' }}>Day
+                                </option>
+                                <option value="night" {{ $job->shift_name == 'night' ? 'selected' : '' }}>Night</option>
+                            </select>
+                        </td>
+
                         <td {!! $isEditable !!} data-field="wo_number">{{ $job->wo_number }}</td>
                         <td {!! $isEditable !!} data-field="asset_no">{{ $job->asset_no }}</td>
                         <td {!! $isEditable !!} data-field="work_description">{{ $job->work_description }}</td>
@@ -127,6 +136,7 @@
 @endsection
 
 @section('page-script')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(function() {
             $("#sortableRows").sortable({
@@ -151,7 +161,15 @@
                             <td class="line-no text-center">
                                 <span class="line-no-text"></span>
                             </td>
-                            <td contenteditable="true" data-field="shift_name">Day</td>
+                             <td style="width: 95px">
+                                <select data-field="shift_name" class="form-control"
+                                    style="text-transform: capitalize; width: 68px;">
+                                    <option value="">Select Shift</option>
+                                    <option value="day">Day
+                                    </option>
+                                    <option value="night">Night</option>
+                                </select>
+                            </td>
                             <td contenteditable="true" data-field="wo_number">WO####</td>
                             <td contenteditable="true" data-field="asset_no">Asset-XXX</td>
                             <td contenteditable="true" data-field="work_description">Work Description</td>
@@ -163,7 +181,9 @@
                             </td>
                             <td class="handle text-center">
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-info"><i class="bi bi-info-circle"></i> More</button>
+                                    <a href="" class="btn btn-sm btn-info moreInfo">
+                                        <i class="bi bi-info-circle"></i> More
+                                    </a>
                                     <button class="btn btn-sm btn-danger deleteRowBtn"><i class="bi bi-trash"></i> Delete</button>
                                 </div>
                             </td>
@@ -177,8 +197,19 @@
 
             $(document).on('click', '.deleteRowBtn', function() {
                 let id = $(this).closest('tr').data('id');
-                deleteNewRow(id);
-                $(this).closest('tr').remove();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This file will be permanently deleted.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteNewRow(id, $(this).closest('tr'));
+                    }
+                });
                 updateLineNumbers();
             });
         });
@@ -218,6 +249,8 @@
                 success: function(response) {
                     if (response.id) {
                         newRow.attr('data-id', response.id);
+                        newRow.find('.moreInfo').attr('href',
+                            `{{ route('supervisors-shift-log.show', ':id') }}`.replace(':id', response.id));
                         newRow.find('[contenteditable]').css('background-color', '#d4edda');
                         setTimeout(() => newRow.find('[contenteditable]').css('background-color', ''), 1000);
                         updateLineNumbers();
@@ -287,12 +320,13 @@
         }
 
         $(document).ready(function() {
-            $('#jobTable').on('blur', '[contenteditable="true"]', function() {
-                let td = $(this);
-                let tr = td.closest('tr');
+
+            $('#jobTable').on('blur change', '[contenteditable="true"], select[data-field]', function() {
+                let el = $(this);
+                let tr = el.closest('tr');
                 let id = tr.data('id');
-                let field = td.data('field');
-                let value = td.text().trim();
+                let field = el.data('field');
+                let value = el.is('select') ? el.val() : el.text().trim();
 
                 $.ajax({
                     url: `{{ route('supervisors-shift-log.update', ':id') }}`.replace(':id', id),
@@ -303,13 +337,13 @@
                         value: value
                     },
                     success: function(res) {
-                        td.css('background-color', '#d4edda');
+                        el.css('background-color', '#d4edda');
                         notify('success', res.message);
-                        setTimeout(() => td.css('background-color', ''), 1000);
+                        setTimeout(() => el.css('background-color', ''), 1000);
                     },
                     error: function() {
-                        td.css('background-color', '#f8d7da');
-                        setTimeout(() => td.css('background-color', ''), 1500);
+                        el.css('background-color', '#f8d7da');
+                        setTimeout(() => el.css('background-color', ''), 1500);
                         notify('error', 'Error updating field');
                     }
                 });
@@ -319,6 +353,8 @@
             let filter = $(this).val();
             window.location.href = `{{ route('supervisors-shift-log.index') }}?filter=${filter}`;
         });
+
+        implementAutoAjaxLoading();
     </script>
 @endsection
 

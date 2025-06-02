@@ -111,6 +111,15 @@ class SupervisorsShiftLog extends Controller
             return response()->json(['error' => 'Job not found.'], 404);
         }
 
+        // Delete all related media/images
+        foreach ($log->media as $media) {
+            $path = str_replace('/storage/', '', $media->url);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+            $media->delete();
+        }
+
         $log->delete();
 
         return response()->json(['success' => true]);

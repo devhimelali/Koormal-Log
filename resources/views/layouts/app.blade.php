@@ -29,11 +29,81 @@
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ asset('assets/libs/toastr/toastr.min.css') }}">
+
+    <style>
+        /* loader css */
+        #ajaxLoaderOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .dot {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #ff4500;
+            animation: bounce 1.2s infinite ease-in-out;
+        }
+
+        .dot1 {
+            animation-delay: 0s;
+        }
+
+        .dot2 {
+            animation-delay: 0.2s;
+        }
+
+        .dot3 {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+
+            40% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* end loader css */
+    </style>
     @yield('vendor-style')
     @yield('page-style')
+
 </head>
 
 <body>
+
+    <!-- Global AJAX Loader -->
+    <div id="ajaxLoaderOverlay" style="display: none;">
+        <div class="loader-container">
+            <div class="dot dot1"></div>
+            <div class="dot dot2"></div>
+            <div class="dot dot3"></div>
+        </div>
+    </div>
+
+
 
     <!-- Begin page -->
     <div id="layout-wrapper">
@@ -171,6 +241,16 @@
             } else {
                 toastr.show(options);
             }
+        }
+
+        function implementAutoAjaxLoading() {
+            $(document).ajaxStart(function() {
+                $('#ajaxLoaderOverlay').fadeIn(200);
+            });
+
+            $(document).ajaxStop(function() {
+                $('#ajaxLoaderOverlay').fadeOut(200);
+            });
         }
     </script>
     <!-- App js -->
