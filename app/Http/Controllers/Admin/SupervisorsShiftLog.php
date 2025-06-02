@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ShiftLog;
 use Illuminate\Http\Request;
 use App\Imports\ShiftLogImport;
 use App\Http\Controllers\Controller;
-use App\Models\ShiftLog;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class SupervisorsShiftLog extends Controller
 {
@@ -34,7 +35,8 @@ class SupervisorsShiftLog extends Controller
             'work_description' => 'nullable|string',
             'labour' => 'nullable|string',
         ]);
-
+        $nextPosition = ShiftLog::max('position') + 1;
+        $validated['position'] = $nextPosition;
         $log = ShiftLog::create($validated);
 
         return response()->json(['id' => $log->id]);
@@ -50,17 +52,40 @@ class SupervisorsShiftLog extends Controller
             'field' => 'required|string',
             'value' => 'nullable|string'
         ]);
-
-        $allowedFields = ['shift_name', 'wo_number', 'asset_no', 'work_description', 'labour'];
+        $allowedFields = ['shift_name', 'wo_number', 'asset_no', 'work_description', 'labour', 'supervisor_notes', 'asset_description', 'duration', 'department', 'priority'];
 
         if (!in_array($request->field, $allowedFields)) {
             return response()->json(['error' => 'Invalid field'], 400);
         }
-
         $log = ShiftLog::find($id);
         $log->{$request->field} = $request->value;
         $log->save();
         return response()->json(['success' => true, 'message' => 'Field updated successfully']);
+    }
+
+    public function updateDetails(Request $request, $id)
+    {
+        $shiftLog = ShiftLog::find($id);
+        $shiftLog->update($request->all());
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $path = $file->store('attachments', 'public');
+
+                $shiftLog->media()->create([
+                    'url' => Storage::url($path),
+                    'level' => 'attachment',
+                ]);
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Details updated successfully']);
+    }
+
+    public function markComplete(Request $request, $id)
+    {
+        $shiftLog = ShiftLog::find($id);
+        $shiftLog->update(['mark_as_complete' => !$shiftLog->mark_as_complete]);
+        return redirect()->back()->with('success', 'Shift Log Marked as Complete');
     }
 
     public function reorder(Request $request)

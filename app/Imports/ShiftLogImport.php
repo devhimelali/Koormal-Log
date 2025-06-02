@@ -26,6 +26,7 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
             if ($index === $total - 1) {
                 continue;
             }
+            $nextPosition = ShiftLog::max('position') + 1;
             ShiftLog::create([
                 'shift_name'          => $this->shiftName,
                 'wo_number'           => $row['wo_no'] ?? null,
@@ -44,7 +45,8 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                 'labor_cost'          => $row['labour_cost'] ?? null,
                 'other_cost'          => $row['other_cost'] ?? null,
                 'asset_description'   => $row['asset_description'] ?? null,
-                'is_excel_upload'     => 1
+                'is_excel_upload'     => 1,
+                'position'            => $nextPosition,
                 // 'labour' and 'is_excel_upload' can be added here if needed
             ]);
         }

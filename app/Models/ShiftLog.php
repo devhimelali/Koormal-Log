@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class ShiftLog extends Model
 {
@@ -26,6 +27,8 @@ class ShiftLog extends Model
         'labor_cost',
         'other_cost',
         'asset_description',
+        'supervisor_notes',
+        'mark_as_complete',
 
         'labour',
         'is_excel_upload', // if it is excel uploaded user can not edit
@@ -39,5 +42,15 @@ class ShiftLog extends Model
     public function scopeNightShift($query)
     {
         return $query->where('shift_name', 'Night');
+    }
+
+    /**
+     * Get all media (files) associated with the shift log.
+     *
+     * @return MorphMany
+     */
+    public function media(): MorphMany
+    {
+        return $this->morphMany(Media::class, 'imageable');
     }
 }

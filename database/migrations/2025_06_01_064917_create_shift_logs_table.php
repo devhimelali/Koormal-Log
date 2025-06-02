@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shift_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('shift_name');
+            $table->string('shift_name')->nullable();
             $table->string('wo_number')->nullable();
             $table->string('asset_no')->nullable();
             $table->longText('asset_description')->nullable();
@@ -32,6 +32,9 @@ return new class extends Migration
             $table->string('labor_cost')->nullable();
             $table->string('other_cost')->nullable();
             $table->boolean('is_excel_upload')->default(0);
+            $table->unsignedInteger('position')->nullable();
+            $table->longText('supervisor_notes')->nullable();
+            $table->boolean('mark_as_complete')->default(0);
             $table->timestamps();
         });
     }
