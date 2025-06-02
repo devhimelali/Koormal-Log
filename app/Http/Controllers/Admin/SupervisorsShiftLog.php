@@ -22,7 +22,7 @@ class SupervisorsShiftLog extends Controller
             $query->where('shift_name', 'Night');
         }
 
-        $jobs = $query->get();
+        $jobs = $query->orderBy('position')->get();
         return view('admin.supervisors.supervisors-shift-log', compact('jobs', 'filter'));
     }
     public function store(Request $request)
@@ -62,6 +62,23 @@ class SupervisorsShiftLog extends Controller
         $log->save();
         return response()->json(['success' => true, 'message' => 'Field updated successfully']);
     }
+
+    public function reorder(Request $request)
+    {
+        try {
+            foreach ($request->order as $row) {
+                ShiftLog::where('id', $row['id'])->update(['position' => $row['position']]);
+            }
+            return response()->json(['success' => true, 'message' => 'Shift Log Moved Successfully']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update row order.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function destroy($id)
     {
         $log = ShiftLog::find($id);
@@ -79,7 +96,7 @@ class SupervisorsShiftLog extends Controller
             'csv_file' => 'required|file|mimes:csv,txt,xlsx',
         ]);
 
-        Excel::import(new ShiftLogImport, $request->file('csv_file'));
+        Excel::import(new ShiftLogImport($request->shift_name), $request->file('csv_file'));
         return back()->with('success', 'Shift log CSV imported successfully!');
     }
 }

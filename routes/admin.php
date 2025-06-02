@@ -14,5 +14,6 @@ Route::get('supervisors-shift-log', [SupervisorsShiftLog::class, 'index'])->name
 Route::post('supervisors-shift-log', [SupervisorsShiftLog::class, 'store'])->name('supervisors-shift-log.store');
 Route::get('supervisors-shift-log/{id}', [SupervisorsShiftLog::class, 'show'])->name('supervisors-shift-log.show');
 Route::put('supervisors-shift-log/{id}', [SupervisorsShiftLog::class, 'update'])->name('supervisors-shift-log.update');
+Route::post('supervisors-shift-log/reorder', [SupervisorsShiftLog::class, 'reorder'])->name('supervisors-shift-log.reorder');
 Route::delete('/supervisors-shift-log/{id}', [SupervisorsShiftLog::class, 'destroy'])->name('supervisors-shift-log.destroy');
 Route::post('/supervisors-shift-log/import-csv', [SupervisorsShiftLog::class, 'importShiftLog'])->name('supervisors-shift-log.csv.import');

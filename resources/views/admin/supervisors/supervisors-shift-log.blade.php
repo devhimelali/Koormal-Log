@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Supervisor Shift Log Information')
 @section('content')
     <div class="my-4 p-4 border bg-white">
         <div class="row align-items-center text-center text-md-start my-5">
@@ -57,15 +57,19 @@
             </thead>
             <tbody id="sortableRows">
                 @foreach ($jobs as $index => $job)
+                    @php
+                        $isEditable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
+                    @endphp
+
                     <tr data-id="{{ $job->id }}">
                         <td class="line-no text-center">
-                            <span class="line-no-text">{{ $index + 1 }}</span>
+                            <span class="line-no-text"> {{ $index + 1 }}</span>
                         </td>
-                        <td contenteditable="true" data-field="shift_name">{{ $job->shift_name }}</td>
-                        <td contenteditable="true" data-field="wo_number">{{ $job->wo_number }}</td>
-                        <td contenteditable="true" data-field="asset_no">{{ $job->asset_no }}</td>
-                        <td contenteditable="true" data-field="work_description">{{ $job->work_description }}</td>
-                        <td contenteditable="true" data-field="labour">{{ $job->labour }}</td>
+                        <td contenteditable=true data-field="shift_name">{{ $job->shift_name }}</td>
+                        <td {!! $isEditable !!} data-field="wo_number">{{ $job->wo_number }}</td>
+                        <td {!! $isEditable !!} data-field="asset_no">{{ $job->asset_no }}</td>
+                        <td {!! $isEditable !!} data-field="work_description">{{ $job->work_description }}</td>
+                        <td contenteditable=true data-field="labour">{{ $job->labour }}</td>
                         <td class="line-no text-center">
                             <span class="drag-handle me-2 btn btn-secondary btn-sm" style="cursor: move;">
                                 <i class="bi bi-arrows-move me-2"></i> Move
@@ -92,7 +96,7 @@
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary-subtle pb-3">
                     <h1 class="modal-title fs-5" id="supervisorsShiftLogModalLabel">Upload Excel Sheet</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -100,8 +104,18 @@
                     enctype="multipart/form-data">
                     <div class="modal-body p-3 mb-3">
                         @csrf
+                        <label for="csv_file" class="form-label fw-semibold">Upload File <span
+                                class="text-danger">*</span></label>
                         <input type="file" name="csv_file" class="form-control" required>
+                        <div class="mt-3">
+                            <label for="shift_name" class="form-label fw-semibold">Select Shift</label>
+                            <select name="shift_name" class="form-select" id="shift_name">
+                                <option value="day">Day</option>
+                                <option value="night">Night</option>
+                            </select>
+                        </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Import</button>
@@ -125,6 +139,7 @@
                 },
                 update: function() {
                     updateLineNumbers();
+                    saveRowOrder();
                 }
             });
 
@@ -238,6 +253,35 @@
                 },
                 error: function() {
                     notify('error', 'Error deleting row');
+                }
+            });
+        }
+
+        function saveRowOrder() {
+            let order = [];
+
+            $('#sortableRows tr').each(function(index) {
+                const id = $(this).data('id');
+                if (id && id !== 'new') {
+                    order.push({
+                        id: id,
+                        position: index + 1
+                    });
+                }
+            });
+
+            $.ajax({
+                url: '{{ route('supervisors-shift-log.reorder') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    order: order
+                },
+                success: function(res) {
+                    notify('success', res.message);
+                },
+                error: function(err) {
+                    notify('error', err.message);
                 }
             });
         }

@@ -14,6 +14,11 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
     /**
      * @param Collection $rows
      */
+    protected $shiftName;
+    public function __construct($shiftName)
+    {
+        $this->shiftName = $shiftName;
+    }
     public function collection(Collection $rows)
     {
         $total = $rows->count();
@@ -22,6 +27,7 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                 continue;
             }
             ShiftLog::create([
+                'shift_name'          => $this->shiftName,
                 'wo_number'           => $row['wo_no'] ?? null,
                 'work_description'    => $row['description'] ?? null,
                 'duration'            => $row['duration'] ?? null,
@@ -38,6 +44,7 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                 'labor_cost'          => $row['labour_cost'] ?? null,
                 'other_cost'          => $row['other_cost'] ?? null,
                 'asset_description'   => $row['asset_description'] ?? null,
+                'is_excel_upload'     => 1
                 // 'labour' and 'is_excel_upload' can be added here if needed
             ]);
         }

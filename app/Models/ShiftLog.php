@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ShiftLog extends Model
 {
     protected $fillable = [
+        'position',
         'shift_name',
 
         'wo_number',
