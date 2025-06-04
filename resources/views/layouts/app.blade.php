@@ -29,7 +29,8 @@
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ asset('assets/libs/toastr/toastr.min.css') }}">
-
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <style>
         /* loader css */
         #ajaxLoaderOverlay {
@@ -255,8 +256,11 @@
     </script>
     <!-- App js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     @yield('vendor-script')
     @yield('page-script')
+    @stack('scripts')
 
 </body>
 

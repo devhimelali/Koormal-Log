@@ -40,14 +40,29 @@
                 <!-- Date Picker Input (you can hide it if needed) -->
 
 
-                <div class="border border-success rounded p-2 mb-3">
+                {{-- <div class="border border-success rounded p-2 mb-3">
                     <strong><u>Labour for Dayshift</u></strong><br>
                     Alex Herbertson, Bill Smith, Steven Jones, Frank Reid, Mark Thomas
                 </div>
                 <div class="border border-success rounded p-2">
                     <strong><u>Labour for Nightshift</u></strong><br>
                     John Winters, Albert Cummins, Ralph Grieves, Mark Riley
+                </div> --}}
+                <div class="border border-success rounded p-2 mb-3">
+                    <strong><u>Labour for Dayshift</u></strong><br>
+                    <div class="editable" data-shift="day" contenteditable="true">
+                        {{ implode(', ', $labours_day) }}
+                    </div>
                 </div>
+
+                <div class="border border-success rounded p-2">
+                    <strong><u>Labour for Nightshift</u></strong><br>
+                    <div class="editable" data-shift="night" contenteditable="true">
+                        {{ implode(', ', $labours_night) }}
+                    </div>
+                </div>
+
+
             </div>
 
             <!-- Right: 4EMUS logo and buttons -->
@@ -185,10 +200,6 @@
                 }
             });
         });
-    </script>
-
-
-    <script>
         $(function() {
             $("#sortableRows").sortable({
                 items: "tr",
@@ -448,6 +459,27 @@
             }
 
         })
+        $(document).ready(function() {
+            $('.editable').on('blur', function() {
+                let content = $(this).text().trim();
+                let shift = $(this).data('shift');
+                let date = $('#flatpickr-date').val();
+
+                $.ajax({
+                    url: '{{ route('labour-shift.update') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        shift: shift,
+                        labour: content,
+                        date: date
+                    },
+                    success: function(res) {},
+                    error: function() {}
+                });
+            });
+        });
+
 
         implementAutoAjaxLoading();
     </script>

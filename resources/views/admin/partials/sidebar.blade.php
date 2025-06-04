@@ -31,14 +31,14 @@
             <ul class="navbar-nav" id="navbar-nav">
 
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}"
                         class="nav-link menu-link @if (Route::current()->getName() == 'admin.dashboard') active @endif"
                         aria-expanded="false">
                         <i class="ph-gauge"></i>
                         <span data-key="t-dashboard">Dashboard</span>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="nav-item">
                     <a href="{{ route('supervisors-shift-log.index', ['date' => date('d-m-Y')]) }}"
@@ -48,7 +48,6 @@
                         <span data-key="t-dashboard">Supervisors Shift Log</span>
                     </a>
                 </li>
-
             </ul>
         </div>
         <!-- Sidebar -->

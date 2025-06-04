@@ -4,4 +4,5 @@ return [
     App\Providers\AppServiceProvider::class,
     App\Providers\FortifyServiceProvider::class,
     Maatwebsite\Excel\ExcelServiceProvider::class,
+    Yajra\DataTables\DataTablesServiceProvider::class,
 ];

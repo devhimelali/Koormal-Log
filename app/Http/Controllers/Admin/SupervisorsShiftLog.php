@@ -9,6 +9,7 @@ use App\Imports\ShiftLogImport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\ShiftLogCsvExport;
 use App\Http\Controllers\Controller;
+use App\Models\Labour;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,6 +20,7 @@ class SupervisorsShiftLog extends Controller
         $shift = $request->query('shift', 'both');
         $inputDate = $request->query('date', date('d-m-Y'));
 
+        $laboursQuery = Labour::where('date', $inputDate)->get();
         // Convert d-m-Y to Y-m-d for querying
         try {
             $queryDate = Carbon::createFromFormat('d-m-Y', $inputDate)->format('Y-m-d');
@@ -42,6 +44,8 @@ class SupervisorsShiftLog extends Controller
             'jobs' => $jobs,
             'shift' => $shift,
             'date' => $inputDate,
+            'labours_day' => (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray(),
+            'labours_night' => (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray(),
         ]);
     }
 
@@ -104,8 +108,13 @@ class SupervisorsShiftLog extends Controller
     {
         $shiftLog = ShiftLog::find($id);
         $shiftLog->update(['mark_as_complete' => !$shiftLog->mark_as_complete]);
-        return redirect()->back()->with('success', 'Shift Log Marked as Complete');
+        if ($shiftLog->mark_as_complete == 1) {
+            return redirect()->back()->with('success', 'Job marked as completed');
+        } else {
+            return redirect()->back()->with('success', 'Job marked as not completed');
+        }
     }
+
 
     public function reorder(Request $request)
     {
@@ -161,18 +170,19 @@ class SupervisorsShiftLog extends Controller
             'date' => 'required|date',
             'export' => 'required|in:csv,xlsx,pdf',
         ]);
+        $laboursQuery = Labour::where('date', $request->date)->get();
 
         if ($request->export == 'pdf') {
             $queryDate = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
             $query = ShiftLog::whereDate('created_at', $queryDate);
 
-            if ($request->shift) {
+            if ($request->shift !== null && $request->shift != 'both') {
                 $query->where('shift_name', $request->shift);
             }
 
             $logs = $query->get();
-            $dayLabour = 'Alex Herbertson, Bill Smith, Steven Jones, Frank Reid, Mark Thomas';
-            $nightLabour = 'John Winters, Albert Cummins, Ralph Grieves, Mark Riley';
+            $dayLabour = (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray();
+            $nightLabour = (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray();
 
             $pdf = PDF::loadView('exports.shift-log', [
                 'logs' => $logs,

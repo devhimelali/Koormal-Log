@@ -69,8 +69,9 @@
                     SUPERVISORS SHIFT LOG – {{ \Carbon\Carbon::parse($date)->format('d-m-y') }}
                 </div>
 
-                <div class="labour-box"><strong>Labour for Dayshift:</strong><br> {{ $dayLabour }}</div>
-                <div class="labour-box"><strong>Labour for Nightshift:</strong> <br> {{ $nightLabour }}</div>
+                <div class="labour-box"><strong>Labour for Dayshift:</strong><br> {{ implode(', ', $dayLabour) }}</div>
+                <div class="labour-box"><strong>Labour for Nightshift:</strong> <br> {{ implode(', ', $nightLabour) }}
+                </div>
             </td>
             <td style="width: 25%;">
                 <img src="{{ public_path('assets/logos/4emus-logo.png') }}" alt="4EMUS Logo">

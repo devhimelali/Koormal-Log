@@ -23,9 +23,10 @@ class ShiftLogCsvExport implements FromCollection, WithHeadings
         $queryDate = Carbon::createFromFormat('d-m-Y', $this->date)->format('Y-m-d');
         $query = ShiftLog::whereDate('created_at', $queryDate);
 
-        if (!empty($this->shift)) {
+        if ($this->shift !== null && $this->shift != 'both') {
             $query->where('shift_name', $this->shift);
         }
+
 
         return $query->get([
             'shift_name',
