@@ -3,41 +3,40 @@
 namespace App\Imports;
 
 use App\Models\ShiftLog;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, WithBatchInserts
 {
     /**
      * @param Collection $rows
      */
-    protected $shiftName;
-    public function __construct($shiftName)
-    {
-        $this->shiftName = $shiftName;
-    }
+
     public function collection(Collection $rows)
     {
-        $total = $rows->count();
-        foreach ($rows as $index => $row) {
-            if ($index === $total - 1) {
+        $nextPosition = ShiftLog::max('position') + 1;
+
+        foreach ($rows as $row) {
+            if (empty(array_filter($row->toArray()))) {
                 continue;
             }
-            $nextPosition = ShiftLog::max('position') + 1;
+
             ShiftLog::create([
-                'shift_name'          => $this->shiftName,
                 'wo_number'           => $row['wo_no'] ?? null,
                 'work_description'    => $row['description'] ?? null,
                 'duration'            => $row['duration'] ?? null,
                 'asset_no'            => $row['asset_no'] ?? null,
                 'trades'              => $row['trades'] ?? null,
-                'due_start'           => $row['due_start'] ?? null,
+                'due_start'   => $this->parseExcelDate($row['due_start']),
                 'status'              => $row['work_order_status_description'] ?? null,
-                'raised'              => $row['raised'] ?? null,
-                'start_date'          => $row['start_date'] ?? null,
+                'raised'      => $this->parseExcelDate($row['raised']),
+                'start_date'  => $this->parseExcelDate($row['start_date']),
+
                 'priority'            => $row['priority'] ?? null,
                 'job_type'            => $row['job_type'] ?? null,
                 'department'          => $row['department'] ?? null,
@@ -46,11 +45,12 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                 'other_cost'          => $row['other_cost'] ?? null,
                 'asset_description'   => $row['asset_description'] ?? null,
                 'is_excel_upload'     => 1,
-                'position'            => $nextPosition,
-                // 'labour' and 'is_excel_upload' can be added here if needed
+                'position'            => $nextPosition++,
             ]);
         }
     }
+
+
 
     public function chunkSize(): int
     {
@@ -60,5 +60,11 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
     public function batchSize(): int
     {
         return 100;
+    }
+    private function parseExcelDate($value, $format = 'd-m-Y')
+    {
+        return isset($value)
+            ? Carbon::instance(Date::excelToDateTimeObject((float) $value))->format($format)
+            : null;
     }
 }

@@ -29,6 +29,7 @@ class ShiftLog extends Model
         'asset_description',
         'supervisor_notes',
         'mark_as_complete',
+        'progress',
 
         'labour',
         'is_excel_upload', // if it is excel uploaded user can not edit

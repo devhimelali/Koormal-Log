@@ -21,3 +21,8 @@ Route::get('/test', function () {
 Route::get('hash-make', function () {
     return Hash::make('super#visor');
 });
+
+Route::get('composer-dump-autoload', function () {
+    $composer = exec('composer dump-autoload');
+    return $composer;
+});

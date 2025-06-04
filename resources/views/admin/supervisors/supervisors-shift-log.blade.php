@@ -10,15 +10,36 @@
                         class="mb-2">
                 </div>
                 <select name="filter" class="form-select w-75 mt-2" id="filter">
-                    <option {{ $filter == 'both' ? 'selected' : '' }} value="both">Both</option>
-                    <option {{ $filter == 'day' ? 'selected' : '' }} value="day">Day</option>
-                    <option {{ $filter == 'night' ? 'selected' : '' }} value="night">Night</option>
+                    <option {{ $shift == 'both' ? 'selected' : '' }} value="both">Both</option>
+                    <option {{ $shift == 'day' ? 'selected' : '' }} value="day">Day</option>
+                    <option {{ $shift == 'night' ? 'selected' : '' }} value="night">Night</option>
                 </select>
+                <select name="export" class="form-select w-75 mt-2" id="export">
+                    <option value="">Export</option>
+                    <option value="pdf">PDF</option>
+                    <option value="csv">CSV</option>
+                </select>
+
+
             </div>
 
             <!-- Center: Title and Shift Labour -->
             <div class="col-md-6 text-center">
-                <h4 class="fw-bold fst-italic mb-4">SUPERVISORS SHIFT LOG – <span>(DATE)</span></h4>
+                @php
+                    $selectedDate = request()->get('date', \Carbon\Carbon::now()->format('d-m-Y'));
+                @endphp
+
+                <!-- Center: Title and Shift Labour -->
+                <h4 class="fw-bold fst-italic mb-4">
+                    SUPERVISORS SHIFT LOG –
+                    <input type="text" id="flatpickr-date" class="form-control d-inline-block w-auto"
+                        value="{{ $selectedDate }}"
+                        placeholder="Select Date"style="font-weight: bold;font-size: 18px;font-style: italic;">
+                </h4>
+
+                <!-- Date Picker Input (you can hide it if needed) -->
+
+
                 <div class="border border-success rounded p-2 mb-3">
                     <strong><u>Labour for Dayshift</u></strong><br>
                     Alex Herbertson, Bill Smith, Steven Jones, Frank Reid, Mark Thomas
@@ -51,6 +72,7 @@
                     <th>Asset No</th>
                     <th>Work Description</th>
                     <th>Labour Assigned</th>
+                    <th>% Complete</th>
                     <th style="width: 101px">Move</th>
                     <th style="width: 150px">Action</th>
                 </tr>
@@ -59,15 +81,23 @@
                 @foreach ($jobs as $index => $job)
                     @php
                         $isEditable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
+                        $shift = match ($job->shift_name) {
+                            'night' => 'background-color: #939393a8;',
+                            default => '',
+                        };
+                        if ($job->mark_as_complete == 1) {
+                            $shift = 'background-color: #ffef3bc2;';
+                        }
+
                     @endphp
 
-                    <tr data-id="{{ $job->id }}">
+                    <tr style="{{ $shift }}" data-id="{{ $job->id }}">
                         <td class="line-no text-center">
                             <span class="line-no-text"> {{ $index + 1 }}</span>
                         </td>
                         <td style="width: 95px">
                             <select data-field="shift_name" class="form-control"
-                                style="text-transform: capitalize; width: 68px;">
+                                style="text-transform: capitalize; width: 68px; {{ $shift }}">
                                 <option value="">Select Shift</option>
                                 <option value="day" {{ $job->shift_name == 'day' ? 'selected' : '' }}>Day
                                 </option>
@@ -79,6 +109,13 @@
                         <td {!! $isEditable !!} data-field="asset_no">{{ $job->asset_no }}</td>
                         <td {!! $isEditable !!} data-field="work_description">{{ $job->work_description }}</td>
                         <td contenteditable=true data-field="labour">{{ $job->labour }}</td>
+                        <td>
+                            <input data-field="progress" type="number" class="form-control text-center complete_progress"
+                                min="0" max="100" value="{{ $job->progress }}" style="width: 88px;"
+                                oninput="this.value = Math.max(0, Math.min(100, this.value))">
+                        </td>
+
+
                         <td class="line-no text-center">
                             <span class="drag-handle me-2 btn btn-secondary btn-sm" style="cursor: move;">
                                 <i class="bi bi-arrows-move me-2"></i> Move
@@ -116,13 +153,6 @@
                         <label for="csv_file" class="form-label fw-semibold">Upload File <span
                                 class="text-danger">*</span></label>
                         <input type="file" name="csv_file" class="form-control" required>
-                        <div class="mt-3">
-                            <label for="shift_name" class="form-label fw-semibold">Select Shift</label>
-                            <select name="shift_name" class="form-select" id="shift_name">
-                                <option value="day">Day</option>
-                                <option value="night">Night</option>
-                            </select>
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -137,6 +167,27 @@
 
 @section('page-script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Flatpickr assets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            flatpickr("#flatpickr-date", {
+                dateFormat: "d-m-Y",
+                defaultDate: "{{ $selectedDate }}",
+                onChange: function(selectedDates, dateStr, instance) {
+                    let filter = dateStr;
+                    let params = new URLSearchParams(window.location.search);
+                    params.set('date', filter);
+                    window.location.href =
+                        `{{ route('supervisors-shift-log.index') }}?${params.toString()}`;
+                }
+            });
+        });
+    </script>
+
+
     <script>
         $(function() {
             $("#sortableRows").sortable({
@@ -174,6 +225,11 @@
                             <td contenteditable="true" data-field="asset_no">Asset-XXX</td>
                             <td contenteditable="true" data-field="work_description">Work Description</td>
                             <td contenteditable="true" data-field="labour">Labour Name</td>
+                            <td>
+                                <input data-field="progress" type="number" class="form-control text-center complete_progress"
+                                    min="0" max="100" value="0" style="width: 88px;"
+                                    oninput="this.value = Math.max(0, Math.min(100, this.value))">
+                            </td>
                             <td class="line-no text-center">
                                 <span class="drag-handle me-2 btn btn-secondary btn-sm" style="cursor: move;">
                                     <i class="bi bi-arrows-move me-2"></i> Move
@@ -319,40 +375,79 @@
             });
         }
 
-        $(document).ready(function() {
+        // Attach events
+        $('#jobTable').on('change', 'select[data-field], input.complete_progress', function() {
+            let el = $(this);
+            let value = el.val();
+            let field = el.data('field');
 
-            $('#jobTable').on('blur change', '[contenteditable="true"], select[data-field]', function() {
-                let el = $(this);
-                let tr = el.closest('tr');
-                let id = tr.data('id');
-                let field = el.data('field');
-                let value = el.is('select') ? el.val() : el.text().trim();
+            if (field === 'shift_name') {
+                let row = el.closest('tr');
 
-                $.ajax({
-                    url: `{{ route('supervisors-shift-log.update', ':id') }}`.replace(':id', id),
-                    method: 'PUT',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        field: field,
-                        value: value
-                    },
-                    success: function(res) {
-                        el.css('background-color', '#d4edda');
-                        notify('success', res.message);
-                        setTimeout(() => el.css('background-color', ''), 1000);
-                    },
-                    error: function() {
-                        el.css('background-color', '#f8d7da');
-                        setTimeout(() => el.css('background-color', ''), 1500);
-                        notify('error', 'Error updating field');
-                    }
-                });
-            });
+                // Reset background
+                row.css('background-color', '');
+                el.css('background-color', '');
+
+                if (value === 'night') {
+                    row.css('background-color', '#939393a8');
+                }
+            }
+            handler(this);
         });
+
+        $('#jobTable').on('blur', '[contenteditable="true"]', function() {
+
+
+            handler(this);
+        });
+
+        function handler(el) {
+            let $el = $(el);
+            let tr = $el.closest('tr');
+            let id = tr.data('id');
+            let field = $el.data('field');
+            let value = $el.is('select') || $el.is('input') ? $el.val() : $el.text().trim();
+
+            $.ajax({
+                url: `{{ route('supervisors-shift-log.update', ':id') }}`.replace(':id', id),
+                method: 'PUT',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    field: field,
+                    value: value
+                },
+                success: function(res) {
+                    $el.css('background-color', '#d4edda');
+                    notify('success', res.message);
+                    setTimeout(() => $el.css('background-color', ''), 1000);
+                },
+                error: function() {
+                    $el.css('background-color', '#f8d7da');
+                    setTimeout(() => $el.css('background-color', ''), 1500);
+                    notify('error', 'Error updating field');
+                }
+            });
+        }
+
         $('#filter').on('change', function() {
             let filter = $(this).val();
-            window.location.href = `{{ route('supervisors-shift-log.index') }}?filter=${filter}`;
+            let params = new URLSearchParams(window.location.search);
+            params.set('shift', filter);
+            window.location.href = `{{ route('supervisors-shift-log.index') }}?${params.toString()}`;
         });
+
+        $('#export').on('change', function() {
+            // Get the selected value
+            let selectedValue = $(this).val();
+
+            // Check if a value is selected
+            if (selectedValue) {
+                let params = new URLSearchParams(window.location.search);
+                let url = `{{ route('supervisors-shift-log.export') }}?export=${selectedValue}&${params}`;
+                window.open(url, '_blank');
+            }
+
+        })
 
         implementAutoAjaxLoading();
     </script>
@@ -366,6 +461,10 @@
         .line-number {
             width: 40px;
             text-align: center;
+        }
+
+        .flatpickr-months {
+            background-color: #ffffff;
         }
     </style>
 @endsection

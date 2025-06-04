@@ -166,12 +166,18 @@
                     },
                     success: function(response) {
                         notify('success', response.message);
+                        const today = new Date();
+                        const day = String(today.getDate()).padStart(2, '0');
+                        const month = String(today.getMonth() + 1).padStart(2, '0');
+                        const year = today.getFullYear();
+
+                        const formattedDate = `${day}-${month}-${year}`;
                         setTimeout(() => {
                             window.location.href =
-                                "{{ route('supervisors-shift-log.index') }}";
+                                `{{ route('supervisors-shift-log.index') }}?date=${formattedDate}`;
                         }, 1000);
-                        // Optionally redirect or update UI here
                     },
+
                     error: function(xhr) {
                         alert('Failed to update job.');
                         console.error(xhr.responseText);

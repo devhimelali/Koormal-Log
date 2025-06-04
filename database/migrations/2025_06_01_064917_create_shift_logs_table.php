@@ -35,6 +35,7 @@ return new class extends Migration
             $table->unsignedInteger('position')->nullable();
             $table->longText('supervisor_notes')->nullable();
             $table->boolean('mark_as_complete')->default(0);
+            $table->string('progress')->default('0');
             $table->timestamps();
         });
     }

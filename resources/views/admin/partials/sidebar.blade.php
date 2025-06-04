@@ -41,7 +41,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('supervisors-shift-log.index') }}"
+                    <a href="{{ route('supervisors-shift-log.index', ['date' => date('d-m-Y')]) }}"
                         class="nav-link menu-link @if (Route::current()->getName() == 'supervisors-shift-log.index') active @endif"
                         aria-expanded="false">
                         <i class="ph ph-clock-counter-clockwise"></i>
