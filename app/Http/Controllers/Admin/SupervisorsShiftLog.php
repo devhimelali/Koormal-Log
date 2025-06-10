@@ -57,10 +57,19 @@ class SupervisorsShiftLog extends Controller
             'asset_no' => 'nullable|string',
             'work_description' => 'nullable|string',
             'labour' => 'nullable|string',
+            'date' => 'required|date_format:d-m-Y',
         ]);
+        
         $nextPosition = ShiftLog::max('position') + 1;
         $validated['position'] = $nextPosition;
+        
+        $datePart = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
+        $timePart = now()->format('H:i:s');
+        $createdAt = Carbon::parse("$datePart $timePart");
         $log = ShiftLog::create($validated);
+        
+        $log->created_at = $createdAt;
+        $log->save();
 
         return response()->json(['id' => $log->id]);
     }
@@ -114,7 +123,6 @@ class SupervisorsShiftLog extends Controller
             return redirect()->back()->with('success', 'Job marked as not completed');
         }
     }
-
 
     public function reorder(Request $request)
     {
@@ -176,7 +184,7 @@ class SupervisorsShiftLog extends Controller
             $queryDate = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
             $query = ShiftLog::whereDate('created_at', $queryDate);
 
-            if ($request->shift !== null && $request->shift != 'both') {
+             if ($request->shift !== null && $request->shift != 'both') {
                 $query->where('shift_name', $request->shift);
             }
 

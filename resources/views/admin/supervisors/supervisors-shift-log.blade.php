@@ -300,6 +300,8 @@
             if (newRow.length === 0) return;
 
             let rowData = {};
+            let date = $("#flatpickr-date").val();
+            rowData["date"] = date;
             newRow.find('[data-field]').each(function() {
                 const field = $(this).data('field');
                 const value = $(this).text().trim();
@@ -314,6 +316,7 @@
                     ...rowData
                 },
                 success: function(response) {
+                    console.log(response);
                     if (response.id) {
                         newRow.attr('data-id', response.id);
                         newRow.find('.moreInfo').attr('href',

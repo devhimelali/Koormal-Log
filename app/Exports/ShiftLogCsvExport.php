@@ -27,7 +27,6 @@ class ShiftLogCsvExport implements FromCollection, WithHeadings
             $query->where('shift_name', $this->shift);
         }
 
-
         return $query->get([
             'shift_name',
             'wo_number',
