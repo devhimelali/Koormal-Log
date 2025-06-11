@@ -173,21 +173,14 @@
                     },
                     success: function(response) {
                         notify('success', response.message);
-                        const today = new Date();
-                        const day = String(today.getDate()).padStart(2, '0');
-                        const month = String(today.getMonth() + 1).padStart(2, '0');
-                        const year = today.getFullYear();
-
-                        const formattedDate = `${day}-${month}-${year}`;
                         setTimeout(() => {
                             window.location.href =
-                                `{{ route('supervisors-shift-log.index') }}?date=${formattedDate}`;
+                                `{{ route('supervisors-shift-log.index') }}?date=${response.date}`;
                         }, 1000);
                     },
 
                     error: function(xhr) {
-                        alert('Failed to update job.');
-                        console.error(xhr.responseText);
+                        notify('error', 'Failed to update job');
                     }
                 });
             });
