@@ -204,6 +204,27 @@
         });
 
 
+        $(document).ready(function() {
+            $('.editable').on('blur', function() {
+                let content = $(this).text().trim();
+                let shift = $(this).data('shift');
+                let date = $('#flatpickr-date').val();
+
+                $.ajax({
+                    url: "{{ route('labour-shift.update') }}",
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        shift: shift,
+                        labour: content,
+                        date: date
+                    },
+                    success: function(res) {},
+                    error: function() {}
+                });
+            });
+        });
+
         $('#jobTable').on('change', '.shift_name', function() {
             let select = $(this);
             let field = select.data('field'); // should be "shift_name"
