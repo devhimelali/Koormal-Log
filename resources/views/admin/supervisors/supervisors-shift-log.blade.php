@@ -140,16 +140,11 @@
                 dateFormat: "d-m-Y",
                 defaultDate: "{{ $selectedDate ?? now()->format('d-m-Y') }}",
                 onChange: function(selectedDates, dateStr, instance) {
-                    reloadTableWithFilters();
+                    window.location.href = "{{ route('supervisors-shift-log.index') }}?date=" + dateStr;
                 }
             });
         });
-    </script>
 
-
-
-
-    <script>
         $(document).on('draw.dt', function() {
             $('#jobTable tbody').sortable({
                 items: "tr",

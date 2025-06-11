@@ -12,24 +12,28 @@
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">WO Number</label>
                         <input type="text" name="wo_number" class="form-control" value="{{ $log->wo_number }}"
-                            {{ $log->mark_as_complete ? 'disabled' : '' }}>
+                            {{ $log->mark_as_complete ? 'disabled' : '' }}
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Asset Number</label>
-                        <input type="text" name="asset_no" class="form-control" value="{{ $log->asset_no }}" readonly>
+                        <input type="text" name="asset_no" class="form-control" value="{{ $log->asset_no }}"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Priority</label>
-                        <input type="text" name="priority" class="form-control" value="{{ $log->priority }}" readonly>
+                        <input type="text" name="priority" class="form-control" value="{{ $log->priority }}"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Department</label>
                         <input type="text" name="department" class="form-control" value="{{ $log->department }}"
-                            readonly>
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Duration (hrs)</label>
-                        <input type="text" name="duration" class="form-control" value="{{ $log->duration }}" readonly>
+                        <input type="text" name="duration" class="form-control" value="{{ $log->duration }}"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                 </div>
 
@@ -37,11 +41,13 @@
                 <div class="row g-3 mt-3">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Workorder Description</label>
-                        <textarea class="form-control" name="work_description" rows="3" readonly>{{ $log->work_description }}</textarea>
+                        <textarea class="form-control" name="work_description" rows="3"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>{{ $log->work_description }}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Asset Description</label>
-                        <textarea class="form-control" name="asset_description" rows="3" readonly>{{ $log->asset_description }}</textarea>
+                        <textarea class="form-control" name="asset_description" rows="3"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>{{ $log->asset_description }}</textarea>
                     </div>
                 </div>
 
