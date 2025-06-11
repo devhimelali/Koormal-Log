@@ -85,7 +85,7 @@ class SupervisorsShiftLog extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Shift Log Created Successfully',
+            'message' => 'New Job Added Successfully',
         ]);
     }
     public function show($id)
@@ -99,7 +99,7 @@ class SupervisorsShiftLog extends Controller
             'field' => 'required|string',
             'value' => 'nullable|string'
         ]);
-        $allowedFields = ['shift_name', 'wo_number', 'asset_no', 'work_description', 'labour', 'supervisor_notes', 'asset_description', 'duration', 'department', 'priority', 'progress', 'note'];
+        $allowedFields = ['shift_name', 'wo_number', 'asset_no', 'work_description', 'labour', 'supervisor_notes', 'asset_description', 'duration', 'department', 'priority', 'progress', 'note', 'requisition', 'note_id'];
 
         if (!in_array($request->field, $allowedFields)) {
             return response()->json(['error' => 'Invalid field'], 400);
@@ -199,7 +199,7 @@ class SupervisorsShiftLog extends Controller
     public function export(Request $request)
     {
         $request->validate([
-            'shift_name' => 'nullable|string',
+            'shift' => 'nullable|string',
             'date' => 'required|date',
             'export' => 'required|in:csv,xlsx,pdf',
         ]);

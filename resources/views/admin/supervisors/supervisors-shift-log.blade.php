@@ -184,8 +184,10 @@
         $('#export').on('change', function() {
             let selectedValue = $(this).val();
             if (selectedValue) {
-                let params = new URLSearchParams(window.location.search);
-                let url = `{{ route('supervisors-shift-log.export') }}?export=${selectedValue}&${params}`;
+                let date = $('#flatpickr-date').val();
+                let filter = $('#filter').val();
+                let url =
+                    `{{ route('supervisors-shift-log.export') }}?export=${selectedValue}&${filter ? 'shift=' + encodeURIComponent(filter) : ''}&date=${date}`;
                 window.open(url, '_blank');
             }
 

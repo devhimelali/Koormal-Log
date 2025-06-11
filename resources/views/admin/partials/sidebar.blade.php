@@ -48,6 +48,14 @@
                         <span data-key="t-dashboard">Supervisors Shift Log</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('notes.index') }}"
+                        class="nav-link menu-link @if (Route::current()->getName() == 'notes.index') active @endif"
+                        aria-expanded="false">
+                        <i class="ph ph-file-text"></i>
+                        <span data-key="t-dashboard">Notes</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->

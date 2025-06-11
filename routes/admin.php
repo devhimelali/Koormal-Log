@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\Admin\NoteController;
 use App\Http\Controllers\Admin\LabourController;
 use App\Http\Controllers\Admin\SupervisorsShiftLog;
 
@@ -26,6 +27,8 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
 
     // Labourer routes
     Route::post('labour-shift/update', [LabourController::class, 'updateLabour'])->name('labour-shift.update');
+
+    Route::resource('notes', NoteController::class);
 
 
 

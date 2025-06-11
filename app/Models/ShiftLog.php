@@ -30,7 +30,7 @@ class ShiftLog extends Model
         'supervisor_notes',
         'mark_as_complete',
         'progress',
-        'note',
+        'note_id',
 
         'labour',
         'is_excel_upload', // if it is excel uploaded user can not edit
@@ -54,5 +54,10 @@ class ShiftLog extends Model
     public function media(): MorphMany
     {
         return $this->morphMany(Media::class, 'imageable');
+    }
+
+    public function note()
+    {
+        return $this->belongsTo(Note::class);
     }
 }

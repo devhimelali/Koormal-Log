@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Note;
 use Carbon\Carbon;
 use App\Models\ShiftLog;
 use Yajra\DataTables\Services\DataTable;
@@ -69,17 +70,29 @@ class ShiftLogsDataTable extends DataTable
                 return "<div {$editable} data-field='work_description' class='p-3 m-0'>{$job->work_description}</div>";
             })
             ->addColumn('labour', function ($job) {
-                $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
+                $editable =  'contenteditable=true';
                 return "<div {$editable} data-field='labour' class='p-3 m-0'>{$job->labour}</div>";
             })
             ->addColumn('note', function ($job) {
-                return '<select class="form-control w-100 note" data-field="note" style="text-transform: capitalize; width: 68px;">
-                            <option value="">Select Note</option>
-                            <option value="no">Could not find asset</option>
-                            <option value="no">Further work required</option>
-                            <option value="yes">No show</option>
-                            <option value="no">No labour</option>
-                            <option value="no">No parts</option>
+                $notes = Note::orderBy('note', 'asc')->get();
+                $options = '<option value="">Select Note</option>';
+
+                foreach ($notes as $note) {
+                    $selected = $job->note_id == $note->id ? 'selected' : '';
+                    $options .= "<option value=\"{$note->id}\" {$selected}>{$note->note}</option>";
+                }
+
+                return "
+                    <select class=\"form-control w-100 shift_name\" data-field=\"note_id\" data-id=\"{$job->id}\" style=\"text-transform: capitalize; width: 100%;\">
+                        {$options}
+                    </select>";
+            })
+
+            ->addColumn('requisition', function ($job) {
+                $selected = $job->requisition === 'yes' ? 'selected' : '';
+                return '<select class="form-control w-100 shift_name" data-field="requisition" style="text-transform: capitalize; width: 78px;">
+                            <option value="no" ' . $selected . '>No</option>
+                            <option value="yes" ' . $selected . '>Yes</option>
                         </select>';
             })
 
@@ -88,7 +101,7 @@ class ShiftLogsDataTable extends DataTable
                 <input data-field="progress" type="number"
                        class="form-control text-center complete_progress"
                        min="0" max="100" value="' . $job->progress . '"
-                       style="width: 88px; padding-right: 24px;"
+                       style="width: 68px; padding-right: 24px;"
                        oninput="this.value = Math.max(0, Math.min(100, this.value))">
                 <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none;">%</span>
             </div>')
@@ -105,12 +118,20 @@ class ShiftLogsDataTable extends DataTable
                         </button>
                     </div>';
             })
-            ->rawColumns(['line', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'progress', 'action']);
+            ->rawColumns(['line', 'requisition', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'progress', 'action']);
     }
 
     public function query()
     {
-        $query = ShiftLog::query()->orderBy('position');
+        $query = ShiftLog::query();
+
+        $orderColumnIndex = $this->request->input('order.0.column');
+        $orderColumnName = $this->getColumns()[$orderColumnIndex]['data'] ?? null;
+
+        // Only apply default ordering if the order is not for a specific column
+        if (!$orderColumnName || $orderColumnName === 'line') {
+            $query->orderBy('position');
+        }
 
         // Filter by shift
         if (request()->has('shift') && in_array(request('shift'), ['day', 'night'])) {
@@ -133,6 +154,7 @@ class ShiftLogsDataTable extends DataTable
 
         return $query;
     }
+
 
 
     public function html()
@@ -159,6 +181,7 @@ class ShiftLogsDataTable extends DataTable
             ['data' => 'work_description', 'title' => 'Work Description', 'orderable' => false, 'searchable' => false],
             ['data' => 'labour', 'title' => 'Labour Assigned', 'orderable' => false, 'searchable' => false],
             ['data' => 'note', 'title' => 'Note', 'orderable' => false, 'searchable' => false, 'style' => "width: 93px !important;"],
+            ['data' => 'requisition', 'title' => 'Req', 'orderable' => false, 'searchable' => false, 'style' => "width: 50px !important;"],
             ['data' => 'progress', 'title' => '% Complete', 'orderable' => false, 'searchable' => false],
             ['data' => 'action', 'title' => 'Action', 'orderable' => false, 'searchable' => false, 'style' => "width: 132px !important;"],
         ];
