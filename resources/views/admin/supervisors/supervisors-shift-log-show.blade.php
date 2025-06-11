@@ -16,19 +16,20 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Asset Number</label>
-                        <input type="text" name="asset_no" class="form-control" value="{{ $log->asset_no }}">
+                        <input type="text" name="asset_no" class="form-control" value="{{ $log->asset_no }}" readonly>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Priority</label>
-                        <input type="text" name="priority" class="form-control" value="{{ $log->priority }}">
+                        <input type="text" name="priority" class="form-control" value="{{ $log->priority }}" readonly>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Department</label>
-                        <input type="text" name="department" class="form-control" value="{{ $log->department }}">
+                        <input type="text" name="department" class="form-control" value="{{ $log->department }}"
+                            readonly>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Duration (hrs)</label>
-                        <input type="text" name="duration" class="form-control" value="{{ $log->duration }}">
+                        <input type="text" name="duration" class="form-control" value="{{ $log->duration }}" readonly>
                     </div>
                 </div>
 
@@ -36,11 +37,11 @@
                 <div class="row g-3 mt-3">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Workorder Description</label>
-                        <textarea class="form-control" name="work_description" rows="3">{{ $log->work_description }}</textarea>
+                        <textarea class="form-control" name="work_description" rows="3" readonly>{{ $log->work_description }}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Asset Description</label>
-                        <textarea class="form-control" name="asset_description" rows="3">{{ $log->asset_description }}</textarea>
+                        <textarea class="form-control" name="asset_description" rows="3" readonly>{{ $log->asset_description }}</textarea>
                     </div>
                 </div>
 

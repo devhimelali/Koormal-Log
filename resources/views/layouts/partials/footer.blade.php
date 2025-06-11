@@ -9,7 +9,7 @@
             </div>
             <div class="col-sm-6">
                 <div class="text-sm-end d-none d-sm-block">
-                    Design & Develop by 4emus
+                    Design and Development by 4EMUS
                 </div>
             </div>
         </div>

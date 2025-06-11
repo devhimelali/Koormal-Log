@@ -90,7 +90,7 @@
     </style>
     @yield('vendor-style')
     @yield('page-style')
-
+    @stack('styles')
 </head>
 
 <body>

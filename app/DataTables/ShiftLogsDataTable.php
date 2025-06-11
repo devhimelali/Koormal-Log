@@ -1,0 +1,166 @@
+<?php
+
+namespace App\DataTables;
+
+use Carbon\Carbon;
+use App\Models\ShiftLog;
+use Yajra\DataTables\Services\DataTable;
+
+class ShiftLogsDataTable extends DataTable
+{
+    public function dataTable($query)
+    {
+        $index = 0;
+        return datatables()
+            ->eloquent($query)
+            ->setRowAttr([
+                'data-id' => function ($job) {
+                    return $job->id;
+                },
+            ])
+            ->setRowId(fn($row) => 'row_' . $row->id)
+            ->setRowClass(function ($job) {
+                if ($job->mark_as_complete == 1) {
+                    return 'row-complete';
+                }
+
+                if ($job->shift_name === 'night') {
+                    return 'row-night';
+                }
+
+                return '';
+            })
+            ->addIndexColumn()
+            ->addColumn('line', function ($job) use (&$index) {
+                $index++; // Increment each row
+                return '
+                    <span class="line-no-text">' . $index . '</span>
+                    <span class="drag-handle" style="cursor: move; margin-left: 6px;">
+                        <i class="bi bi-arrows-move"></i>
+                    </span>';
+            })
+
+
+            ->addColumn('shift', function ($job) {
+                $selectedDay = $job->shift_name === 'day' ? 'selected' : '';
+                $selectedNight = $job->shift_name === 'night' ? 'selected' : '';
+                $style = match (true) {
+                    $job->mark_as_complete == 1 => 'background-color: #ffef3bc2;',
+                    $job->shift_name === 'night' => 'background-color: #939393a8;',
+                    default => '',
+                };
+                return '<select class="form-control shift_name" data-field="shift_name" style="text-transform: capitalize; width: 68px; ' . $style . '">
+                        <option value="">Select Shift</option>
+                        <option value="day" ' . $selectedDay . '>Day</option>
+                        <option value="night" ' . $selectedNight . '>Night</option>
+                    </select>';
+            })
+
+            ->addColumn('wo_number', function ($job) {
+                $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
+                return "<div {$editable} data-field='wo_number' class='p-3 m-0'>{$job->wo_number}</div>";
+            })
+            ->addColumn('asset_no', function ($job) {
+                $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
+                return "<div {$editable} data-field='asset_no' class='p-3 m-0'>{$job->asset_no}</div>";
+            })
+            ->addColumn('work_description', function ($job) {
+                $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
+                return "<div {$editable} data-field='work_description' class='p-3 m-0'>{$job->work_description}</div>";
+            })
+            ->addColumn('labour', function ($job) {
+                $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
+                return "<div {$editable} data-field='labour' class='p-3 m-0'>{$job->labour}</div>";
+            })
+            ->addColumn('note', function ($job) {
+                return '<select class="form-control w-100 note" data-field="note" style="text-transform: capitalize; width: 68px;">
+                            <option value="">Select Note</option>
+                            <option value="no">Could not find asset</option>
+                            <option value="no">Further work required</option>
+                            <option value="yes">No show</option>
+                            <option value="no">No labour</option>
+                            <option value="no">No parts</option>
+                        </select>';
+            })
+
+            ->addColumn('progress', fn($job) =>
+            '<div style="position: relative; display: inline-block;">
+                <input data-field="progress" type="number"
+                       class="form-control text-center complete_progress"
+                       min="0" max="100" value="' . $job->progress . '"
+                       style="width: 88px; padding-right: 24px;"
+                       oninput="this.value = Math.max(0, Math.min(100, this.value))">
+                <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none;">%</span>
+            </div>')
+
+            ->addColumn('action', function ($job) {
+                $url = route('supervisors-shift-log.show', $job->id);
+                return '
+                    <div class="btn-group">
+                        <a href="' . $url . '" class="btn btn-sm btn-info">
+                            <i class="bi bi-info-circle"></i> More
+                        </a>
+                        <button class="btn btn-sm btn-danger deleteRowBtn" data-id="' . $job->id . '">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>';
+            })
+            ->rawColumns(['line', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'progress', 'action']);
+    }
+
+    public function query()
+    {
+        $query = ShiftLog::query()->orderBy('position');
+
+        // Filter by shift
+        if (request()->has('shift') && in_array(request('shift'), ['day', 'night'])) {
+            $query->where('shift_name', request('shift'));
+        }
+
+        // Filter by date — default to today
+        $rawDate = request('date');
+        if (filled($rawDate)) {
+            try {
+                $queryDate = Carbon::createFromFormat('d-m-Y', $rawDate)->format('Y-m-d');
+            } catch (\Exception $e) {
+                $queryDate = now()->format('Y-m-d');
+            }
+        } else {
+            $queryDate = now()->format('Y-m-d');
+        }
+
+        $query->whereDate('created_at', $queryDate);
+
+        return $query;
+    }
+
+
+    public function html()
+    {
+        return $this->builder()
+            ->setTableId('jobTable')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->parameters([
+                'scrollX' => true,
+                'paging' => false,
+                'searching' => false,
+                'ordering' => true,
+            ]);
+    }
+
+    protected function getColumns()
+    {
+        return [
+            ['data' => 'line', 'title' => '#', 'orderable' => false, 'searchable' => false, 'style' => "width: 50px !important;"],
+            ['data' => 'shift', 'name' => 'shift_name', 'title' => 'Shift', 'orderable' => true, 'searchable' => false],
+            ['data' => 'wo_number', 'contenteditable' => 'true', 'title' => 'WO Number', 'orderable' => false, 'searchable' => false],
+            ['data' => 'asset_no', 'title' => 'Asset No', 'orderable' => false, 'searchable' => false],
+            ['data' => 'work_description', 'title' => 'Work Description', 'orderable' => false, 'searchable' => false],
+            ['data' => 'labour', 'title' => 'Labour Assigned', 'orderable' => false, 'searchable' => false],
+            ['data' => 'note', 'title' => 'Note', 'orderable' => false, 'searchable' => false, 'style' => "width: 93px !important;"],
+            ['data' => 'progress', 'title' => '% Complete', 'orderable' => false, 'searchable' => false],
+            ['data' => 'action', 'title' => 'Action', 'orderable' => false, 'searchable' => false, 'style' => "width: 132px !important;"],
+        ];
+    }
+}

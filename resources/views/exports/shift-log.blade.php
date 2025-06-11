@@ -92,7 +92,6 @@
                 <th>Department</th>
                 <th>Duration</th>
                 <th>Asset Description</th>
-                <th>Supervisor Notes</th>
                 <th>Completed</th>
             </tr>
         </thead>
@@ -121,9 +120,15 @@
                     <td style="text-align: center">{{ $log->department }}</td>
                     <td style="text-align: center">{{ $log->duration }}</td>
                     <td>{{ $log->asset_description }}</td>
-                    <td>{{ $log->supervisor_notes }}</td>
                     <td>{{ $log->mark_as_complete == 1 ? 'Yes' : 'No' }}</td>
                 </tr>
+                @if ($log->supervisor_notes != '')
+                    <tr>
+                        <td colspan="12">
+                            {{ $log->supervisor_notes }}
+                        </td>
+                    </tr>
+                @endif
             @endforeach
         </tbody>
     </table>
