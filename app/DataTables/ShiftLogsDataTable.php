@@ -50,7 +50,7 @@ class ShiftLogsDataTable extends DataTable
                     $job->shift_name === 'night' => 'background-color: #939393a8;',
                     default => '',
                 };
-                return '<select class="form-control shift_name" data-field="shift_name" style="text-transform: capitalize; width: 68px; ' . $style . '">
+                return '<select class="form-control shift_name" data-field="shift_name" style="text-transform: capitalize; width: 68px; font-size: 10px;' . $style . '">
                         <option value="">Select Shift</option>
                         <option value="day" ' . $selectedDay . '>Day</option>
                         <option value="night" ' . $selectedNight . '>Night</option>
@@ -83,14 +83,14 @@ class ShiftLogsDataTable extends DataTable
                 }
 
                 return "
-                    <select class=\"form-control w-100 shift_name\" data-field=\"note_id\" data-id=\"{$job->id}\" style=\"text-transform: capitalize; width: 100%;\">
+                    <select class=\"form-control w-100 shift_name\" data-field=\"note_id\" data-id=\"{$job->id}\" style=\"font-size: 10px; text-transform: capitalize; width: 100%;\">
                         {$options}
                     </select>";
             })
 
             ->addColumn('requisition', function ($job) {
                 $selected = $job->requisition === 'yes' ? 'selected' : '';
-                return '<select class="form-control w-100 shift_name" data-field="requisition" style="text-transform: capitalize; width: 78px;">
+                return '<select class="form-control w-100 shift_name" data-field="requisition" style="text-transform: capitalize; font-size: 10px;">
                             <option value="no" ' . $selected . '>No</option>
                             <option value="yes" ' . $selected . '>Yes</option>
                         </select>';
@@ -180,8 +180,8 @@ class ShiftLogsDataTable extends DataTable
             ['data' => 'asset_no', 'title' => 'Asset No', 'orderable' => false, 'searchable' => false],
             ['data' => 'work_description', 'title' => 'Work Description', 'orderable' => false, 'searchable' => false],
             ['data' => 'labour', 'title' => 'Labour Assigned', 'orderable' => false, 'searchable' => false],
-            ['data' => 'note', 'title' => 'Note', 'orderable' => false, 'searchable' => false, 'style' => "width: 93px !important;"],
-            ['data' => 'requisition', 'title' => 'Req', 'orderable' => false, 'searchable' => false, 'style' => "width: 50px !important;"],
+            ['data' => 'note', 'title' => 'Note', 'orderable' => false, 'searchable' => false, 'style' => "width: 100px !important;"],
+            ['data' => 'requisition', 'title' => 'Req', 'orderable' => false, 'searchable' => false, 'style' => "width: 60px !important;"],
             ['data' => 'progress', 'title' => '% Complete', 'orderable' => false, 'searchable' => false],
             ['data' => 'action', 'title' => 'Action', 'orderable' => false, 'searchable' => false, 'style' => "width: 132px !important;"],
         ];
