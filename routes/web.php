@@ -17,28 +17,3 @@ Route::get('/', function () {
     }
     return view('auth.login');
 })->name('login');
-
-
-// Route::get('/test', function () {
-//     return view('test');
-// })->middleware(['auth', 'verified'])->name('test');
-
-// Route::get('hash-make', function () {
-//     return Hash::make('super#visor');
-// });
-
-// Route::get('composer-dump-autoload', function () {
-//     $composer = exec('composer dump-autoload');
-//     return $composer;
-// });
-
-
-Route::get('/sorting-info', function () {
-    $sortedColumn = session('sorted_column', 'No column sorted yet');
-    $sortedDirection = session('sorted_direction', 'No direction set yet');
-
-    return response()->json([
-        'sorted_column' => $sortedColumn,
-        'sorted_direction' => $sortedDirection,
-    ]);
-});

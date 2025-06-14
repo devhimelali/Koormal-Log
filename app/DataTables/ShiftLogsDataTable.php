@@ -52,7 +52,7 @@ class ShiftLogsDataTable extends DataTable
                     $job->shift_name === 'night' => 'background-color: #939393a8;',
                     default => '',
                 };
-                return '<select class="form-control shift_name" data-field="shift_name" style="text-transform: capitalize; width: 68px; font-size: 10px;' . $style . '">
+                return '<select class="form-select form-select-sm shift_name" data-field="shift_name" style="text-transform: capitalize; width: 68px; font-size: 10px;' . $style . '">
                         <option value="">Select Shift</option>
                         <option value="day" ' . $selectedDay . '>Day</option>
                         <option value="night" ' . $selectedNight . '>Night</option>
@@ -61,19 +61,19 @@ class ShiftLogsDataTable extends DataTable
 
             ->addColumn('wo_number', function ($job) {
                 $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
-                return "<div {$editable} data-field='wo_number' class='p-3 m-0'>{$job->wo_number}</div>";
+                return "<div {$editable} data-field='wo_number' class='py-3 m-0'>{$job->wo_number}</div>";
             })
             ->addColumn('asset_no', function ($job) {
                 $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
-                return "<div {$editable} data-field='asset_no' class='p-3 m-0'>{$job->asset_no}</div>";
+                return "<div {$editable} data-field='asset_no' class='py-3 m-0'>{$job->asset_no}</div>";
             })
             ->addColumn('work_description', function ($job) {
                 $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
-                return "<div {$editable} data-field='work_description' class='p-3 m-0'>{$job->work_description}</div>";
+                return "<div {$editable} data-field='work_description' class='py-3 m-0'>{$job->work_description}</div>";
             })
             ->addColumn('labour', function ($job) {
                 $editable =  'contenteditable=true';
-                return "<div {$editable} data-field='labour' class='p-3 m-0'>{$job->labour}</div>";
+                return "<div {$editable} data-field='labour' class='py-3 m-0'>{$job->labour}</div>";
             })
             ->addColumn('note', function ($job) {
                 $notes = Note::orderBy('note', 'asc')->get();
@@ -97,6 +97,9 @@ class ShiftLogsDataTable extends DataTable
                             overflow: hidden;
                             text-overflow: ellipsis;
                             white-space: nowrap;
+                            background-position: right 0.5rem center; /* move arrow icon */
+                            background-repeat: no-repeat;
+                            background-size: 12px;
                         ">
                         ' . $options . '
                     </select>';
@@ -193,12 +196,13 @@ class ShiftLogsDataTable extends DataTable
                 ->title('#')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('50px'),
+                ->width('40px'),
             Column::make('shift')
                 ->name('shift_name')
                 ->title('Shift')
                 ->orderable(true)
-                ->searchable(false),
+                ->searchable(false)
+                ->width('45px'),
             Column::make('wo_number')
                 ->title('WO Number')
                 ->orderable(false)
@@ -212,7 +216,8 @@ class ShiftLogsDataTable extends DataTable
             Column::make('work_description')
                 ->title('Work Description')
                 ->orderable(false)
-                ->searchable(false),
+                ->searchable(false)
+                ->width('300px'),
 
             Column::make('labour')
                 ->title('Labour Assigned')
@@ -225,7 +230,7 @@ class ShiftLogsDataTable extends DataTable
                 ->title('Note')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('100px'),
+                ->width('180px'),
 
             Column::make('requisition')
                 ->title('Req')

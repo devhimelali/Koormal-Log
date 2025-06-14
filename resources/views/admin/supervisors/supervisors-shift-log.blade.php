@@ -391,5 +391,25 @@
         thead {
             background-color: #e0e0e0;
         }
+
+        table th,
+        table td {
+            padding: 2px 3px;
+            /* very tight */
+            text-align: left;
+            vertical-align: top;
+            font-size: 10px;
+            /* very compact */
+            line-height: 1.4;
+        }
+
+        table.dataTable tbody th,
+        table.dataTable tbody td {
+            padding: 6px !important;
+        }
+
+        .form-select {
+            padding: .525rem 24px .525rem .9rem !important;
+        }
     </style>
 @endpush
