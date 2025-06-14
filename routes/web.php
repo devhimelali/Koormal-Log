@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RedirectController;
 
+
 Route::get('/redirect', [RedirectController::class, 'redirect'])->name('redirect')->middleware('auth');
 Route::get('{role}/profile', [ProfileController::class, 'show'])->name('profile.show');
 
@@ -30,3 +31,9 @@ Route::get('/', function () {
 //     $composer = exec('composer dump-autoload');
 //     return $composer;
 // });
+
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('storage-link', function () {
+    Artisan::call('storage:link');
+});

@@ -108,8 +108,8 @@
 
                                         @if (Str::startsWith($media->url, ['http', '/']) && Str::contains($media->url, ['.jpg', '.jpeg', '.png', '.gif']))
                                             <a href="{{ $media->url }}" download target="_blank">
-                                                <img src="{{ $media->url }}" class="img-thumbnail" style="height: 100px;"
-                                                    lazy="loading">
+                                                <img src="{{ asset($media->url) }}" class="img-thumbnail"
+                                                    style="height: 100px;" lazy="loading">
                                             </a>
                                         @else
                                             <a href="{{ $media->url }}" download target="_blank">
@@ -154,6 +154,7 @@
 @section('page-script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        implementAutoAjaxLoading();
         $(document).ready(function() {
             $('#jobUpdateForm').on('submit', function(e) {
                 e.preventDefault();
