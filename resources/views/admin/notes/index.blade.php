@@ -106,5 +106,10 @@
         thead {
             background-color: #e0e0e0;
         }
+
+        .text-wrap {
+            white-space: normal !important;
+            word-break: break-word;
+        }
     </style>
 @endpush

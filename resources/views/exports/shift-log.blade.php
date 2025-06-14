@@ -85,13 +85,15 @@
                 <th>Shift</th>
                 <th>WO Number</th>
                 <th>Asset No</th>
-                <th>Work Description</th>
-                <th>Labour </th>
-                <th style="text-align: center">Complete (%)</th>
-                <th>Priority</th>
-                <th>Department</th>
-                <th>Duration</th>
                 <th>Asset Description</th>
+                <th>Work Description</th>
+                <th style="width: 150px;">Labour </th>
+                <th>Notes</th>
+                <th>Req</th>
+                <th style="text-align: center">Complete (%)</th>
+                {{-- <th>Priority</th> --}}
+                {{-- <th>Department</th> --}}
+                <th>Duration</th>
                 <th>Completed</th>
             </tr>
         </thead>
@@ -113,18 +115,20 @@
                     <td>{{ Str::ucfirst($log->shift_name) }}</td>
                     <td>{{ $log->wo_number }}</td>
                     <td>{{ $log->asset_no }}</td>
+                    <td>{{ $log->asset_description }}</td>
                     <td>{{ $log->work_description }}</td>
                     <td>{{ $log->labour }}</td>
+                    <td>{{ $log->note->note ?? '' }}</td>
+                    <td>{{ Str::ucfirst($log->requisition) }}</td>
                     <td style="text-align: center">{{ $log->progress }}</td>
-                    <td>{{ $log->priority }}</td>
-                    <td style="text-align: center">{{ $log->department }}</td>
+                    {{-- <td>{{ $log->priority }}</td> --}}
+                    {{-- <td style="text-align: center">{{ $log->department }}</td> --}}
                     <td style="text-align: center">{{ $log->duration }}</td>
-                    <td>{{ $log->asset_description }}</td>
                     <td style="text-align: center">{{ $log->mark_as_complete == 1 ? 'Yes' : 'No' }}</td>
                 </tr>
                 <tr>
                     <td colspan="12">
-                        <div style="min-height: 70px;">
+                        <div style="min-height: 70px; overflow-wrap: break-word;">
                             {{ $log->supervisor_notes }}
                         </div>
                     </td>

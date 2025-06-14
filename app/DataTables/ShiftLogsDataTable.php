@@ -6,6 +6,8 @@ use App\Models\Note;
 use Carbon\Carbon;
 use App\Models\ShiftLog;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Column;
+
 
 class ShiftLogsDataTable extends DataTable
 {
@@ -174,16 +176,70 @@ class ShiftLogsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            ['data' => 'line', 'title' => '#', 'orderable' => false, 'searchable' => false, 'style' => "width: 50px !important;"],
-            ['data' => 'shift', 'name' => 'shift_name', 'title' => 'Shift', 'orderable' => true, 'searchable' => false],
-            ['data' => 'wo_number', 'contenteditable' => 'true', 'title' => 'WO Number', 'orderable' => false, 'searchable' => false],
-            ['data' => 'asset_no', 'title' => 'Asset No', 'orderable' => false, 'searchable' => false],
-            ['data' => 'work_description', 'title' => 'Work Description', 'orderable' => false, 'searchable' => false],
-            ['data' => 'labour', 'title' => 'Labour Assigned', 'orderable' => false, 'searchable' => false],
-            ['data' => 'note', 'title' => 'Note', 'orderable' => false, 'searchable' => false, 'style' => "width: 100px !important;"],
-            ['data' => 'requisition', 'title' => 'Req', 'orderable' => false, 'searchable' => false, 'style' => "width: 60px !important;"],
-            ['data' => 'progress', 'title' => '% Complete', 'orderable' => false, 'searchable' => false],
-            ['data' => 'action', 'title' => 'Action', 'orderable' => false, 'searchable' => false, 'style' => "width: 132px !important;"],
+            Column::make('line')
+                ->title('#')
+                ->orderable(false)
+                ->searchable(false)
+                ->width('50px'),
+            Column::make('shift')
+                ->name('shift_name')
+                ->title('Shift')
+                ->orderable(true)
+                ->searchable(false),
+            Column::make('wo_number')
+                ->title('WO Number')
+                ->orderable(false)
+                ->searchable(false),
+
+            Column::make('asset_no')
+                ->title('Asset No')
+                ->orderable(false)
+                ->searchable(false),
+
+            Column::make('work_description')
+                ->title('Work Description')
+                ->orderable(false)
+                ->searchable(false),
+
+            Column::make('labour')
+                ->title('Labour Assigned')
+                ->orderable(false)
+                ->searchable(false)
+                ->width('200px')
+                ->addClass('text-wrap'),
+
+            Column::make('note')
+                ->title('Note')
+                ->orderable(false)
+                ->searchable(false)
+                ->width('100px'),
+
+            Column::make('requisition')
+                ->title('Req')
+                ->orderable(false)
+                ->searchable(false)
+                ->width('60px'),
+
+            Column::make('progress')
+                ->title('% Complete')
+                ->orderable(false)
+                ->searchable(false),
+
+            Column::computed('action')
+                ->title('Action')
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false)
+                ->width('132px'),
+            // ['data' => 'wo_number', 'contenteditable' => 'true', 'title' => 'WO Number', 'orderable' => false, 'searchable' => false],
+            // ['data' => 'asset_no', 'title' => 'Asset No', 'orderable' => false, 'searchable' => false],
+            // ['data' => 'work_description', 'title' => 'Work Description', 'orderable' => false, 'searchable' => false],
+            // ['data' => 'labour', 'title' => 'Labour Assigned', 'orderable' => false, 'searchable' => false],
+            // ['data' => 'note', 'title' => 'Note', 'orderable' => false, 'searchable' => false, 'style' => "width: 100px !important;"],
+            // ['data' => 'requisition', 'title' => 'Req', 'orderable' => false, 'searchable' => false, 'style' => "width: 60px !important;"],
+            // ['data' => 'progress', 'title' => '% Complete', 'orderable' => false, 'searchable' => false],
+            // ['data' => 'action', 'title' => 'Action', 'orderable' => false, 'searchable' => false, 'style' => "width: 132px !important;"],
         ];
     }
 }
