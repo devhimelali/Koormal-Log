@@ -32,6 +32,10 @@ return new class extends Migration
             $table->string('labor_cost')->nullable();
             $table->string('other_cost')->nullable();
             $table->boolean('is_excel_upload')->default(0);
+            $table->unsignedInteger('position')->nullable();
+            $table->longText('supervisor_notes')->nullable();
+            $table->boolean('mark_as_complete')->default(0);
+            $table->string('progress')->default('0');
             $table->timestamps();
         });
     }

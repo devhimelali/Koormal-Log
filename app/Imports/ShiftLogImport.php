@@ -3,61 +3,69 @@
 namespace App\Imports;
 
 use App\Models\ShiftLog;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class ShiftLogImport implements ToCollection
+class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, WithBatchInserts
 {
     /**
      * @param Collection $rows
-     * @throws \Exception
      */
+
     public function collection(Collection $rows)
     {
-        if ($rows->isEmpty()) {
-            throw new \Exception("Imported file is empty.");
-        }
+        $nextPosition = ShiftLog::max('position') + 1;
 
-        $filteredRows = $rows->slice(1);
+        foreach ($rows as $row) {
+            if (empty(array_filter($row->toArray()))) {
+                continue;
+            }
 
-        foreach ($filteredRows as $row) {
             ShiftLog::create([
-                'shift_name' => null,
-                'wo_number' => $row[0] ?? null,
-                'asset_no' => $row[3] ?? null,
-                'asset_description' => $row[15] ?? null,
-                'work_description' => $row[1] ?? null,
-                'labour' => $row[5] ?? null,
-                'duration' => $row[2] ?? null,
-                'trades' => $row[4] ?? null,
-                'due_start' => $this->formatExcelDate($row[5] ?? null),
-                'status' => $row[6] ?? null,
-                'raised' => $this->formatExcelDate($row[7] ?? null),
-                'start_date' => $this->formatExcelDate($row[8] ?? null),
-                'priority' => $row[9] ?? null,
-                'job_type' => $row[10] ?? null,
-                'department' => $row[11] ?? null,
-                'material_cost' => $row[12] ?? null,
-                'labor_cost' => $row[13] ?? null,
-                'other_cost' => $row[14] ?? null,
-                'is_excel_upload' => 1,
+                'shift_name'          => 'day',
+                'wo_number'           => $row['wo_no'] ?? null,
+                'work_description'    => $row['description'] ?? null,
+                'duration'            => $row['duration'] ?? null,
+                'asset_no'            => $row['asset_no'] ?? null,
+                'trades'              => $row['trades'] ?? null,
+                'due_start'   => $this->parseExcelDate($row['due_start']),
+                'status'              => $row['work_order_status_description'] ?? null,
+                'raised'      => $this->parseExcelDate($row['raised']),
+                'start_date'  => $this->parseExcelDate($row['start_date']),
+
+                'priority'            => $row['priority'] ?? null,
+                'job_type'            => $row['job_type'] ?? null,
+                'department'          => $row['department'] ?? null,
+                'material_cost'       => $row['materials_cost'] ?? null,
+                'labor_cost'          => $row['labour_cost'] ?? null,
+                'other_cost'          => $row['other_cost'] ?? null,
+                'asset_description'   => $row['asset_description'] ?? null,
+                'is_excel_upload'     => 1,
+                'position'            => $nextPosition++,
             ]);
         }
     }
 
-    protected function formatExcelDate($value)
-    {
-        if (!$value) {
-            return null;
-        }
 
-        try {
-            // Convert dd/mm/yyyy to Carbon and reformat to dd-mm-Y
-            return Carbon::createFromFormat('d/m/Y', trim($value))->format('d-m-Y');
-        } catch (\Exception $e) {
-            // You can log or handle invalid dates here if needed
-            return null;
-        }
+
+    public function chunkSize(): int
+    {
+        return 100;
+    }
+
+    public function batchSize(): int
+    {
+        return 100;
+    }
+    private function parseExcelDate($value, $format = 'd-m-Y')
+    {
+        return isset($value)
+            ? Carbon::instance(Date::excelToDateTimeObject((float) $value))->format($format)
+            : null;
     }
 }

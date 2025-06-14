@@ -72,6 +72,9 @@ return [
     | and the user is authenticated. You are free to change this value.
     |
     */
+    'paths' => [
+        'login' => '/',
+    ],
 
     'home' => '/redirect',
 
@@ -144,7 +147,7 @@ return [
     */
 
     'features' => [
-//        Features::registration(),
+        Features::registration(),
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::updateProfileInformation(),

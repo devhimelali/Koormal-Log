@@ -22,7 +22,7 @@
         </div>
 
         <button type="button" class="px-3 shadow-none btn btn-sm fs-16 header-item vertical-menu-btn topnav-hamburger"
-                id="topnav-hamburger-icon">
+            id="topnav-hamburger-icon">
             <span class="hamburger-icon">
                 <span></span>
                 <span></span>
@@ -33,10 +33,10 @@
         <form class="app-search d-none d-md-inline-flex">
             <div class="position-relative">
                 <input type="text" class="form-control" placeholder="Search..." autocomplete="off"
-                       id="search-options" value="">
+                    id="search-options" value="">
                 <span class="mdi mdi-magnify search-widget-icon"></span>
                 <span class="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none"
-                      id="search-close-options"></span>
+                    id="search-close-options"></span>
             </div>
             <div class="dropdown-menu dropdown-menu-lg" id="search-dropdown">
                 <div data-simplebar style="max-height: 320px;">
@@ -84,7 +84,7 @@
                         <a href="javascript:void(0);" class="py-2 dropdown-item notify-item">
                             <div class="d-flex">
                                 <img src="assets/images/users/avatar-2.jpg" class="me-3 rounded-circle avatar-xs"
-                                     alt="user-pic">
+                                    alt="user-pic">
                                 <div class="flex-1">
                                     <h6 class="m-0">Angela Bernier</h6>
                                     <span class="mb-0 fs-2xs text-muted">Manager</span>
@@ -95,7 +95,7 @@
                         <a href="javascript:void(0);" class="py-2 dropdown-item notify-item">
                             <div class="d-flex">
                                 <img src="assets/images/users/avatar-3.jpg" class="me-3 rounded-circle avatar-xs"
-                                     alt="user-pic">
+                                    alt="user-pic">
                                 <div class="flex-1">
                                     <h6 class="m-0">David Grasso</h6>
                                     <span class="mb-0 fs-2xs text-muted">Web Designer</span>
@@ -106,7 +106,7 @@
                         <a href="javascript:void(0);" class="py-2 dropdown-item notify-item">
                             <div class="d-flex">
                                 <img src="assets/images/users/avatar-5.jpg" class="me-3 rounded-circle avatar-xs"
-                                     alt="user-pic">
+                                    alt="user-pic">
                                 <div class="flex-1">
                                     <h6 class="m-0">Mike Bunch</h6>
                                     <span class="mb-0 fs-2xs text-muted">React Developer</span>
@@ -127,14 +127,14 @@
     <div class="d-flex align-items-center">
         <div class="ms-1 header-item d-none d-sm-flex">
             <button type="button" class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle"
-                    data-toggle="fullscreen">
+                data-toggle="fullscreen">
                 <i class='bi bi-arrows-fullscreen fs-lg'></i>
             </button>
         </div>
 
         <div class="dropdown topbar-head-dropdown ms-1 header-item">
             <button type="button" class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle mode-layout"
-                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="align-middle bi bi-sun fs-3xl"></i>
             </button>
             <div class="p-2 dropdown-menu dropdown-menu-end" id="light-dark-mode">
@@ -146,19 +146,13 @@
                         class="align-middle bi bi-moon-stars me-2"></i> Auto (system default)</a>
             </div>
         </div>
-        <div class="ms-1 header-item d-none d-sm-flex">
-            <a href="{{ route('home') }}" class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle"
-               data-bs-toggle="tooltip" data-bs-title="Visit Site">
-                <i class="bi bi-globe fs-3xl"></i>
-            </a>
-        </div>
 
         <div class="dropdown ms-sm-3 header-item topbar-user">
             <button type="button" class="shadow-none btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+                aria-haspopup="true" aria-expanded="false">
                 <span class="d-flex align-items-center">
                     <img class="rounded-circle header-profile-user"
-                         src="{{ asset('assets/images/users/32/avatar-1.jpg') }}" alt="Header Avatar">
+                        src="{{ asset('assets/images/users/32/avatar-1.jpg') }}" alt="Header Avatar">
                     <span class="text-start ms-xl-2">
                         <span
                             class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ auth()->user()->name }}</span>
@@ -171,7 +165,7 @@
                 <!-- item-->
                 <h6 class="dropdown-header">Welcome {{ auth()->user()->name }}!</h6>
                 <a class="dropdown-item"
-                   href="{{ route('profile.show', auth()->user()->roles->pluck('name')->first()) }}"><i
+                    href="{{ route('profile.show', auth()->user()->roles->pluck('name')->first()) }}"><i
                         class="align-middle mdi mdi-account-circle text-muted fs-lg me-1"></i> <span
                         class="align-middle">Profile</span></a>
                 <a class="dropdown-item" href="pages-profile-settings.html"><i
@@ -194,8 +188,8 @@
     }
 </style>
 <script>
-    $(document).ready(function () {
-        $('#logoutForm').on('submit', function (e) {
+    $(document).ready(function() {
+        $('#logoutForm').on('submit', function(e) {
             e.preventDefault();
             let formData = new FormData(this);
 
@@ -205,17 +199,16 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function (response) {
+                success: function(response) {
                     notify('success', 'Logged out successfully');
                     setTimeout(() => {
                         window.location.href = "{{ route('login') }}";
                     }, 1000);
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     notify('error', error);
                 }
             });
         });
     });
 </script>
-

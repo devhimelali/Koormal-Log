@@ -1,32 +1,39 @@
 @extends('layouts.app')
+@section('title', 'Supervisor Shift Log')
 @section('content')
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary-subtle pb-2 text-white">
             <h5 class="mb-0">Job Details – More Information</h5>
         </div>
         <div class="card-body">
-            <form>
+            <form id="jobUpdateForm" enctype="multipart/form-data">
                 <!-- Row 1 -->
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">WO Number</label>
-                        <input type="text" class="form-control" value="WO-1001">
+                        <input type="text" name="wo_number" class="form-control" value="{{ $log->wo_number }}"
+                            {{ $log->mark_as_complete ? 'disabled' : '' }}
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Asset Number</label>
-                        <input type="text" class="form-control" value="AS-321">
+                        <input type="text" name="asset_no" class="form-control" value="{{ $log->asset_no }}"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Priority</label>
-                        <input type="text" class="form-control" value="High">
+                        <input type="text" name="priority" class="form-control" value="{{ $log->priority }}"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Department</label>
-                        <input type="text" class="form-control" value="Maintenance">
+                        <input type="text" name="department" class="form-control" value="{{ $log->department }}"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">Duration (hrs)</label>
-                        <input type="text" class="form-control" value="3">
+                        <input type="text" name="duration" class="form-control" value="{{ $log->duration }}"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>
                     </div>
                 </div>
 
@@ -34,21 +41,23 @@
                 <div class="row g-3 mt-3">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Workorder Description</label>
-                        <textarea class="form-control" rows="3">Oil change on generator</textarea>
+                        <textarea class="form-control" name="work_description" rows="3"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>{{ $log->work_description }}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Asset Description</label>
-                        <textarea class="form-control" rows="3">Diesel powered gen-set</textarea>
+                        <textarea class="form-control" name="asset_description" rows="3"
+                            {{ $log->is_excel_upload == 1 ? 'readonly' : '' }}>{{ $log->asset_description }}</textarea>
                     </div>
                 </div>
 
                 <!-- Notes -->
                 <div class="mt-4">
                     <label class="form-label fw-semibold">Supervisor Notes</label>
-                    <textarea class="form-control" rows="4">Supervisor can enter notes here.</textarea>
+                    <textarea class="form-control" name="supervisor_notes" rows="4">{{ $log->supervisor_notes }}</textarea>
                 </div>
 
-                <div class="mt-4">
+                {{-- <div class="mt-4">
                     <label class="form-label fw-semibold">Attach Images / Documents</label>
                     <div id="customDropzone" class="border border-2 border-dashed rounded text-center p-4 bg-light"
                         style="cursor: pointer;">
@@ -59,18 +68,82 @@
                         <input type="file" id="fileInput" name="attachments[]" multiple hidden>
                         <div id="filePreview" class="d-flex flex-wrap gap-3 mt-3 justify-content-start"></div>
                     </div>
+                </div> --}}
+
+                <div class="row d-flex align-items-stretch">
+                    <!-- Upload Dropzone & Live Preview -->
+                    <div class="mt-4 col-md-6">
+                        <div class="h-100 d-flex flex-column">
+                            <label class="form-label fw-semibold">Attach Images / Documents</label>
+                            <div id="customDropzone"
+                                class="border border-2 border-dashed rounded text-center p-4 bg-light flex-grow-1"
+                                style="cursor: pointer;">
+                                <div id="dropzonePlaceholder">
+                                    <i class="bi bi-upload fs-1 text-muted"></i>
+                                    <p class="text-muted mb-0">Click or drag files here to upload</p>
+                                </div>
+                                <input type="file" id="fileInput" name="attachments[]" multiple hidden>
+                                <div id="filePreview" class="d-flex flex-wrap gap-3 mt-3 justify-content-start"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Existing Attachments -->
+                    <div id="existingAttachments" class="mt-4 pt-2 col-md-6">
+                        <div class="h-100 d-flex flex-column">
+                            <label class="form-label fw-semibold">Existing Attachments</label>
+                            <div class="d-flex flex-wrap gap-3 mt-2 justify-content-start flex-grow-1">
+                                @foreach ($log->media as $media)
+                                    <div class="attachment-item border rounded p-2 text-center position-relative"
+                                        style="width: 100px;" data-id="{{ $media->id }}">
+
+                                        <!-- Remove Button -->
+                                        <span
+                                            class="removeAttachment d-flex align-items-center justify-content-center
+                                                position-absolute top-0 end-0 bg-white text-danger border rounded-circle shadow-sm"
+                                            style="width: 24px; height: 24px; cursor: pointer; transform: translate(25%, -25%);"
+                                            title="Remove">
+                                            <i class='bx bx-trash fs-5 fw-bold'></i>
+                                        </span>
+
+                                        @if (Str::startsWith($media->url, ['http', '/']) && Str::contains($media->url, ['.jpg', '.jpeg', '.png', '.gif']))
+                                            <a href="{{ $media->url }}" download target="_blank">
+                                                <img src="{{ asset($media->url) }}" class="img-thumbnail"
+                                                    style="height: 100px;" lazy="loading">
+                                            </a>
+                                        @else
+                                            <a href="{{ $media->url }}" download target="_blank">
+                                                <i class="bi bi-file-earmark-text fs-1 text-secondary"></i>
+                                                <div class="small text-truncate">{{ basename($media->url) }}</div>
+                                            </a>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
 
 
                 <!-- Buttons -->
                 <div class="mt-4 d-flex flex-wrap gap-2">
-                    <button type="button" class="btn btn-success">
-                        <i class="bi bi-check-circle me-1"></i> Job Completed
-                    </button>
-                    {{-- <button type="button" class="btn btn-outline-secondary">
-                        <i class="bi bi-paperclip me-1"></i> Attach Image / Document
-                    </button> --}}
-                    <button type="submit" class="btn btn-primary ms-auto">
+                    @if ($log->mark_as_complete == 0)
+                        {{-- <button type="button" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i> Mark As Completed
+                        </button> --}}
+                        <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i> Mark As Completed
+                        </a>
+                    @else
+                        {{-- <button type="button" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i> Job Completed
+                        </button> --}}
+                        <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i> Job Completed
+                        </a>
+                    @endif
+                    <button type="submit" class="btn btn-secondary ms-auto">
                         <i class="bi bi-save me-1"></i> Save and Return
                     </button>
                 </div>
@@ -79,7 +152,83 @@
     </div>
 @endsection
 @section('page-script')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        implementAutoAjaxLoading();
+        $(document).ready(function() {
+            $('#jobUpdateForm').on('submit', function(e) {
+                e.preventDefault();
+
+                let form = $(this)[0];
+                let formData = new FormData(form);
+
+                $.ajax({
+                    url: '{{ route('shift-logs.update-details', $log->id) }}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-HTTP-Method-Override': 'PUT'
+                    },
+                    success: function(response) {
+                        notify('success', response.message);
+                        setTimeout(() => {
+                            window.location.href =
+                                `{{ route('supervisors-shift-log.index') }}?date=${response.date}`;
+                        }, 1000);
+                    },
+
+                    error: function(xhr) {
+                        notify('error', 'Failed to update job');
+                    }
+                });
+            });
+        });
+
+        $(document).on('click', '.removeAttachment', function() {
+            const wrapper = $(this).closest('.attachment-item');
+            const mediaId = wrapper.data('id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This file will be permanently deleted.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('media.destroy', '__ID__') }}`.replace('__ID__', mediaId),
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        success: function() {
+                            wrapper.remove();
+                            Swal.fire(
+                                'Deleted!',
+                                'The attachment has been removed.',
+                                'success'
+                            );
+                        },
+                        error: function() {
+                            Swal.fire(
+                                'Error!',
+                                'Failed to delete the attachment.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+
+
         const dropzone = document.getElementById('customDropzone');
         const fileInput = document.getElementById('fileInput');
         const previewContainer = document.getElementById('filePreview');
