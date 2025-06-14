@@ -81,14 +81,27 @@ class ShiftLogsDataTable extends DataTable
 
                 foreach ($notes as $note) {
                     $selected = $job->note_id == $note->id ? 'selected' : '';
-                    $options .= "<option value=\"{$note->id}\" {$selected}>{$note->note}</option>";
+                    $shortText = strlen($note->note) > 25 ? substr($note->note, 0, 25) . '...' : $note->note;
+                    $options .= "<option value=\"{$note->id}\" {$selected}>{$shortText}</option>";
                 }
 
-                return "
-                    <select class=\"form-control w-100 shift_name\" data-field=\"note_id\" data-id=\"{$job->id}\" style=\"font-size: 10px; text-transform: capitalize; width: 100%;\">
-                        {$options}
-                    </select>";
+                return '
+                    <select
+                        class="form-select form-select-sm shift_name"
+                        data-field="note_id"
+                        data-id="' . $job->id . '"
+                        style="
+                            font-size: 11px;
+                            width: 100%;
+                            text-transform: capitalize;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        ">
+                        ' . $options . '
+                    </select>';
             })
+
 
             ->addColumn('requisition', function ($job) {
                 $selected = $job->requisition === 'yes' ? 'selected' : '';

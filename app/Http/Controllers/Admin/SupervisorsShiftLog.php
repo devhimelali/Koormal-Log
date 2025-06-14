@@ -215,7 +215,7 @@ class SupervisorsShiftLog extends Controller
                 'date' => $request->date,
                 'dayLabour' => $dayLabour,
                 'nightLabour' => $nightLabour,
-            ])->setPaper('a4', 'landscape');
+            ])->setPaper('a4', 'portrait');
 
             return $pdf->stream('shift_log_' . $request->date . '.pdf');
         }
