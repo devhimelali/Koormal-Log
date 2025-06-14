@@ -16,42 +16,24 @@ use Illuminate\Support\Facades\Storage;
 
 class SupervisorsShiftLog extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     $shift = $request->query('shift', 'both');
-    //     $inputDate = $request->query('date', date('d-m-Y'));
-
-    //     $laboursQuery = Labour::where('date', $inputDate)->get();
-    //     // Convert d-m-Y to Y-m-d for querying
-    //     try {
-    //         $queryDate = Carbon::createFromFormat('d-m-Y', $inputDate)->format('Y-m-d');
-    //     } catch (\Exception $e) {
-    //         $queryDate = now()->format('Y-m-d');
-    //     }
-    //     $query = ShiftLog::query();
-
-    //     if ($shift === 'day') {
-    //         $query->where('shift_name', 'Day');
-    //     } elseif ($shift === 'night') {
-    //         $query->where('shift_name', 'Night');
-    //     }
-
-    //     $query->whereDate('created_at', $queryDate);
-
-    //     $jobs = $query->orderBy('position')->get();
-
-    //     // Pass original input date for UI display
-    //     return view('admin.supervisors.supervisors-shift-log', [
-    //         'jobs' => $jobs,
-    //         'shift' => $shift,
-    //         'date' => $inputDate,
-    //         'labours_day' => (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray(),
-    //         'labours_night' => (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray(),
-    //     ]);
-    // }
-
     public function index(ShiftLogsDataTable $dataTable, Request $request)
     {
+        if ($request->has('order') && $request['order'][0]['column'] == 1) {
+            $orderIndex = $request->input('order.0.column'); // column index
+            $direction = $request->input('order.0.dir'); // asc or desc
+            $columns = $request->input('columns');
+            $columnName = $columns[$orderIndex]['data'] ?? 'unknown';
+            session([
+                'sorted_column' => 'shift_name',
+                'sorted_direction' => $direction,
+            ]);
+        } else {
+            session([
+                'sorted_column' => 'shift',
+                'sorted_direction' => 'both',
+            ]);
+        }
+
         $inputDate = $request->query('date', date('d-m-Y'));
         $laboursQuery = Labour::where('date', $inputDate)->get();
         return $dataTable->render('admin.supervisors.supervisors-shift-log', [
@@ -207,11 +189,22 @@ class SupervisorsShiftLog extends Controller
 
         if ($request->export == 'pdf') {
             $queryDate = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
-            $query = ShiftLog::whereDate('created_at', $queryDate);
+            $query = ShiftLog::with('note')->whereDate('created_at', $queryDate);
 
             if ($request->shift !== null && $request->shift != 'both') {
                 $query->where('shift_name', $request->shift);
             }
+
+
+            //get session for orderby
+            $sortedColumn = session('sorted_column', 'No column sorted yet');
+            $sortedDirection = session('sorted_direction', 'No direction set yet');
+            if ($sortedDirection == 'asc') {
+                $query->orderBy($sortedColumn, 'asc');
+            } elseif ($sortedDirection == 'desc') {
+                $query->orderBy($sortedColumn, 'desc');
+            }
+
 
             $logs = $query->get();
             $dayLabour = (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray();

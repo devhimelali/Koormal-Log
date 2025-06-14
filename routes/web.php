@@ -32,8 +32,13 @@ Route::get('/', function () {
 //     return $composer;
 // });
 
-use Illuminate\Support\Facades\Artisan;
 
-Route::get('storage-link', function () {
-    Artisan::call('storage:link');
+Route::get('/sorting-info', function () {
+    $sortedColumn = session('sorted_column', 'No column sorted yet');
+    $sortedDirection = session('sorted_direction', 'No direction set yet');
+
+    return response()->json([
+        'sorted_column' => $sortedColumn,
+        'sorted_direction' => $sortedDirection,
+    ]);
 });
