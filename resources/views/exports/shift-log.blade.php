@@ -168,6 +168,15 @@
     @else
         {{--  Dynamic Shift Logs  --}}
         @forelse($logs as $index => $log)
+            @php
+                $background = '';
+
+                if ($log->mark_as_complete == 1) {
+                    $background = 'background-color: #ffef3bc2;';
+                } elseif ($log->shift_name === 'night') {
+                    $background = 'background-color: #939393a8;';
+                }
+            @endphp
             <tr style="{{ $background }}">
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ Str::ucfirst($log->shift_name) }}</td>
