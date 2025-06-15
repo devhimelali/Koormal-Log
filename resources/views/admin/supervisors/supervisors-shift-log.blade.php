@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Supervisors Shift Log')
 @section('content')
     <div class="my-4 p-4 border bg-white">
         <div class="row align-items-center text-center text-md-start my-5">
@@ -60,18 +61,6 @@
                         {{ implode(', ', $labours_night) }}
                     </div>
                 </div>
-                {{-- <div class="row mt-2 g-3">
-                    <div class="col-md-6 text-start">
-                        <label for="day_shit_supervisor" class="form-label"> Day Shift Supervisor</label>
-                        <input type="text" class="form-control" placeholder="Day Shift Supervisor">
-                    </div>
-                    <div class="col-md-6 text-start">
-                        <label for="night_shit_supervisor" class="form-label"> Night Shift Supervisor</label>
-                        <input type="text" class="form-control" placeholder="Night Shift Supervisor">
-                    </div>
-                </div> --}}
-
-
             </div>
 
             <!-- Right: 4EMUS logo and buttons -->
@@ -189,6 +178,7 @@
                 let url =
                     `{{ route('supervisors-shift-log.export') }}?export=${selectedValue}&${filter ? 'shift=' + encodeURIComponent(filter) : ''}&date=${date}`;
                 window.open(url, '_blank');
+                $('#export').val('');
             }
 
         })
