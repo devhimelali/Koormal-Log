@@ -189,33 +189,38 @@ class SupervisorsShiftLog extends Controller
 
         if ($request->export == 'pdf') {
             $queryDate = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
-            $query = ShiftLog::with('note')->whereDate('created_at', $queryDate);
+            $query = ShiftLog::with('note')->whereDate('created_at', $queryDate)->orderBy('wo_number', 'asc');
 
             if ($request->shift !== null && $request->shift != 'both') {
                 $query->where('shift_name', $request->shift);
             }
 
 
-            //get session for orderby
-            $sortedColumn = session('sorted_column', 'No column sorted yet');
-            $sortedDirection = session('sorted_direction', 'No direction set yet');
-            if ($sortedDirection == 'asc') {
-                $query->orderBy($sortedColumn, 'asc');
-            } elseif ($sortedDirection == 'desc') {
-                $query->orderBy($sortedColumn, 'desc');
-            }
-
-
             $logs = $query->get();
             $dayLabour = (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray();
             $nightLabour = (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray();
+            PDF::setOptions(['isPhpEnabled' => true]);
+            if ($request->shift == 'both') {
+                $dayLogs = $logs->where('shift_name', 'day');
+                $nightLogs = $logs->where('shift_name', 'night');
 
-            $pdf = PDF::loadView('exports.shift-log', [
-                'logs' => $logs,
-                'date' => $request->date,
-                'dayLabour' => $dayLabour,
-                'nightLabour' => $nightLabour,
-            ])->setPaper('a4', 'portrait');
+                $pdf = PDF::loadView('exports.shift-log', [
+                    'dayLogs' => $dayLogs,
+                    'nightLogs' => $nightLogs,
+                    'shift' => 'both',
+                    'date' => $request->date,
+                    'dayLabour' => $dayLabour,
+                    'nightLabour' => $nightLabour,
+                ])->setPaper('a4', 'portrait');
+            } else {
+                $pdf = PDF::loadView('exports.shift-log', [
+                    'logs' => $logs,
+                    'shift' => $request->shift,
+                    'date' => $request->date,
+                    'dayLabour' => $dayLabour,
+                    'nightLabour' => $nightLabour,
+                ])->setPaper('a4', 'portrait');
+            }
 
             return $pdf->stream('shift_log_' . $request->date . '.pdf');
         }
