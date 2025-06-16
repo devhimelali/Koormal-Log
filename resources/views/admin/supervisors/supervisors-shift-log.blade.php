@@ -7,7 +7,7 @@
             <div class="col-md-3 mb-3 mb-md-0 d-flex flex-column align-items-center">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/koormal-logo.png') }}" style="width: 180px;" alt="Koormal Logo"
-                        class="mb-2">
+                         class="mb-2">
                 </div>
                 <select name="filter" class="form-select w-75 mt-2" id="filter">
                     <option value="both">Both</option>
@@ -29,25 +29,15 @@
                     $selectedDate = request()->get('date', \Carbon\Carbon::now()->format('d-m-Y'));
                 @endphp
 
-                <!-- Center: Title and Shift Labour -->
+                        <!-- Center: Title and Shift Labour -->
                 <h4 class="fw-bold fst-italic mb-4">
                     SUPERVISORS SHIFT LOG –
                     <input type="text" id="flatpickr-date" class="form-control d-inline-block w-auto"
-                        value="{{ $selectedDate }}"
-                        placeholder="Select Date"style="font-weight: bold;font-size: 18px;font-style: italic;">
+                           value="{{ $selectedDate }}"
+                           placeholder="Select Date" style="font-weight: bold;font-size: 18px;font-style: italic;">
                 </h4>
 
                 <!-- Date Picker Input (you can hide it if needed) -->
-
-
-                {{-- <div class="border border-success rounded p-2 mb-3">
-                    <strong><u>Labour for Dayshift</u></strong><br>
-                    Alex Herbertson, Bill Smith, Steven Jones, Frank Reid, Mark Thomas
-                </div>
-                <div class="border border-success rounded p-2">
-                    <strong><u>Labour for Nightshift</u></strong><br>
-                    John Winters, Albert Cummins, Ralph Grieves, Mark Riley
-                </div> --}}
                 <div class="border border-success rounded p-2 mb-3">
                     <strong><u>Labour for Dayshift</u></strong><br>
                     <div class="editable" data-shift="day" contenteditable="true">
@@ -67,12 +57,21 @@
             <div class="col-md-3 mb-3 mb-md-0 d-flex flex-column align-items-center">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/4emus-logo.png') }}" style="width: 180px;" alt="4EMUS Logo"
-                        class="mb-2">
+                         class="mb-2">
                 </div>
-                <button class="btn btn-warning mt-3 w-75" data-bs-toggle="modal"
-                    data-bs-target="#supervisorsShiftLogModal">Upload Excel
-                    Sheet</button>
-                <button id="addJobBtn" onclick="addJob()" class="btn btn-warning mt-2 w-75">Add a Job</button>
+                <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
+                        data-bs-target="#supervisorsShiftLogModal">Upload Excel
+                    Sheet
+                </button>
+                <button id="addJobBtn" onclick="addJob()" class="btn btn-sm btn-primary mt-1 w-75">Add a Job</button>
+
+                <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" data-type="day_shift">
+                    Supervisor's Notes – Dayshift
+                </a>
+
+                <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" data-type="night_shift">
+                    Supervisor's Notes – Nightshift
+                </a>
             </div>
         </div>
 
@@ -81,24 +80,25 @@
 
     <!-- Modal -->
     <div class="modal fade" id="supervisorsShiftLogModal" tabindex="-1" aria-labelledby="supervisorsShiftLogModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary-subtle pb-3">
                     <h1 class="modal-title fs-5" id="supervisorsShiftLogModalLabel">Upload Excel Sheet</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('supervisors-shift-log.csv.import') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('supervisors-shift-log.csv.import') }}" method="POST"
+                      enctype="multipart/form-data" id="csvImportForm">
                     <div class="modal-body p-3 mb-3">
                         @csrf
                         <label for="csv_file" class="form-label fw-semibold">Upload File <span
-                                class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                         <input type="file" name="csv_file" class="form-control" required>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Import</button>
+                        <button type="submit" class="btn btn-primary" id="csvImportBtn">Import</button>
                     </div>
                 </form>
             </div>
@@ -120,33 +120,86 @@
 
 
     <script>
-        $('#filter').on('change', function() {
+
+        $('#csvImportForm').submit(function (e) {
+            e.preventDefault();
+
+            let log_date = $('#flatpickr-date').val();
+            let formData = new FormData(this);
+            formData.append('log_date', log_date);
+            let url = $(this).attr('action');
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#csvImportBtn').attr('disabled', true);
+                    $('#csvImportBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...');
+                },
+                success: function (res) {
+                    if (res.status == 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $('#supervisorsShiftLogModal').modal('hide');
+                        $('#jobTable').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    let errors = xhr.responseJSON.errors;
+                    $.each(errors, function (key, value) {
+                        notify('error', value);
+                    });
+                },
+                complete: function () {
+                    $('#csvImportBtn').attr('disabled', false);
+                    $('#csvImportBtn').html('Import');
+                }
+            });
+        });
+
+        $('#filter').on('change', function () {
             reloadTableWithFilters();
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             flatpickr("#flatpickr-date", {
                 dateFormat: "d-m-Y",
                 defaultDate: "{{ $selectedDate ?? now()->format('d-m-Y') }}",
-                onChange: function(selectedDates, dateStr, instance) {
+                onChange: function (selectedDates, dateStr, instance) {
                     window.location.href = "{{ route('supervisors-shift-log.index') }}?date=" + dateStr;
                 }
             });
         });
 
-        $(document).on('draw.dt', function() {
+        $(document).on('draw.dt', function () {
             $('#jobTable tbody').sortable({
                 items: "tr",
                 handle: ".drag-handle",
                 helper: fixHelper,
                 cancel: '[contenteditable]',
-                start: function(e, ui) {
+                start: function (e, ui) {
                     ui.placeholder.height(ui.item.height());
                 },
-                update: function() {
+                update: function () {
                     updateLineNumbers();
                     let order = [];
-                    $('#jobTable tbody tr').each(function(index) {
+                    $('#jobTable tbody tr').each(function (index) {
                         order.push({
                             id: $(this).data('id'),
                             position: index + 1
@@ -159,10 +212,10 @@
                             order: order,
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             console.log('Order updated successfully');
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error('Failed to update order');
                         }
                     });
@@ -170,7 +223,7 @@
             });
         });
 
-        $('#export').on('change', function() {
+        $('#export').on('change', function () {
             let selectedValue = $(this).val();
             if (selectedValue) {
                 let date = $('#flatpickr-date').val();
@@ -183,7 +236,7 @@
 
         })
 
-        $('#jobTable').on('blur', '[contenteditable="true"]', function() {
+        $('#jobTable').on('blur', '[contenteditable="true"]', function () {
             let td = $(this);
             let field = td.data('field');
             let value = td.text().trim();
@@ -194,8 +247,8 @@
         });
 
 
-        $(document).ready(function() {
-            $('.editable').on('blur', function() {
+        $(document).ready(function () {
+            $('.editable').on('blur', function () {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -209,13 +262,15 @@
                         labour: content,
                         date: date
                     },
-                    success: function(res) {},
-                    error: function() {}
+                    success: function (res) {
+                    },
+                    error: function () {
+                    }
                 });
             });
         });
 
-        $('#jobTable').on('change', '.shift_name', function() {
+        $('#jobTable').on('change', '.shift_name', function () {
             let select = $(this);
             let field = select.data('field'); // should be "shift_name"
             let value = select.val();
@@ -224,7 +279,7 @@
             editField(select, field, value, id, true);
         });
 
-        $('#jobTable').on('change', '.complete_progress', function() {
+        $('#jobTable').on('change', '.complete_progress', function () {
             let select = $(this);
             let field = select.data('field');
             let value = select.val();
@@ -234,7 +289,7 @@
         });
 
 
-        $(document).on('click', '.deleteRowBtn', function() {
+        $(document).on('click', '.deleteRowBtn', function () {
             let id = $(this).data('id');
             Swal.fire({
                 title: 'Are you sure?',
@@ -261,11 +316,11 @@
                     _method: 'DELETE',
                     _token: '{{ csrf_token() }}',
                 },
-                success: function() {
+                success: function () {
                     reloadTableWithFilters();
                     notify('success', 'Shift log deleted successfully');
                 },
-                error: function() {
+                error: function () {
                     reloadTableWithFilters();
                 }
             });
@@ -279,11 +334,11 @@
                     _token: '{{ csrf_token() }}',
                     date: $('#flatpickr-date').val(),
                 },
-                success: function(response) {
+                success: function (response) {
                     notify('success', response.message);
                     reloadTableWithFilters();
                 },
-                error: function() {
+                error: function () {
 
                 }
             });
@@ -307,8 +362,8 @@
         }
 
 
-        const fixHelper = function(e, ui) {
-            ui.children().each(function() {
+        const fixHelper = function (e, ui) {
+            ui.children().each(function () {
                 $(this).width($(this).width());
             });
             return ui;
@@ -323,25 +378,44 @@
                     field: field,
                     value: value
                 },
-                success: function(res) {
+                success: function (res) {
                     td.css('background-color', '#d4edda');
                     setTimeout(() => td.css('background-color', ''), 1000);
                     if (table_reload) {
                         $('#jobTable').DataTable().ajax.reload(null, false);
                     }
                 },
-                error: function() {
+                error: function () {
                     td.css('background-color', '#f8d7da');
                 }
             });
         }
 
         function updateLineNumbers() {
-            $('#jobTable tbody tr').each(function(index) {
+            $('#jobTable tbody tr').each(function (index) {
                 $(this).find('.line-no-text').text(index + 1);
             });
         }
+
         implementAutoAjaxLoading();
+
+        $('.supervisor-note-btn').on('click', function (e) {
+            e.preventDefault();
+
+            const logDate = $('#flatpickr-date').val();
+            const noteType = $(this).data('type');
+
+            if (!logDate) {
+                alert('Please select a date.');
+                return;
+            }
+
+            const url = "{{ route('supervisor-notes.create') }}" +
+                '?note_type=' + encodeURIComponent(noteType) +
+                '&log_date=' + encodeURIComponent(logDate);
+
+            window.location.href = url;
+        });
     </script>
 @endpush
 @push('styles')

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class ShiftLog extends Model
@@ -10,7 +11,6 @@ class ShiftLog extends Model
     protected $fillable = [
         'position',
         'shift_name',
-
         'wo_number',
         'work_description',
         'duration',
@@ -31,9 +31,10 @@ class ShiftLog extends Model
         'mark_as_complete',
         'progress',
         'note_id',
-
         'labour',
-        'is_excel_upload', // if it is excel uploaded user can not edit
+        'is_excel_upload',
+        'log_date',
+        'requisition'
     ];
 
     public function scopeDayShift($query)
@@ -59,5 +60,15 @@ class ShiftLog extends Model
     public function note()
     {
         return $this->belongsTo(Note::class);
+    }
+
+    /**
+     * Get all supervisor notes associated with the shift log.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function supervisorNotes(): HasMany
+    {
+        return $this->hasMany(SupervisorNote::class);
     }
 }

@@ -70,11 +70,13 @@ class SupervisorsShiftLog extends Controller
             'message' => 'New Job Added Successfully',
         ]);
     }
+
     public function show($id)
     {
         $log = ShiftLog::find($id);
         return view('admin.supervisors.supervisors-shift-log-show', compact('log'));
     }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -167,15 +169,20 @@ class SupervisorsShiftLog extends Controller
 
         return response()->json(['success' => true]);
     }
+
     public function importShiftLog(Request $request)
     {
         $request->validate([
             'csv_file' => 'required|file|mimes:csv,txt,xlsx',
+            'log_date' => 'required',
         ]);
 
-        Excel::import(new ShiftLogImport, $request->file('csv_file'));
+        Excel::import(new ShiftLogImport($request->log_date), $request->file('csv_file'));
 
-        return back()->with('success', 'Shift log CSV imported successfully!');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shift logs imported successfully.'
+        ], 201);
     }
 
     public function export(Request $request)

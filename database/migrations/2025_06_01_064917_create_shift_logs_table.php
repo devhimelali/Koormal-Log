@@ -36,6 +36,8 @@ return new class extends Migration
             $table->longText('supervisor_notes')->nullable();
             $table->boolean('mark_as_complete')->default(0);
             $table->string('progress')->default('0');
+            $table->enum('requisition', ['no', 'yes'])->default('no');
+            $table->string('log_date')->nullable();
             $table->timestamps();
         });
     }

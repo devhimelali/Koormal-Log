@@ -158,17 +158,18 @@ class ShiftLogsDataTable extends DataTable
 
         // Filter by date — default to today
         $rawDate = request('date');
+
         if (filled($rawDate)) {
             try {
-                $queryDate = Carbon::createFromFormat('d-m-Y', $rawDate)->format('Y-m-d');
+                $queryDate = Carbon::createFromFormat('d-m-Y', $rawDate)->format('d-m-Y');
             } catch (\Exception $e) {
-                $queryDate = now()->format('Y-m-d');
+                $queryDate = now()->format('d-m-Y');
             }
         } else {
-            $queryDate = now()->format('Y-m-d');
+            $queryDate = now()->format('d-m-Y');
         }
 
-        $query->whereDate('created_at', $queryDate);
+        $query->where('log_date', $queryDate);
 
         return $query;
     }
