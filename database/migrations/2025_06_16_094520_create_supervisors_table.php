@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('supervisors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->date('date');
+            $table->string('date');
             $table->string('shift');
             $table->timestamps();
         });

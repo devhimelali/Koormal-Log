@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Admin\SupervisorNoteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MediaController;
@@ -28,9 +29,9 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
 
     // Labourer routes
     Route::post('labour-shift/update', [LabourController::class, 'updateLabour'])->name('labour-shift.update');
+    Route::post('supervisor-shift/update', [SupervisorController::class, 'updateSupervisor'])->name('supervisor-shift.update');
 
     Route::resource('notes', NoteController::class);
-
 
 
     Route::delete('/media/{id}', [MediaController::class, 'destroy'])->name('media.destroy');

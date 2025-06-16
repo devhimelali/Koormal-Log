@@ -4,7 +4,7 @@
     <div class="my-4 p-4 border bg-white">
         <div class="row align-items-center text-center text-md-start my-5">
             <!-- Left: Koormal logo and filter -->
-            <div class="col-md-3 mb-3 mb-md-0 d-flex flex-column align-items-center">
+            <div class="col-md-2 mb-3 mb-md-0 d-flex flex-column align-items-center">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/koormal-logo.png') }}" style="width: 180px;" alt="Koormal Logo"
                          class="mb-2">
@@ -24,7 +24,7 @@
             </div>
 
             <!-- Center: Title and Shift Labour -->
-            <div class="col-md-6 text-center">
+            <div class="col-md-8 text-center">
                 @php
                     $selectedDate = request()->get('date', \Carbon\Carbon::now()->format('d-m-Y'));
                 @endphp
@@ -36,25 +36,47 @@
                            value="{{ $selectedDate }}"
                            placeholder="Select Date" style="font-weight: bold;font-size: 18px;font-style: italic;">
                 </h4>
+                <div class="row">
+                    <!-- Supervisor Shift -->
+                    <div class="col-md-6">
+                        <!-- Date Picker Input (you can hide it if needed) -->
+                        <div class="border border-success rounded p-2 mb-3">
+                            <strong><u>Supervisor for Dayshift</u></strong><br>
+                            <div class="supervisor-editable" data-shift="day" contenteditable="true">
+                                {{ implode(', ', $supervisors_day) }}
+                            </div>
+                        </div>
 
-                <!-- Date Picker Input (you can hide it if needed) -->
-                <div class="border border-success rounded p-2 mb-3">
-                    <strong><u>Labour for Dayshift</u></strong><br>
-                    <div class="editable" data-shift="day" contenteditable="true">
-                        {{ implode(', ', $labours_day) }}
+                        <div class="border border-success rounded p-2">
+                            <strong><u>Supervisor for Nightshift</u></strong><br>
+                            <div class="supervisor-editable" data-shift="night" contenteditable="true">
+                                {{ implode(', ', $supervisors_night) }}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Labour Shift -->
+                    <div class="col-md-6">
+                        <!-- Date Picker Input (you can hide it if needed) -->
+                        <div class="border border-success rounded p-2 mb-3">
+                            <strong><u>Labour for Dayshift</u></strong><br>
+                            <div class="editable" data-shift="day" contenteditable="true">
+                                {{ implode(', ', $labours_day) }}
+                            </div>
+                        </div>
+
+                        <div class="border border-success rounded p-2">
+                            <strong><u>Labour for Nightshift</u></strong><br>
+                            <div class="editable" data-shift="night" contenteditable="true">
+                                {{ implode(', ', $labours_night) }}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="border border-success rounded p-2">
-                    <strong><u>Labour for Nightshift</u></strong><br>
-                    <div class="editable" data-shift="night" contenteditable="true">
-                        {{ implode(', ', $labours_night) }}
-                    </div>
-                </div>
             </div>
 
             <!-- Right: 4EMUS logo and buttons -->
-            <div class="col-md-3 mb-3 mb-md-0 d-flex flex-column align-items-center">
+            <div class="col-md-2 mb-3 mb-md-0 d-flex flex-column align-items-center">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/4emus-logo.png') }}" style="width: 180px;" alt="4EMUS Logo"
                          class="mb-2">
@@ -265,6 +287,31 @@
                     success: function (res) {
                     },
                     error: function () {
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('.supervisor-editable').on('blur', function () {
+                let content = $(this).text().trim();
+                let shift = $(this).data('shift');
+                let date = $('#flatpickr-date').val();
+
+                $.ajax({
+                    url: "{{ route('supervisor-shift.update') }}",
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        shift: shift,
+                        supervisor: content,
+                        date: date
+                    },
+                    success: function (res) {
+                        notify('success', res.message)
+                    },
+                    error: function (xhr){
+                        console.log(xhr);
                     }
                 });
             });
