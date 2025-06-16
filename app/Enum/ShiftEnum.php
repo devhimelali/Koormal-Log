@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum LabourShiftEnum: string
+enum ShiftEnum: string
 {
     case DAY = "day";
     case NIGHT = "night";

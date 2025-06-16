@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Enum\LabourShiftEnum;
+use App\Enum\ShiftEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class Labour extends Model
@@ -17,7 +17,7 @@ class Labour extends Model
     protected function casts()
     {
         return [
-            'shift' => LabourShiftEnum::class,
+            'shift' => ShiftEnum::class,
         ];
     }
 }
