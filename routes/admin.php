@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Admin\SupervisorNoteController;
+use App\Http\Controllers\OpportuneJobController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\Admin\NoteController;
 use App\Http\Controllers\Admin\LabourController;
-use App\Http\Controllers\Admin\SupervisorsShiftLog;
+use App\Http\Controllers\Admin\SupervisorsShiftLogController;
 
 Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -14,18 +15,18 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
         return view('admin.dashboard.index');
     })->name('admin.dashboard');
 
-    Route::get('supervisors-shift-log', [SupervisorsShiftLog::class, 'index'])->name('supervisors-shift-log.index');
-    Route::post('supervisors-shift-log', [SupervisorsShiftLog::class, 'store'])->name('supervisors-shift-log.store');
-    Route::get('supervisors-shift-log/{id}', [SupervisorsShiftLog::class, 'show'])->name('supervisors-shift-log.show');
+    Route::get('supervisors-shift-log', [SupervisorsShiftLogController::class, 'index'])->name('supervisors-shift-log.index');
+    Route::post('supervisors-shift-log', [SupervisorsShiftLogController::class, 'store'])->name('supervisors-shift-log.store');
+    Route::get('supervisors-shift-log/{id}', [SupervisorsShiftLogController::class, 'show'])->name('supervisors-shift-log.show');
 
-    Route::put('supervisors-shift-log/{id}', [SupervisorsShiftLog::class, 'update'])->name('supervisors-shift-log.update');
-    Route::put('shift-logs/update-details/{shift_log}', [SupervisorsShiftLog::class, 'updateDetails'])->name('shift-logs.update-details');
-    Route::get('shift-logs/mark-complete/{shift_log}', [SupervisorsShiftLog::class, 'markComplete'])->name('shift-logs.markComplete');
+    Route::put('supervisors-shift-log/{id}', [SupervisorsShiftLogController::class, 'update'])->name('supervisors-shift-log.update');
+    Route::put('shift-logs/update-details/{shift_log}', [SupervisorsShiftLogController::class, 'updateDetails'])->name('shift-logs.update-details');
+    Route::get('shift-logs/mark-complete/{shift_log}', [SupervisorsShiftLogController::class, 'markComplete'])->name('shift-logs.markComplete');
 
-    Route::post('supervisors-shift-log/reorder', [SupervisorsShiftLog::class, 'reorder'])->name('supervisors-shift-log.reorder');
-    Route::delete('/supervisors-shift-log/{id}', [SupervisorsShiftLog::class, 'destroy'])->name('supervisors-shift-log.destroy');
-    Route::post('/supervisors-shift-log/import-csv', [SupervisorsShiftLog::class, 'importShiftLog'])->name('supervisors-shift-log.csv.import');
-    Route::get('/export-shift-logs', [SupervisorsShiftLog::class, 'export'])->name('supervisors-shift-log.export');
+    Route::post('supervisors-shift-log/reorder', [SupervisorsShiftLogController::class, 'reorder'])->name('supervisors-shift-log.reorder');
+    Route::delete('/supervisors-shift-log/{id}', [SupervisorsShiftLogController::class, 'destroy'])->name('supervisors-shift-log.destroy');
+    Route::post('/supervisors-shift-log/import-csv', [SupervisorsShiftLogController::class, 'importShiftLog'])->name('supervisors-shift-log.csv.import');
+    Route::get('/export-shift-logs', [SupervisorsShiftLogController::class, 'export'])->name('supervisors-shift-log.export');
 
     // Labourer routes
     Route::post('labour-shift/update', [LabourController::class, 'updateLabour'])->name('labour-shift.update');
@@ -37,5 +38,8 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::delete('/media/{id}', [MediaController::class, 'destroy'])->name('media.destroy');
     Route::get('supervisor-notes/create', [SupervisorNoteController::class, 'create'])->name('supervisor-notes.create');
     Route::Post('supervisor-notes', [SupervisorNoteController::class, 'store'])->name('supervisor-notes.store');
-    Route::post('bulk-delete-supervisor-shift', [SupervisorsShiftLog::class, 'bulkDelete'])->name('bulk-delete-supervisor-shift');
+    Route::post('bulk-delete-supervisor-shift', [SupervisorsShiftLogController::class, 'bulkDelete'])->name('bulk-delete-supervisor-shift');
+    Route::resource('opportune-jobs', OpportuneJobController::class);
+    Route::post('bulk-import-opportune-jobs', [OpportuneJobController::class, 'bulkImportFromExcel'])->name('bulk-import-opportune-jobs');
+    Route::post('store-shift-log-from-opportune-jobs', [SupervisorsShiftLogController::class, 'storeShiftLogFromOpportuneJobs'])->name('store-shift-log-from-opportune-jobs');
 });

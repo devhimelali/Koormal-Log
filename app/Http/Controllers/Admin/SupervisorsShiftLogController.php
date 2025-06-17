@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\ShiftLogsDataTable;
+use App\Models\OpportuneJob;
 use App\Models\Supervisor;
 use Carbon\Carbon;
 use App\Models\ShiftLog;
@@ -15,7 +16,7 @@ use App\Models\Labour;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 
-class SupervisorsShiftLog extends Controller
+class SupervisorsShiftLogController extends Controller
 {
     public function index(ShiftLogsDataTable $dataTable, Request $request)
     {
@@ -44,6 +45,7 @@ class SupervisorsShiftLog extends Controller
             'labours_night' => (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray(),
             'supervisors_day' => (clone $supervisorQuery)->where('shift', 'day')->pluck('name')->toArray(),
             'supervisors_night' => (clone $supervisorQuery)->where('shift', 'night')->pluck('name')->toArray(),
+            'opportuneJobs' => OpportuneJob::get(),
         ]);
     }
 
@@ -265,6 +267,49 @@ class SupervisorsShiftLog extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Work Order deleted successfully for date: ' . $logDate,
+        ]);
+    }
+
+    public function storeShiftLogFromOpportuneJobs(Request $request)
+    {
+        $validated = $request->validate([
+            'shift_name' => 'required|in:day,night',
+            'job_id' => 'required|exists:opportune_jobs,id',
+            'log_date' => 'required|date_format:d-m-Y',
+        ]);
+
+        $job = OpportuneJob::find($request->job_id);
+
+        if (!$job) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Opportune job not found.',
+            ], 404);
+        }
+
+        ShiftLog::create([
+            'shift_name' => $request->shift_name,
+            'wo_number' => $job->wo_number,
+            'asset_no' => $job->asset_no,
+            'asset_description' => $job->asset_description,
+            'work_description' => $job->work_description,
+            'status' => $job->status,
+            'due_start' => $job->due_start,
+            'job_type' => $job->job_type,
+            'priority' => $job->priority,
+            'raised' => $job->raised,
+            'start_date' => $job->start_date,
+            'duration' => $job->duration,
+            'department' => $job->department,
+            'material_cost' => $job->material_cost,
+            'other_cost' => $job->other_cost,
+            'position' => ShiftLog::max('position') + 1,
+            'log_date' => $request->log_date,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'New Job Added Successfully',
         ]);
     }
 }

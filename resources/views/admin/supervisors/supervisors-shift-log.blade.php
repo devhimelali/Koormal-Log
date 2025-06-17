@@ -126,6 +126,47 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="addOpportuneJobModal" tabindex="-1" aria-labelledby="addOpportuneJobModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-subtle pb-3">
+                    <h1 class="modal-title fs-5" id="addOpportuneJobModalLabel">Add a Job from Opportune Job List</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('store-shift-log-from-opportune-jobs') }}" method="POST"
+                      id="addOpportuneJobForm">
+                    <div class="modal-body p-3 mb-3">
+                        @csrf
+                        <div class="mb-2">
+                            <label for="shift_name" class="form-label">Shift <span class="text-danger">*</span></label>
+                            <select class="form-select" name="shift_name" id="shift_name">
+                                <option value="">Select a Shift</option>
+                                <option value="day">Day shift</option>
+                                <option value="night">Night Shift</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label for="job_id" class="form-label">Select a Job</label>
+                            <select class="form-select" name="job_id" id="job_id">
+                                <option value="">Select a Job</option>
+                                @foreach($opportuneJobs as $job)
+                                    <option value="{{ $job->id }}">{{ $job->wo_number }} - {{ $job->asset_no }}
+                                        - {{ $job->department }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-subtle-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-secondary" id="addOpportuneJobSubmitBtn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <!-- DataTables JS and dependencies (if not already included globally) -->
@@ -283,10 +324,45 @@
                     addJob();
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     // Redirect or show modal for opportune job
-                    alert('This feature is currently under development. Implementation will proceed once the requirements are fully defined.');
+                    $('#addOpportuneJobModal').modal('show');
                 }
             });
         })
+
+        $('#addOpportuneJobForm').on('submit', function (e) {
+            e.preventDefault();
+            let log_date = $('#flatpickr-date').val();
+            let formData = new FormData(this);
+            formData.append('log_date', log_date);
+            let url = $(this).attr('action');
+            let method = $(this).attr('method');
+            $.ajax({
+                url: url,
+                method: method,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.status == 'success') {
+                        $('#addOpportuneJobModal').modal('hide');
+                        $('#jobTable').DataTable().ajax.reload();
+                        notify('success', response.message);
+                        $('#addOpportuneJobForm')[0].reset();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status == 422) {
+                        let errors = xhr.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            notify('error', value);
+                            let input = $('[name="' + key + '"]');
+                            input.addClass('is-invalid');
+                            input.next('.invalid-feedback').text(value);
+                        });
+                    }
+                }
+            });
+        });
 
 
         $(document).ready(function () {
@@ -305,7 +381,7 @@
                         date: date
                     },
                     success: function (res) {
-                        if(res.status == 'success') {
+                        if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
@@ -331,7 +407,7 @@
                         date: date
                     },
                     success: function (res) {
-                        if(res.status == 'success') {
+                        if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
@@ -589,7 +665,8 @@
         .form-select {
             padding: .525rem 24px .525rem .9rem !important;
         }
-        .dataTables_scrollHeadInner{
+
+        .dataTables_scrollHeadInner {
             width: 100% !important;
         }
     </style>
