@@ -21,7 +21,12 @@ class SupervisorController extends Controller
             ]
         );
 
-        return response()->json(['message' => 'Supervisor list updated successfully.']);
+        $shift = $request->shift == 'day' ? 'Day Shift' : 'Night Shift';
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Supervisor ' . $shift . ' list updated successfully.'
+        ]);
 
     }
 }

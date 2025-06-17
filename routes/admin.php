@@ -37,4 +37,5 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::delete('/media/{id}', [MediaController::class, 'destroy'])->name('media.destroy');
     Route::get('supervisor-notes/create', [SupervisorNoteController::class, 'create'])->name('supervisor-notes.create');
     Route::Post('supervisor-notes', [SupervisorNoteController::class, 'store'])->name('supervisor-notes.store');
+    Route::post('bulk-delete-supervisor-shift', [SupervisorsShiftLog::class, 'bulkDelete'])->name('bulk-delete-supervisor-shift');
 });

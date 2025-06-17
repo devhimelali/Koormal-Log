@@ -42,8 +42,6 @@ class ShiftLogsDataTable extends DataTable
                         <i class="bi bi-arrows-move"></i>
                     </span>';
             })
-
-
             ->addColumn('shift', function ($job) {
                 $selectedDay = $job->shift_name === 'day' ? 'selected' : '';
                 $selectedNight = $job->shift_name === 'night' ? 'selected' : '';
@@ -58,7 +56,6 @@ class ShiftLogsDataTable extends DataTable
                         <option value="night" ' . $selectedNight . '>Night</option>
                     </select>';
             })
-
             ->addColumn('wo_number', function ($job) {
                 $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
                 return "<div {$editable} data-field='wo_number' class='py-3 m-0'>{$job->wo_number}</div>";
@@ -72,7 +69,7 @@ class ShiftLogsDataTable extends DataTable
                 return "<div {$editable} data-field='work_description' class='py-3 m-0'>{$job->work_description}</div>";
             })
             ->addColumn('labour', function ($job) {
-                $editable =  'contenteditable=true';
+                $editable = 'contenteditable=true';
                 return "<div {$editable} data-field='labour' class='py-3 m-0'>{$job->labour}</div>";
             })
             ->addColumn('note', function ($job) {
@@ -104,8 +101,6 @@ class ShiftLogsDataTable extends DataTable
                         ' . $options . '
                     </select>';
             })
-
-
             ->addColumn('requisition', function ($job) {
                 $selected = $job->requisition === 'yes' ? 'selected' : '';
                 return '<select class="form-control w-100 shift_name" data-field="requisition" style="text-transform: capitalize; font-size: 10px;">
@@ -113,9 +108,7 @@ class ShiftLogsDataTable extends DataTable
                             <option value="yes" ' . $selected . '>Yes</option>
                         </select>';
             })
-
-            ->addColumn('progress', fn($job) =>
-            '<div style="position: relative; display: inline-block;">
+            ->addColumn('progress', fn($job) => '<div style="position: relative; display: inline-block;">
                 <input data-field="progress" type="number"
                        class="form-control text-center complete_progress"
                        min="0" max="100" value="' . $job->progress . '"
@@ -123,7 +116,6 @@ class ShiftLogsDataTable extends DataTable
                        oninput="this.value = Math.max(0, Math.min(100, this.value))">
                 <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none;">%</span>
             </div>')
-
             ->addColumn('action', function ($job) {
                 $url = route('supervisors-shift-log.show', $job->id);
                 return '
@@ -175,7 +167,6 @@ class ShiftLogsDataTable extends DataTable
     }
 
 
-
     public function html()
     {
         return $this->builder()
@@ -197,68 +188,75 @@ class ShiftLogsDataTable extends DataTable
                 ->title('#')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('40px'),
+                ->width('40px')
+                ->addClass('align-content-center'),
             Column::make('shift')
                 ->name('shift_name')
                 ->title('Shift')
                 ->orderable(true)
                 ->searchable(false)
-                ->width('45px'),
+                ->width('45px')
+                ->addClass('align-content-center'),
+
             Column::make('wo_number')
                 ->title('WO Number')
                 ->orderable(false)
-                ->searchable(false),
+                ->searchable(false)
+                ->addClass('align-content-center'),
 
             Column::make('asset_no')
                 ->title('Asset No')
                 ->orderable(false)
-                ->searchable(false),
+                ->searchable(false)
+                ->addClass('align-content-center'),
 
             Column::make('work_description')
                 ->title('Work Description')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('300px'),
+                ->width('300px')
+                ->addClass('align-content-center'),
 
             Column::make('labour')
                 ->title('Labour Assigned')
                 ->orderable(false)
                 ->searchable(false)
                 ->width('200px')
-                ->addClass('text-wrap'),
+                ->addClass('text-wrap align-content-center'),
 
             Column::make('note')
                 ->title('Note')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('180px'),
+                ->width('180px')
+                ->addClass('align-content-center'),
 
             Column::make('requisition')
                 ->title('Req')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('60px'),
+                ->width('60px')
+                ->addClass('align-content-center'),
 
             Column::make('progress')
                 ->title('% Complete')
                 ->orderable(false)
-                ->searchable(false),
+                ->searchable(false)
+                ->addClass('align-content-center'),
 
             Column::computed('action')
-                ->title('Action')
+                ->title('<div class="d-flex align-items-center gap-3">
+                                    <div>
+                                        Action
+                                    </div>
+                                    <div><button id="delete-selected" class="btn btn-sm btn-danger">Delete All</button></div>
+                                </div>')
                 ->exportable(false)
                 ->printable(false)
                 ->orderable(false)
                 ->searchable(false)
-                ->width('132px'),
-            // ['data' => 'wo_number', 'contenteditable' => 'true', 'title' => 'WO Number', 'orderable' => false, 'searchable' => false],
-            // ['data' => 'asset_no', 'title' => 'Asset No', 'orderable' => false, 'searchable' => false],
-            // ['data' => 'work_description', 'title' => 'Work Description', 'orderable' => false, 'searchable' => false],
-            // ['data' => 'labour', 'title' => 'Labour Assigned', 'orderable' => false, 'searchable' => false],
-            // ['data' => 'note', 'title' => 'Note', 'orderable' => false, 'searchable' => false, 'style' => "width: 100px !important;"],
-            // ['data' => 'requisition', 'title' => 'Req', 'orderable' => false, 'searchable' => false, 'style' => "width: 60px !important;"],
-            // ['data' => 'progress', 'title' => '% Complete', 'orderable' => false, 'searchable' => false],
-            // ['data' => 'action', 'title' => 'Action', 'orderable' => false, 'searchable' => false, 'style' => "width: 132px !important;"],
+                ->width('160px')
+                ->addClass('text-center'),
         ];
     }
 }

@@ -197,10 +197,10 @@ class SupervisorsShiftLog extends Controller
             'export' => 'required|in:csv,xlsx,pdf',
         ]);
         $laboursQuery = Labour::where('date', $request->date)->get();
+        $supervisorQuery = Supervisor::where('date', $request->date)->get();
 
         if ($request->export == 'pdf') {
-            $queryDate = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
-            $query = ShiftLog::with('note')->whereDate('created_at', $queryDate)->orderBy('wo_number', 'asc');
+            $query = ShiftLog::with('note')->where('log_date', $request->date)->orderBy('wo_number', 'asc');
 
             if ($request->shift !== null && $request->shift != 'both') {
                 $query->where('shift_name', $request->shift);
@@ -210,6 +210,8 @@ class SupervisorsShiftLog extends Controller
             $logs = $query->get();
             $dayLabour = (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray();
             $nightLabour = (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray();
+            $daySupervisor = (clone $supervisorQuery)->where('shift', 'day')->pluck('name')->toArray();
+            $nightSupervisor = (clone $supervisorQuery)->where('shift', 'night')->pluck('name')->toArray();
             PDF::setOptions(['isPhpEnabled' => true]);
             if ($request->shift == 'both') {
                 $dayLogs = $logs->where('shift_name', 'day');
@@ -222,6 +224,8 @@ class SupervisorsShiftLog extends Controller
                     'date' => $request->date,
                     'dayLabour' => $dayLabour,
                     'nightLabour' => $nightLabour,
+                    'daySupervisor' => $daySupervisor,
+                    'nightSupervisor' => $nightSupervisor,
                 ])->setPaper('a4', 'portrait');
             } else {
                 $pdf = PDF::loadView('exports.shift-log', [
@@ -230,6 +234,8 @@ class SupervisorsShiftLog extends Controller
                     'date' => $request->date,
                     'dayLabour' => $dayLabour,
                     'nightLabour' => $nightLabour,
+                    'daySupervisor' => $daySupervisor,
+                    'nightSupervisor' => $nightSupervisor,
                 ])->setPaper('a4', 'portrait');
             }
 
@@ -242,5 +248,28 @@ class SupervisorsShiftLog extends Controller
             $fileName = 'shift_logs_' . date('Y-m-d') . '.' . $ext;
             return Excel::download(new ShiftLogCsvExport($request->date, $request->shift), $fileName);
         }
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'log_date' => 'required',
+        ]);
+        $logDate = $request->log_date;
+        $logs = ShiftLog::where('log_date', $logDate)->get();
+
+        if ($logs->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No work order found for the provided date.',
+            ], 404);
+        }
+
+        ShiftLog::where('log_date', $logDate)->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Work Order deleted successfully for date: ' . $logDate,
+        ]);
     }
 }

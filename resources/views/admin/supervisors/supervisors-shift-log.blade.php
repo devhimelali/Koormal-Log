@@ -285,6 +285,9 @@
                         date: date
                     },
                     success: function (res) {
+                        if(res.status == 'success') {
+                            notify('success', res.message);
+                        }
                     },
                     error: function () {
                     }
@@ -308,9 +311,11 @@
                         date: date
                     },
                     success: function (res) {
-                        notify('success', res.message)
+                        if(res.status == 'success') {
+                            notify('success', res.message);
+                        }
                     },
-                    error: function (xhr){
+                    error: function (xhr) {
                         console.log(xhr);
                     }
                 });
@@ -365,7 +370,7 @@
                 },
                 success: function () {
                     reloadTableWithFilters();
-                    notify('success', 'Shift log deleted successfully');
+                    notify('success', 'Work Order deleted successfully');
                 },
                 error: function () {
                     reloadTableWithFilters();
@@ -462,6 +467,48 @@
                 '&log_date=' + encodeURIComponent(logDate);
 
             window.location.href = url;
+        });
+
+        $(document).on('click', '#delete-selected', function () {
+            Swal.fire({
+                title: 'Are you sure you want to delete all work orders from this shift log?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let log_date = $('#flatpickr-date').val();
+
+                    $.ajax({
+                        url: "{{ route('bulk-delete-supervisor-shift') }}",
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            log_date: log_date
+                        },
+                        success: function (res) {
+                            if (res.status == 'success') {
+                                notify('success', res.message);
+                                $('#jobTable').DataTable().ajax.reload(null, false);
+                            }
+                        },
+                        error: function (xhr) {
+                            console.log(xhr)
+                            if (xhr.status == 404) {
+                                notify('error', xhr.responseJSON.message || 'No data found for the given date.')
+                            } else if (xhr.status == 422) {
+                                let errors = xhr.responseJSON.errors;
+                                let firstError = Object.values(errors)[0][0];
+                                notify('error', firstError || 'Validation failed.')
+                            } else {
+                                notify('error', xhr.responseJSON.message || 'Something went wrong. Please try again.')
+                            }
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endpush

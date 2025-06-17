@@ -26,6 +26,10 @@ class LabourController extends Controller
             ]
         );
 
-        return response()->json(['message' => 'Labour list updated successfully.']);
+        $shift = $request->shift == 'day' ? 'Day Shift' : 'Night Shift';
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Labour ' . $shift . ' list updated successfully.'
+        ]);
     }
 }

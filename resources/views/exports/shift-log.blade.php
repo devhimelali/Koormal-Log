@@ -71,25 +71,51 @@
 
 <body>
 
-<table class="logo-title-table">
+<table class="logo-title-table" style="width: 100%; border-collapse: collapse;">
     <tr>
-        <td style="width: 25%;">
-            <img src="{{ public_path('assets/logos/koormal-logo.png') }}" alt="Koormal Logo">
+        <td style="width: 15%;">
+            <img src="{{ public_path('assets/logos/koormal-logo.png') }}" alt="Koormal Logo" style="max-width: 100px;">
         </td>
-        <td style="width: 50%;">
-            <div class="title-text">
+        <td style="width: 70%; text-align: center;">
+            <div class="title-text" style="font-size: 18px; font-weight: bold;">
                 SUPERVISORS SHIFT LOG – {{ \Carbon\Carbon::parse($date)->format('d-m-y') }}
             </div>
-
-            <div class="labour-box"><strong>Labour for Dayshift:</strong><br> {{ implode(', ', $dayLabour) }}</div>
-            <div class="labour-box"><strong>Labour for Nightshift:</strong> <br> {{ implode(', ', $nightLabour) }}
-            </div>
         </td>
-        <td style="width: 25%;">
-            <img src="{{ public_path('assets/logos/4emus-logo.png') }}" alt="4EMUS Logo">
+        <td style="width: 15%; text-align: right;">
+            <img src="{{ public_path('assets/logos/4emus-logo.png') }}" alt="4EMUS Logo" style="max-width: 100px;">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="padding-top: 8px;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 50%; padding-right: 5px; vertical-align: top; border-right: 1px solid #ccc;">
+                        <div class="labour-box" style="margin-bottom: 5px;">
+                            <strong>Supervisor for Dayshift:</strong><br>
+                            {{ implode(', ', $daySupervisor) }}
+                        </div>
+                        <div class="labour-box">
+                            <strong>Supervisor for Nightshift:</strong><br>
+                            {{ implode(', ', $nightSupervisor) }}
+                        </div>
+                    </td>
+                    <td style="width: 50%; padding-left: 5px; vertical-align: top;">
+                        <div class="labour-box" style="margin-bottom: 5px;">
+                            <strong>Labour for Dayshift:</strong><br>
+                            {{ implode(', ', $dayLabour) }}
+                        </div>
+                        <div class="labour-box">
+                            <strong>Labour for Nightshift:</strong><br>
+                            {{ implode(', ', $nightLabour) }}
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
+
+
 <table class="data-table">
     <thead>
     <tr>
@@ -115,18 +141,18 @@
                 $background = $log->mark_as_complete == 1 ? 'background-color: #ffef3bc2;' : '';
             @endphp
             <tr style="{{ $background }}">
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ Str::ucfirst($log->shift_name) }}</td>
-                <td>{{ $log->wo_number }}</td>
-                <td>{{ $log->asset_no }}</td>
-                <td>{{ $log->asset_description }}</td>
-                <td>{{ $log->work_description }}</td>
-                <td>{{ $log->labour }}</td>
-                <td>{{ $log->note->note ?? '' }}</td>
-                <td>{{ Str::ucfirst($log->requisition) }}</td>
-                <td style="text-align: center">{{ $log->progress }}</td>
-                <td style="text-align: center">{{ $log->duration }}</td>
-                <td style="text-align: center">{{ $log->mark_as_complete == 1 ? 'Yes' : 'No' }}</td>
+                <td style="vertical-align: middle;">{{ $loop->iteration }}</td>
+                <td style="vertical-align: middle;">{{ Str::ucfirst($log->shift_name) }}</td>
+                <td style="vertical-align: middle;">{{ $log->wo_number }}</td>
+                <td style="vertical-align: middle;">{{ $log->asset_no }}</td>
+                <td style="vertical-align: middle;">{{ $log->asset_description }}</td>
+                <td style="vertical-align: middle;">{{ $log->work_description }}</td>
+                <td style="vertical-align: middle;">{{ $log->labour }}</td>
+                <td style="vertical-align: middle;">{{ $log->note->note ?? '' }}</td>
+                <td style="vertical-align: middle;">{{ Str::ucfirst($log->requisition) }}</td>
+                <td style="text-align: center; vertical-align: middle;">{{ $log->progress }}</td>
+                <td style="text-align: center; vertical-align: middle;">{{ $log->duration }}</td>
+                <td style="text-align: center; vertical-align: middle;">{{ $log->mark_as_complete == 1 ? 'Yes' : 'No' }}</td>
             </tr>
             <tr>
                 <td colspan="12">
