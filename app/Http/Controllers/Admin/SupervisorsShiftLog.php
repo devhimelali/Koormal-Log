@@ -60,13 +60,8 @@ class SupervisorsShiftLog extends Controller
 
         $nextPosition = ShiftLog::max('position') + 1;
         $validated['position'] = $nextPosition;
-
-        $datePart = Carbon::createFromFormat('d-m-Y', $request->date)->format('Y-m-d');
-        $timePart = now()->format('H:i:s');
-        $createdAt = Carbon::parse("$datePart $timePart");
+        $validated['log_date'] = $request->date;
         $log = ShiftLog::create($validated);
-
-        $log->created_at = $createdAt;
         $log->save();
 
         return response()->json([

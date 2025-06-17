@@ -85,7 +85,7 @@
                         data-bs-target="#supervisorsShiftLogModal">Upload Excel
                     Sheet
                 </button>
-                <button id="addJobBtn" onclick="addJob()" class="btn btn-sm btn-primary mt-1 w-75">Add a Job</button>
+                <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75">Add a Job</button>
 
                 <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" data-type="day_shift">
                     Supervisor's Notes – Dayshift
@@ -267,6 +267,26 @@
             editField(td, field, value, id);
 
         });
+
+        $('#addJobBtn').on('click', function () {
+            Swal.fire({
+                title: 'Add a Job',
+                text: 'Choose how you want to add a job:',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Add Blank New Job',
+                cancelButtonText: 'Add Opportune Job From List',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect or show form for blank job
+                    addJob();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // Redirect or show modal for opportune job
+                    alert('This feature is currently under development. Implementation will proceed once the requirements are fully defined.');
+                }
+            });
+        })
 
 
         $(document).ready(function () {
@@ -568,6 +588,9 @@
 
         .form-select {
             padding: .525rem 24px .525rem .9rem !important;
+        }
+        .dataTables_scrollHeadInner{
+            width: 100% !important;
         }
     </style>
 @endpush
