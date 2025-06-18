@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\ShiftLogsDataTable;
+use App\Models\HandoverCompletion;
 use App\Models\OpportuneJob;
 use App\Models\Supervisor;
 use App\Models\SupervisorNote;
@@ -232,9 +233,9 @@ class SupervisorsShiftLogController extends Controller
                 ])->setPaper('a4', 'portrait');
             } else {
                 $supervisorNotes = null;
-                if($request->shift == 'day'){
+                if ($request->shift == 'day') {
                     $supervisorNotes = $supervisorDayShiftNotes;
-                }elseif ($request->shift == 'night') {
+                } elseif ($request->shift == 'night') {
                     $supervisorNotes = $supervisorNightShiftNotes;
                 }
                 $pdf = PDF::loadView('exports.shift-log', [

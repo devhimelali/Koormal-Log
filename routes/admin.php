@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\HandoverCompletionController;
 use App\Http\Controllers\Admin\LabourController;
 use App\Http\Controllers\Admin\NoteController;
 use App\Http\Controllers\Admin\OpportuneJobController;
@@ -43,4 +44,8 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::resource('opportune-jobs', OpportuneJobController::class);
     Route::post('bulk-import-opportune-jobs', [OpportuneJobController::class, 'bulkImportFromExcel'])->name('bulk-import-opportune-jobs');
     Route::post('store-shift-log-from-opportune-jobs', [SupervisorsShiftLogController::class, 'storeShiftLogFromOpportuneJobs'])->name('store-shift-log-from-opportune-jobs');
+    Route::get('handover-completions', [HandoverCompletionController::class, 'index'])->name('handover-completions.index');
+    Route::get('handover-completions/create', [HandoverCompletionController::class, 'create'])->name('handover-completions.create');
+    Route::post('handover-completions', [HandoverCompletionController::class, 'store'])->name('handover-completions.store');
+    Route::get('handover-completions/{id}', [HandoverCompletionController::class, 'show'])->name('handover-completions.show');
 });

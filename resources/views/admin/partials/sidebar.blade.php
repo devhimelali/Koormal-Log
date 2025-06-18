@@ -56,6 +56,14 @@
                         <span data-key="t-opportune-jobs">Opportune Jobs</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="javascript: void(0);"
+                       class="nav-link menu-link handover-completion-menu-btn @if (Route::current()->getName() == 'handover-completions.index') active @endif"
+                       aria-expanded="false">
+                        <i class="ph ph-clipboard-text"></i>
+                        <span data-key="t-opportune-jobs">Handover Completion</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->
@@ -63,3 +71,35 @@
 
     <div class="sidebar-background"></div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('.handover-completion-menu-btn').on('click', function () {
+            Swal.fire({
+                title: 'Select Shift',
+                icon: 'question',
+                html: `
+            <p>Which shift do you want to complete handover for?</p>
+            <button class="swal2-confirm btn-option btn btn-primary" data-value="day_shift">Day Shift</button>
+            <button class="swal2-confirm btn-option btn btn-secondary" data-value="night_shift">Night Shift</button>
+        `,
+                showConfirmButton: false,
+                didOpen: () => {
+                    document.querySelectorAll('.btn-option').forEach(button => {
+                        button.addEventListener('click', () => {
+                            const selected = button.getAttribute('data-value');
+                            Swal.close();
+
+                            let shift = '';
+                            if (selected === 'day_shift') shift = 'day';
+                            else if (selected === 'night_shift') shift = 'night';
+                            const baseUrl = "{{ route('handover-completions.index') }}";
+                            const redirectUrl = `${baseUrl}?shift=${shift}`;
+                            window.location.href = redirectUrl;
+                        });
+                    });
+                }
+            });
+        })
+    })
+</script>

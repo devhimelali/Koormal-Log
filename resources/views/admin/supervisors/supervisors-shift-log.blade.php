@@ -38,24 +38,48 @@
                 </h4>
                 <div class="row">
                     <!-- Supervisor Shift -->
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
-                            <strong><u>Supervisor for Dayshift</u></strong><br>
+                            <div class="d-flex align-items-center gap-2">
+                                <p class="mb-0">
+                                    <strong>
+                                        <u>
+                                            Supervisor for Dayshift
+                                        </u>
+                                    </strong>
+                                </p>
+                                <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
+                                        data-shift="day">Handover
+                                    Complete
+                                </button>
+                            </div>
                             <div class="supervisor-editable" data-shift="day" contenteditable="true">
                                 {{ implode(', ', $supervisors_day) }}
                             </div>
                         </div>
 
                         <div class="border border-success rounded p-2">
-                            <strong><u>Supervisor for Nightshift</u></strong><br>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <p class="mb-0">
+                                    <strong>
+                                        <u>
+                                            Supervisor for Nightshift
+                                        </u>
+                                    </strong>
+                                </p>
+                                <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
+                                        data-shift="night">Handover Complete
+                                </button>
+                            </div>
                             <div class="supervisor-editable" data-shift="night" contenteditable="true">
                                 {{ implode(', ', $supervisors_night) }}
                             </div>
                         </div>
                     </div>
                     <!-- Labour Shift -->
-                    <div class="col-md-9">
+                    <div class="col-md-8">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
                             <strong><u>Labour for Dayshift</u></strong><br>
@@ -82,16 +106,19 @@
                          class="mb-2">
                 </div>
                 <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
-                        data-bs-target="#supervisorsShiftLogModal">Upload Excel
+                        data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
                     Sheet
                 </button>
-                <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75">Add a Job</button>
+                <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
+                </button>
 
-                <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" data-type="day_shift">
+                <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
+                   data-type="day_shift">
                     Supervisor's Notes – Dayshift
                 </a>
 
-                <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" data-type="night_shift">
+                <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
+                   data-type="night_shift">
                     Supervisor's Notes – Nightshift
                 </a>
             </div>
@@ -164,6 +191,16 @@
                         <button type="submit" class="btn btn-secondary" id="addOpportuneJobSubmitBtn">Save</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Handover Completion Modal -->
+    <div class="modal fade" id="handoverCompletionModal" tabindex="-1" aria-labelledby="handoverCompletionModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
             </div>
         </div>
     </div>
@@ -606,6 +643,20 @@
                 }
             });
         });
+
+        $('.addCompletion').on('click', function () {
+            let shift = $(this).data('shift');
+            let date = $('#flatpickr-date').val();
+            let url = "{{ route('handover-completions.create') }}?shift=" + shift + "&date=" + date;
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (res) {
+                    $('#handoverCompletionModal .modal-content').html(res);
+                    $('#handoverCompletionModal').modal('show');
+                }
+            })
+        })
     </script>
 @endpush
 @push('styles')
@@ -668,6 +719,10 @@
 
         .dataTables_scrollHeadInner {
             width: 100% !important;
+        }
+
+        .form-select-sm {
+            padding: .35rem 24px .35rem .9rem !important;
         }
     </style>
 @endpush
