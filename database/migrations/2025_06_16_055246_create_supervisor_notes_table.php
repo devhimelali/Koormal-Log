@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('supervisor_notes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shift_log_id')->constrained('shift_logs')->cascadeOnDelete();
             $table->longText('note');
+            $table->string('log_date');
             $table->enum('note_type', ['day_shift', 'night_shift'])->nullable();
             $table->timestamps();
         });

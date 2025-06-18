@@ -139,7 +139,7 @@
 
 
                 <!-- Buttons -->
-                <div class="mt-4 d-flex flex-wrap gap-2">
+                <div class="mt-4 d-flex justify-content-between flex-wrap gap-2">
                     @if ($log->mark_as_complete == 0)
                         {{-- <button type="button" class="btn btn-primary">
                             <i class="bi bi-check-circle me-1"></i> Mark As Completed
@@ -155,9 +155,14 @@
                             <i class="bi bi-check-circle me-1"></i> Job Completed
                         </a>
                     @endif
-                    <button type="submit" class="btn btn-secondary ms-auto">
-                        <i class="bi bi-save me-1"></i> Save and Return
-                    </button>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('supervisors-shift-log.index', ['date' => $log->log_date]) }}" class="btn btn-subtle-danger">
+                            <i class="bi bi-arrow-left me-1"></i> Back
+                        </a>
+                        <button type="submit" class="btn btn-secondary ms-auto">
+                            <i class="bi bi-save me-1"></i> Save and Return
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

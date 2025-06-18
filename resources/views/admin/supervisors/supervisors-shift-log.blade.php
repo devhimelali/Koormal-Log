@@ -38,7 +38,7 @@
                 </h4>
                 <div class="row">
                     <!-- Supervisor Shift -->
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
                             <strong><u>Supervisor for Dayshift</u></strong><br>
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                     <!-- Labour Shift -->
-                    <div class="col-md-6">
+                    <div class="col-md-9">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
                             <strong><u>Labour for Dayshift</u></strong><br>

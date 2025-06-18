@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('progress')->default('0');
             $table->enum('requisition', ['no', 'yes'])->default('no');
             $table->string('log_date')->nullable();
+            $table->foreignId('note_id')->nullable()->constrained('notes')->cascadeOnDelete();
             $table->timestamps();
         });
     }

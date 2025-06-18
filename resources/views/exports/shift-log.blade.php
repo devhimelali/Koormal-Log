@@ -89,7 +89,7 @@
         <td colspan="3" style="padding-top: 8px;">
             <table style="width: 100%; border-collapse: collapse;">
                 <tr>
-                    <td style="width: 50%; padding-right: 5px; vertical-align: top; border-right: 1px solid #ccc;">
+                    <td style="width: 30%; padding-right: 5px; vertical-align: top; border-right: 1px solid #ccc;">
                         <div class="labour-box" style="margin-bottom: 5px;">
                             <strong>Supervisor for Dayshift:</strong><br>
                             {{ implode(', ', $daySupervisor) }}
@@ -99,7 +99,7 @@
                             {{ implode(', ', $nightSupervisor) }}
                         </div>
                     </td>
-                    <td style="width: 50%; padding-left: 5px; vertical-align: top;">
+                    <td style="width: 70%; padding-left: 5px; vertical-align: top;">
                         <div class="labour-box" style="margin-bottom: 5px;">
                             <strong>Labour for Dayshift:</strong><br>
                             {{ implode(', ', $dayLabour) }}
