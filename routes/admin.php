@@ -1,13 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\LabourController;
+use App\Http\Controllers\Admin\NoteController;
+use App\Http\Controllers\Admin\OpportuneJobController;
 use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Admin\SupervisorNoteController;
-use App\Http\Controllers\OpportuneJobController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MediaController;
-use App\Http\Controllers\Admin\NoteController;
-use App\Http\Controllers\Admin\LabourController;
 use App\Http\Controllers\Admin\SupervisorsShiftLogController;
+use App\Http\Controllers\MediaController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -38,6 +38,7 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::delete('/media/{id}', [MediaController::class, 'destroy'])->name('media.destroy');
     Route::get('supervisor-notes/create', [SupervisorNoteController::class, 'create'])->name('supervisor-notes.create');
     Route::Post('supervisor-notes', [SupervisorNoteController::class, 'store'])->name('supervisor-notes.store');
+    Route::post('/supervisor-notes/delete-image', [SupervisorNoteController::class, 'deleteImage'])->name('supervisor-notes.delete-image');
     Route::post('bulk-delete-supervisor-shift', [SupervisorsShiftLogController::class, 'bulkDelete'])->name('bulk-delete-supervisor-shift');
     Route::resource('opportune-jobs', OpportuneJobController::class);
     Route::post('bulk-import-opportune-jobs', [OpportuneJobController::class, 'bulkImportFromExcel'])->name('bulk-import-opportune-jobs');

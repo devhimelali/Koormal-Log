@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\DataTables\ShiftLogsDataTable;
 use App\Models\OpportuneJob;
 use App\Models\Supervisor;
+use App\Models\SupervisorNote;
 use Carbon\Carbon;
 use App\Models\ShiftLog;
 use Illuminate\Http\Request;
@@ -203,6 +204,9 @@ class SupervisorsShiftLogController extends Controller
                 $query->where('shift_name', $request->shift);
             }
 
+            $supervisorDayShiftNotes = SupervisorNote::with('media')->where('log_date', $request->date)->where('note_type', 'day_shift')->first();
+            $supervisorNightShiftNotes = SupervisorNote::with('media')->where('log_date', $request->date)->where('note_type', 'night_shift')->first();
+
 
             $logs = $query->get();
             $dayLabour = (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray();
@@ -223,8 +227,16 @@ class SupervisorsShiftLogController extends Controller
                     'nightLabour' => $nightLabour,
                     'daySupervisor' => $daySupervisor,
                     'nightSupervisor' => $nightSupervisor,
+                    'supervisorDayShiftNotes' => $supervisorDayShiftNotes,
+                    'supervisorNightShiftNotes' => $supervisorNightShiftNotes,
                 ])->setPaper('a4', 'portrait');
             } else {
+                $supervisorNotes = null;
+                if($request->shift == 'day'){
+                    $supervisorNotes = $supervisorDayShiftNotes;
+                }elseif ($request->shift == 'night') {
+                    $supervisorNotes = $supervisorNightShiftNotes;
+                }
                 $pdf = PDF::loadView('exports.shift-log', [
                     'logs' => $logs,
                     'shift' => $request->shift,
@@ -233,6 +245,7 @@ class SupervisorsShiftLogController extends Controller
                     'nightLabour' => $nightLabour,
                     'daySupervisor' => $daySupervisor,
                     'nightSupervisor' => $nightSupervisor,
+                    'supervisorNotes' => $supervisorNotes,
                 ])->setPaper('a4', 'portrait');
             }
 

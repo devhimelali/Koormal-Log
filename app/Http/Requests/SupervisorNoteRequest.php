@@ -23,8 +23,8 @@ class SupervisorNoteRequest extends FormRequest
     {
         return [
             'note' => 'required|string',
-            'shift_log_id' => 'required|exists:shift_logs,id',
             'note_type' => 'required|in:day_shift,night_shift',
+            'log_date' => 'required|date_format:d-m-Y',
             'images' => 'nullable|array',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ];

@@ -14,7 +14,12 @@ class Labour extends Model
         'shift'
     ];
 
-    protected function casts()
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string> An array where the key is the attribute name and the value is the type to cast to.
+     */
+    protected function casts(): array
     {
         return [
             'shift' => ShiftEnum::class,

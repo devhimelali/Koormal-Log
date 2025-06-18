@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Imports\OpportuneJobImport;
 use App\Models\OpportuneJob;
 use Illuminate\Http\Request;
