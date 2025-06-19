@@ -5,78 +5,132 @@
         return 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
 @endphp
+
         <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Supervisor Notes PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 20px;
+            font-size: 14px;
+        }
+
+        .logo-title-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .logo-title-table td {
+            vertical-align: middle;
+        }
+
+        .title-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1e2d58;
+        }
+
+        .header-details p {
+            margin: 2px 0;
+            font-size: 15px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 2px solid #d1d9f3;
+            margin: 10px 0 20px;
+        }
+
+        .note-section p {
+            line-height: 1.6;
+        }
+
+        .note-section strong {
+            font-size: 16px;
+        }
+
+        .attached-images {
+            margin-top: 35px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .attached-images img {
+            max-width: 200px;
+            max-height: 130px;
+            border: 1px solid #aaa;
+            padding: 3px;
+            background-color: #f9f9f9;
+            margin: 3px;
+        }
+    </style>
 </head>
 <body>
-<table class="logo-title-table" style="width: 100%; border-collapse: collapse;">
-    <tr style="margin-bottom: 8px;">
+
+<table class="logo-title-table">
+    <tr>
         <td style="width: 15%;">
             <img src="{{ public_path('assets/logos/koormal-logo.png') }}" alt="Koormal Logo" style="max-width: 100px;">
         </td>
         <td style="width: 70%; text-align: center;">
-            <div class="title-text" style="font-size: 18px; font-weight: bold;">
-                SUPERVISORS SHIFT LOG - {{$log_date}}
+            <div class="title-text">
+                SUPERVISORS NOTE - {{ $log_date }}
             </div>
-            <p style="font-size: 16px; margin-top: 5px; margin-bottom: 0"><strong>Shift:</strong> {{ $note_type }}</p>
-            <p style="font-size: 16px; margin-top: 2px; margin-bottom: 0">
-                <strong>Supervisor:</strong> {{ $supervisor->name ?? 'N/A' }}</p>
+            <div class="header-details">
+                <p><strong>Shift:</strong> {{ $note_type }}</p>
+                <p><strong>Supervisor Name:</strong> {{ $supervisor->name ?? 'N/A' }}</p>
+            </div>
         </td>
         <td style="width: 15%; text-align: right;">
             <img src="{{ public_path('assets/logos/4emus-logo.png') }}" alt="4EMUS Logo" style="max-width: 100px;">
         </td>
     </tr>
 </table>
-<hr style="color: #d1d9f3; margin-bottom: 0;">
-<div style="margin-top: -5px">
-    <p style="font-size: 18px; margin-bottom: 10px;">
-        <strong>Note:</strong>
-    </p>
-    <p style="font-size: 14px; margin-top: 5px; margin-bottom: 10px">
-        {!! nl2br(e($supervisor_notes->note)) !!}
-    </p>
-    <p style="font-size: 17px; margin-bottom: 35px;">
-        <strong>
-            Attached Images
-        </strong>
-    </p>
-    @foreach($supervisor_notes->media as $media)
-        @php
-            $path = public_path($media->url);
-            $base64 = file_exists($path) ? getBase64Image($path) : '';
-        @endphp
-        @if($base64)
-            <img src="{{ $base64 }}"
-                 style="max-width: 200px; max-height: 130px; margin: 5px; border: 1px solid #ccc;">
-        @endif
-    @endforeach
+
+<hr>
+
+<div class="note-section">
+    <p style="margin-bottom: 0; margin-top: -10px;"><strong>Note:</strong></p>
+    <p style="margin-top: 0; line-height: 1.3">{!! nl2br(e($supervisor_notes->note)) !!}</p>
+
+    @if($supervisor_notes->media->isNotEmpty())
+        <div style="clear: both;"></div>
+        <p style="margin-top: 10px;"><strong>Attached Images:</strong></p>
+        <div class="attached-images">
+            @foreach($supervisor_notes->media as $media)
+                @php
+                    $path = public_path($media->url);
+                    $base64 = file_exists($path) ? getBase64Image($path) : '';
+                @endphp
+                @if($base64)
+                    <div style="display: inline-block; margin: 3px;">
+                        <img src="{{ $base64 }}" style="max-width: 200px; max-height: 130px; border: 1px solid #ccc;">
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    @endif
 </div>
+
 <script type="text/php">
     if (isset($pdf)) {
         $pdf->page_script('
             $text = __("Page :pageNum/:pageCount", ["pageNum" => $PAGE_NUM, "pageCount" => $PAGE_COUNT]);
             $font = null;
             $size = 9;
-            $color = array(0,0,0);
-            $word_space = 0.0;  //  default
-            $char_space = 0.0;  //  default
-            $angle = 0.0;   //  default
-
-            // Compute text width to center correctly
-            $textWidth = $fontMetrics->getTextWidth($text, $font, $size);
-
-            $x = ($pdf->get_width() - $textWidth) - 38;
+            $color = [0, 0, 0];
+            $x = $pdf->get_width() - 70;
             $y = $pdf->get_height() - 35;
-
-            $pdf->text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+            $pdf->text($x, $y, $text, $font, $size, $color);
         ');
     }
 </script>
+
 </body>
 </html>
