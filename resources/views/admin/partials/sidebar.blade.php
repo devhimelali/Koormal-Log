@@ -57,11 +57,19 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{route('handover-completion-questions.index')}}"
+                       class="nav-link menu-link @if (Route::current()->getName() == 'handover-completion-questions.index') active @endif"
+                       aria-expanded="false">
+                        <i class="ph ph-question"></i>
+                        <span data-key="t-handover-completion-questions">Handover Completion Questions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="javascript: void(0);"
                        class="nav-link menu-link handover-completion-menu-btn @if (Route::current()->getName() == 'handover-completions.index') active @endif"
                        aria-expanded="false">
                         <i class="ph ph-clipboard-text"></i>
-                        <span data-key="t-opportune-jobs">Handover Completion</span>
+                        <span data-key="t-handover-completions">Handover Completions</span>
                     </a>
                 </li>
             </ul>

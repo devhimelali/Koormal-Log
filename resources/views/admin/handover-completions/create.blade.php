@@ -10,11 +10,11 @@
         <div class="row">
             @foreach($questions as $question)
                 @php
-                    $selectedAnswer = $handoverCompletion->answers[$question] ?? 'No';
+                    $selectedAnswer = $handoverCompletion->answers[$question->question] ?? 'No';
                 @endphp
                 <div class="col-md-6 mb-3">
-                    <label>{{ $question }}</label>
-                    <select name="answers[{{ $question }}]" class="form-select form-select-sm w-50">
+                    <label>{{ $question->question }}</label>
+                    <select name="answers[{{ $question->question }}]" class="form-select form-select-sm w-50">
                         <option value="No" {{ $selectedAnswer === 'No' ? 'selected' : '' }}>No</option>
                         <option value="Yes" {{ $selectedAnswer === 'Yes' ? 'selected' : '' }}>Yes</option>
                     </select>

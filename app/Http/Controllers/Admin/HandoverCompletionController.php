@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HandoverCompletion;
+use App\Models\HandoverCompletionQuestion;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -40,7 +41,7 @@ class HandoverCompletionController extends Controller
     {
         $shift = $request->shift;
         $date = $request->date;
-        $questions = HandoverCompletion::defaultQuestions();
+        $questions = HandoverCompletionQuestion::get();
         $handoverCompletion = HandoverCompletion::where('log_date', $date)->where('shift', $shift)->first();
         return view('admin.handover-completions.create', compact('questions', 'shift', 'date', 'handoverCompletion'));
     }
