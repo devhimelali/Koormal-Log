@@ -40,6 +40,7 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::delete('/media/{id}', [MediaController::class, 'destroy'])->name('media.destroy');
     Route::get('supervisor-notes/create', [SupervisorNoteController::class, 'create'])->name('supervisor-notes.create');
     Route::Post('supervisor-notes', [SupervisorNoteController::class, 'store'])->name('supervisor-notes.store');
+    Route::get('supervisor-notes/export-pdf/{log_date}/{note_type}', [SupervisorNoteController::class, 'exportPdf'])->name('supervisor-notes.pdf');;
     Route::post('/supervisor-notes/delete-image', [SupervisorNoteController::class, 'deleteImage'])->name('supervisor-notes.delete-image');
     Route::post('bulk-delete-supervisor-shift', [SupervisorsShiftLogController::class, 'bulkDelete'])->name('bulk-delete-supervisor-shift');
     Route::resource('opportune-jobs', OpportuneJobController::class);

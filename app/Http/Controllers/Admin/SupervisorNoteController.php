@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SupervisorNoteRequest;
 use App\Models\Media;
 use App\Models\ShiftLog;
+use App\Models\Supervisor;
 use App\Models\SupervisorNote;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -64,5 +66,25 @@ class SupervisorNoteController extends Controller
         }
         $image->delete();
         return response()->json(['status' => 'success']);
+    }
+
+    public function exportPdf($log_date, $note_type)
+    {
+        $supervisor_notes = SupervisorNote::with('media')->where('log_date', $log_date)->where('note_type', $note_type)->first();
+        $supervisor = Supervisor::where('date', $log_date)->where('shift', $note_type === 'day_shift' ? 'day' : 'night')->first();
+
+        if(!$supervisor_notes){
+            return redirect()->back()->with('error', 'Supervisor note not found');
+        }
+
+        $data = [
+            'supervisor_notes' => $supervisor_notes,
+            'supervisor' => $supervisor,
+            'log_date' => $log_date,
+            'note_type' => $note_type === 'day_shift' ? 'Day Shift' : 'Night Shift',
+        ];
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.supervisor-note', $data);
+        return $pdf->stream('supervisor_note.pdf');
     }
 }

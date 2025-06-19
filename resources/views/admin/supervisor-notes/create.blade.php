@@ -1,6 +1,8 @@
 @php
     $label = request()->get('note_type') === 'day_shift' ? 'Supervisor Day Shift Notes' : 'Supervisor Night Shift Notes';
+    $shift = request()->get('note_type') === 'day_shift' ? 'day' : 'night';
     $logDate = request()->get('log_date');
+    $supervisor = \App\Models\Supervisor::where('date', $logDate)->where('shift', $shift)->first();
 @endphp
 
 @extends('layouts.app')
@@ -32,6 +34,9 @@
                     </div>
                     <div>
                         <h3 class="text-center">{{ $label }} {{ $logDate }}</h3>
+                        @if($supervisor)
+                            <h5 class="text-center">Supervisor: {{ $supervisor->name ?? 'N/A' }}</h5>
+                        @endif
                     </div>
                     <div class="py-3 text-center">
                         <img src="{{ asset('assets/logos/4emus-logo.png') }}" style="width: 180px;" alt="4EMUS Logo">
@@ -58,7 +63,6 @@
                             </div>
 
 
-
                             <!-- Upload New Images -->
                             <div class="col-md-12 mb-3">
                                 <label for="images" class="form-label">Upload Images</label>
@@ -77,10 +81,13 @@
                                     <label class="form-label">Existing Images</label>
                                     <div class="row" id="existing-images-preview">
                                         @foreach ($supervisor_notes->media as $img)
-                                            <div class="col-md-1 mb-2 position-relative image-wrapper" data-id="{{ $img->id }}">
-                                                <img src="{{ asset($img->url) }}"
-                                                     class="img-fluid rounded border"
-                                                     style="height: 100px; object-fit: cover;">
+                                            <div class="col-md-1 mb-2 position-relative image-wrapper"
+                                                 data-id="{{ $img->id }}">
+                                                <a href="{{ asset($img->url) }}" class="glightbox">
+                                                    <img src="{{ asset($img->url) }}"
+                                                         class="img-fluid rounded border"
+                                                         style="height: 100px; object-fit: cover;">
+                                                </a>
                                                 <button type="button"
                                                         class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-existing-image"
                                                         data-id="{{ $img->id }}"
@@ -95,7 +102,12 @@
                             <!-- Buttons -->
                             <div class="col-md-12 mt-4 d-flex justify-content-between">
                                 <button type="submit" class="btn btn-secondary">Save</button>
-                                <a href="{{ route('supervisors-shift-log.index', ['date' => $logDate]) }}" class="btn btn-subtle-danger">Cancel</a>
+                                <button type="button" class="btn btn-danger" id="exportPdf">
+                                    <i class="bi bi-filetype-pdf me-1"></i>
+                                    Export PDF
+                                </button>
+                                <a href="{{ route('supervisors-shift-log.index', ['date' => $logDate]) }}"
+                                   class="btn btn-subtle-danger">Cancel</a>
                             </div>
                         </div>
                     </form>
@@ -107,7 +119,19 @@
 @endsection
 
 @section('page-script')
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            GLightbox({
+                selector: '.glightbox'
+            });
+        });
+
+        $('#exportPdf').on('click', function () {
+            let url = "{{ route('supervisor-notes.pdf', ['log_date' => $logDate, 'note_type' => request()->get('note_type')]) }}";
+            window.open(url, '_blank');
+        });
+
         $(document).ready(function () {
             let selectedFiles = [];
 
@@ -193,4 +217,7 @@
             });
         });
     </script>
+@endsection
+@section('page-style')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css"/>
 @endsection
