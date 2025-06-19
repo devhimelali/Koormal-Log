@@ -159,7 +159,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary-subtle pb-3">
-                    <h1 class="modal-title fs-5" id="addOpportuneJobModalLabel">Add a Job from Opportune Job List</h1>
+                    <h1 class="modal-title fs-5" id="addOpportuneJobModalLabel">Add a job - Opportune work</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('store-shift-log-from-opportune-jobs') }}" method="POST"
@@ -179,10 +179,12 @@
                             <select class="form-select" name="job_id" id="job_id">
                                 <option value="">Select a Job</option>
                                 @foreach($opportuneJobs as $job)
-                                    <option value="{{ $job->id }}">{{ $job->wo_number }} - {{ $job->asset_no }}
-                                        - {{ $job->department }}</option>
+                                    <option value="{{ $job->id }}" data-tooltip="{{ $job->work_description }}">
+                                        {{ $job->wo_number }} - {{ $job->asset_no }}
+                                    </option>
                                 @endforeach
                             </select>
+                            <div id="jobDetails" class="mt-2 text-muted"></div>
                         </div>
                     </div>
 
@@ -220,6 +222,19 @@
 
 
     <script>
+        function js_nl2br(str) {
+            if (typeof str !== "string") return str;
+            return str.replace(/\n/g, '<br>');
+        }
+        $(document).ready(function() {
+
+            $('#job_id').on('change', function () {
+                let jobName = $(this).find(':selected').data('tooltip');
+                let formattedJobName = js_nl2br(jobName);
+                $('#jobDetails').html('<span class="fw-bold text-danger">Work Description: </span>' + formattedJobName);
+            });
+
+        });
 
         $('#csvImportForm').submit(function (e) {
             e.preventDefault();
