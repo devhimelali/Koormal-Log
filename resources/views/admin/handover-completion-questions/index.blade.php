@@ -78,7 +78,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Delete Asset</h5>
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Handover Completion Question</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                             id="close-modal"></button>
                 </div>
@@ -87,7 +87,7 @@
                     @csrf
                     <input type="hidden" name="_method" value="DELETE">
                     <div class="modal-body p-4">
-                        <p id="deleteMessage">Are you sure you want to delete this asset?</p>
+                        <p id="deleteMessage">Are you sure you want to delete this handover completion question?</p>
                     </div>
                     <div class="modal-footer" style="display: block;">
                         <div class="hstack gap-2 justify-content-end">
