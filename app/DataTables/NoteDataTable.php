@@ -56,7 +56,7 @@ class NoteDataTable extends DataTable
             ->minifiedAjax()
             ->addAction(['title' => 'Action', 'width' => '138px', 'printable' => false])
             ->parameters([
-                'order' => [[1, 'asc']],
+                'order' => [[2, 'asc']],
             ]);
     }
 
@@ -68,7 +68,7 @@ class NoteDataTable extends DataTable
         return [
             ['data' => 'DT_RowIndex', 'name' => 'DT_RowIndex', 'title' => '#', 'orderable' => false, 'searchable' => false, 'style' => "width: 23px !important;"],
             ['data' => 'note', 'name' => 'note', 'title' => 'Name'],
-
+            ['data' => 'sort_by', 'name' => 'sort_by', 'title' => 'Sorting Order', 'className' => 'text-center sort-by-column',],
         ];
     }
 }

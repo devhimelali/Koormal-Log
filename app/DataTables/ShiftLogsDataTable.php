@@ -73,7 +73,7 @@ class ShiftLogsDataTable extends DataTable
                 return "<div {$editable} data-field='labour' class='py-3 m-0'>{$job->labour}</div>";
             })
             ->addColumn('note', function ($job) {
-                $notes = Note::orderBy('note', 'asc')->get();
+                $notes = Note::orderBy('sort_by', 'asc')->get();
                 $options = '<option value="">Select Note</option>';
 
                 foreach ($notes as $note) {

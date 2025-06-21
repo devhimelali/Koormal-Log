@@ -18,7 +18,7 @@
         let saveUrl = "{{ route('notes.store') }}";
         let updateUrl = "";
 
-        $('#addNoteBtn').click(function() {
+        $('#addNoteBtn').click(function () {
             $('#noteForm')[0].reset();
             $('#noteModalLabel').text('Add Note');
             $('#noteModal').modal('show');
@@ -27,23 +27,25 @@
         });
 
         // Edit
-        $('body').on('click', '.editBtn', function() {
+        $('body').on('click', '.editBtn', function () {
             let id = $(this).data('id');
             let url = "{{ route('notes.edit', ':id') }}".replace(':id', id);
-            $.get(url, function(data) {
+            $.get(url, function (data) {
                 $('#noteModalLabel').text('Edit Note');
                 $('#noteModal').modal('show');
                 $('#note_id').val(data.id);
                 $('#note').val(data.note);
+                $('#sort_by').val(data.sort_by);
                 saveUrl = "{{ route('notes.update', ':id') }}".replace(':id', id);
             });
         });
 
         // Save or Update
-        $('#noteForm').submit(function(e) {
+        $('#noteForm').submit(function (e) {
             e.preventDefault();
             let formData = {
                 note: $('#note').val(),
+                sort_by: $('#sort_by').val(),
                 _token: '{{ csrf_token() }}',
                 _method: $('#note_id').val() ? 'PUT' : 'POST'
             };
@@ -52,19 +54,18 @@
                 url: saveUrl,
                 type: 'POST',
                 data: formData,
-                success: function(response) {
+                success: function (response) {
                     $('#noteModal').modal('hide');
                     $('#notes-table').DataTable().ajax.reload();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     alert(xhr.responseJSON.message);
                 }
             });
         });
 
 
-
-        $(document).on('click', '.deleteBtn', function() {
+        $(document).on('click', '.deleteBtn', function () {
             let id = $(this).data('id');
             Swal.fire({
                 title: 'Are you sure?',
@@ -83,7 +84,7 @@
                         data: {
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function() {
+                        success: function () {
                             $('#notes-table').DataTable().ajax.reload();
                         }
                     });
@@ -110,6 +111,14 @@
         .text-wrap {
             white-space: normal !important;
             word-break: break-word;
+        }
+
+
+        .sort-by-column {
+            max-width: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 @endpush

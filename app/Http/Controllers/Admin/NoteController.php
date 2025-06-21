@@ -16,13 +16,13 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $request->validate(['note' => 'required']);
-        Note::create($request->only('note'));
+        Note::create($request->only(['note', 'sort_by']));
         return response()->json(['success' => true, 'message' => 'Note created successfully.']);
     }
     public function update(Request $request, Note $note)
     {
         $request->validate(['note' => 'required']);
-        $note->update($request->only('note'));
+        $note->update($request->only(['note', 'sort_by']));
         return response()->json(['success' => true, 'message' => 'Note updated successfully.']);
     }
 

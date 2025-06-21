@@ -8,9 +8,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label for="note">Note</label>
                         <input type="text" id="note" name="note" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sort_by">Sorting Order Number</label>
+                        <input type="number" id="sort_by" name="sort_by" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
