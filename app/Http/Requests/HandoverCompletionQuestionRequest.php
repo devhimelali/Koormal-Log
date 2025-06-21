@@ -23,6 +23,15 @@ class HandoverCompletionQuestionRequest extends FormRequest
     {
         return [
             'question' => 'required|string',
+            'sort_by' => 'required|integer',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'sort_by.required' => 'Sorting order number is required',
+            'sort_by.integer' => 'Sorting order number must be an integer',
         ];
     }
 }

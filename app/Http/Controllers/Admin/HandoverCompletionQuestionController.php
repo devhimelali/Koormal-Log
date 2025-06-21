@@ -41,7 +41,7 @@ class HandoverCompletionQuestionController extends Controller
     {
         HandoverCompletionQuestion::create([
             'question' => $request->question,
-            'status' => 1
+            'sort_by' => $request->sort_by,
         ]);
 
         return response()->json([
@@ -64,6 +64,7 @@ class HandoverCompletionQuestionController extends Controller
     {
         $question = HandoverCompletionQuestion::find($id);
         $question->question = $request->question;
+        $question->sort_by = $request->sort_by;
         $question->save();
         return response()->json([
             'status' => 'success',

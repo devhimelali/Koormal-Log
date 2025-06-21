@@ -8,5 +8,6 @@ class HandoverCompletionQuestion extends Model
 {
     protected $fillable = [
         'question',
+        'sort_by',
     ];
 }

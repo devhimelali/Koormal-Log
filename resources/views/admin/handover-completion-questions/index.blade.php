@@ -32,6 +32,7 @@
                             <tr>
                                 <th scope="col" style="max-width: 50px; width: 50px;">S.No</th>
                                 <th scope="col">Question</th>
+                                <th scope="col" style="max-width: 100px; width: 100px;">Sorting Order</th>
                                 <th scope="col" style="max-width: 180px; width: 180px;">Actions</th>
                             </tr>
                             </thead>
@@ -57,11 +58,17 @@
                     @csrf
                     <input type="hidden" name="_method" value="POST" id="method">
                     <div class="modal-body">
-                        <div class="mb-3">
+                        <div class="mb-2">
                             <label for="question" class="form-label">Question <span
                                         class="text-danger">*</span></label>
                             <textarea class="form-control" id="question" name="question"
                                       placeholder="Enter Question" cols="30" rows="5"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sort_by" class="form-label">Sorting Order Number <span
+                                        class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="sort_by" name="sort_by" value="1"
+                                   placeholder="Enter Sorting Order">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -115,8 +122,10 @@
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                     {data: 'question', name: 'question'},
+                    {data: 'sort_by', name: 'sort_by'},
                     {data: 'actions', name: 'actions', orderable: false, searchable: false},
                 ],
+                order: [[2, 'asc']]
             });
 
             $('#handoverCompletionAddForm').submit(function (e) {
@@ -167,6 +176,7 @@
                             .replace(':id', id));
                     $('#method').val('PUT');
                     $('#handoverCompletionAddForm #question').val(data.data.question);
+                    $('#handoverCompletionAddForm #sort_by').val(data.data.sort_by);
                     $('#addOrEditHandoverCompletionModal').modal('show');
                 }).fail(function () {
                     $('#loader').hide();

@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('handover_completion_questions', function (Blueprint $table) {
             $table->id();
             $table->text('question');
+            $table->integer('sort_by')->default(1);
             $table->timestamps();
         });
     }

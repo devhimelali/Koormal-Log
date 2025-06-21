@@ -41,7 +41,7 @@ class HandoverCompletionController extends Controller
     {
         $shift = $request->shift;
         $date = $request->date;
-        $questions = HandoverCompletionQuestion::get();
+        $questions = HandoverCompletionQuestion::orderBy('sort_by', 'asc')->get();
         $handoverCompletion = HandoverCompletion::where('log_date', $date)->where('shift', $shift)->first();
         return view('admin.handover-completions.create', compact('questions', 'shift', 'date', 'handoverCompletion'));
     }

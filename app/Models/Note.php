@@ -8,6 +8,7 @@ class Note extends Model
 {
     protected $fillable = [
         'note',
+        'sort_by',
     ];
 
     public function shiftLogs()

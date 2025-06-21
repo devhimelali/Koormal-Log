@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
             $table->string('note');
+            $table->integer('sort_by')->default(1);
             $table->timestamps();
         });
     }
