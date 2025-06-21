@@ -10,7 +10,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Supervisor Notes PDF</title>
+    <title>Handover Notes PDF</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,7 +80,7 @@
         </td>
         <td style="width: 70%; text-align: center;">
             <div class="title-text">
-                SUPERVISORS NOTE - {{ $log_date }}
+                HANDOVER NOTES - {{ $log_date }}
             </div>
             <div class="header-details">
                 <p><strong>Shift:</strong> {{ $note_type }}</p>

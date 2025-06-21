@@ -1,5 +1,8 @@
-<div class="modal-header bg-primary-subtle pb-3">
-    <h1 class="modal-title fs-5" id="handoverCompletionModalLabel">Handover Completion</h1>
+<div class="modal-header bg-primary-subtle pb-2">
+    <div>
+        <h1 class="modal-title fs-5" id="handoverCompletionModalLabel">Handover Completion</h1>
+        <span class="text-danger">If you answer No to any of the questions please add an explanation in your handover notes.</span>
+    </div>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <form action="{{route('handover-completions.store')}}" method="POST" id="handoverCompletionForm">

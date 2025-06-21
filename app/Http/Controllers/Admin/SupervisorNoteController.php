@@ -84,7 +84,7 @@ class SupervisorNoteController extends Controller
             'note_type' => $note_type === 'day_shift' ? 'Day Shift' : 'Night Shift',
         ];
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.supervisor-note', $data);
-        return $pdf->stream('supervisor_note.pdf');
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.handover-note', $data);
+        return $pdf->stream('handover-note.pdf');
     }
 }
