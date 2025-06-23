@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             NoteSeeder::class,
+            HandoverCompletionQuestionSeeder::class,
+            CrewSeeder::class,
+            LabourSeeder::class,
         ]);
     }
 }
