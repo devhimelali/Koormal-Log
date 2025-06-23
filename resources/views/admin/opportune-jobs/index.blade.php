@@ -78,11 +78,12 @@
                         <label for="csv_file" class="form-label fw-semibold">Upload File <span
                                     class="text-danger">*</span></label>
                         <input type="file" name="file" class="form-control">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-subtle-danger" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-secondary" id="csvImportBtn">Import</button>
+                        <button type="button" class="btn btn-subtle-danger" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>
