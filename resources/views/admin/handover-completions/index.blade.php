@@ -51,8 +51,6 @@
     </div>
 @endsection
 @section('page-script')
-    <script src="{{ asset('assets/libs/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         $(document).ready(function () {
             let shift = '{{ request()->shift }}';
@@ -86,5 +84,23 @@
     </script>
 @endsection
 @section('page-style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/libs/datatables/dataTables.bootstrap5.min.css') }}">
+    <style>
+        div#datatable_length {
+            margin-bottom: 10px;
+        }
+
+        div#datatable_filter {
+            margin-bottom: 10px;
+        }
+
+        div#datatable_info {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        div#datatable_paginate {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+    </style>
 @endsection
