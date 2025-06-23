@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SupervisorNoteRequest;
 use App\Models\Labour;
+use App\Models\LabourShift;
 use App\Models\Media;
 use App\Models\ShiftLog;
 use App\Models\Supervisor;
@@ -73,7 +74,14 @@ class SupervisorNoteController extends Controller
     {
         $supervisor_notes = SupervisorNote::with('media')->where('log_date', $log_date)->where('note_type', $note_type)->first();
         $supervisor = Supervisor::where('date', $log_date)->where('shift', $note_type === 'day_shift' ? 'day' : 'night')->first();
-        $labours = Labour::where('date', $log_date)->where('shift', $note_type === 'day_shift' ? 'day' : 'night')->pluck('name')->toArray();
+
+        $labours = LabourShift::with('labour')
+            ->where('date', $log_date)
+            ->where('shift', $note_type === 'day_shift' ? 'day' : 'night')
+            ->get()
+            ->pluck('labour.name')
+            ->filter()
+            ->implode(', ');
 
         if (!$supervisor_notes) {
             return redirect()->back()->with('error', 'Handover note not found');
@@ -88,6 +96,6 @@ class SupervisorNoteController extends Controller
         ];
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.handover-note', $data);
-        return $pdf->stream('handover-note-' . $log_date .'-'. time() .'.pdf');
+        return $pdf->stream('handover-note-' . $log_date . '-' . time() . '.pdf');
     }
 }

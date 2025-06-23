@@ -18,7 +18,7 @@ class LabourController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('crew_name', function ($row) {
-                    return $row->crew->name;
+                    return $row->crew?->name;
                 })
                 ->addColumn('actions', function ($row) {
                     $btn = '<div class="btn-group">';

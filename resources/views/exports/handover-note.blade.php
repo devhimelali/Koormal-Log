@@ -107,8 +107,8 @@
     <tr>
         <td style="width: 100%;">
             <div class="labour-box">
-                <strong style="font-size: 16px; line-height: 1.3; color: #1e2d58;">Labour for Nightshift:</strong><br>
-                {{ implode(', ', $labours) }}
+                <strong style="font-size: 16px; line-height: 1.3; color: #1e2d58;">Labour for {{$note_type}}:</strong><br>
+                {{ $labours }}
             </div>
         </td>
     </tr>
