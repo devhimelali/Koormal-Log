@@ -72,6 +72,31 @@
                         <span data-key="t-handover-completions">Handover Completions</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="#sidebarCompany"
+                       class="nav-link menu-link {{ in_array(Route::current()->getName(), ['crews.index', 'labours.index']) ? 'active' : 'collapsed' }}"
+                       data-bs-toggle="collapse" role="button"
+                       aria-expanded="{{ in_array(Route::current()->getName(), ['crews.index', 'labours.index']) ? 'true' : 'false' }}"
+                       aria-controls="sidebarCompany">
+                        <i class="ph ph-watch"></i>
+                        <span data-key="t-company-information">Shift Crews</span>
+                    </a>
+                    <div class="menu-dropdown collapse {{ in_array(Route::current()->getName(), ['crews.index', 'labours.index']) ? 'show' : '' }}"
+                         id="sidebarCompany" style="">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('crews.index') }}"
+                                   class="nav-link {{ Route::current()->getName() == 'crews.index' ? 'active' : '' }}"
+                                   data-key="t-crews">Crews</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('labours.index') }}"
+                                   class="nav-link {{ Route::current()->getName() == 'labours.index' ? 'active' : '' }}"
+                                   data-key="t-labours">Labours</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->

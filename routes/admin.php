@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CrewController;
 use App\Http\Controllers\Admin\HandoverCompletionController;
 use App\Http\Controllers\Admin\HandoverCompletionQuestionController;
 use App\Http\Controllers\Admin\LabourController;
@@ -51,4 +52,6 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::get('handover-completions/create', [HandoverCompletionController::class, 'create'])->name('handover-completions.create');
     Route::post('handover-completions', [HandoverCompletionController::class, 'store'])->name('handover-completions.store');
     Route::get('handover-completions/{id}', [HandoverCompletionController::class, 'show'])->name('handover-completions.show');
+    Route::resource('crews', CrewController::class)->except('show');
+    Route::resource('labours', LabourController::class)->except('show');
 });
