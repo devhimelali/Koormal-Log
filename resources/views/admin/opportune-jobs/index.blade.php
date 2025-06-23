@@ -45,10 +45,10 @@
                             <thead class="table-light">
                             <tr>
                                 <th scope="col">S.No</th>
-                                <th scope="col">Wo Order</th>
-                                <th scope="col">Asset No</th>
-                                <th scope="col" style="min-width: 300px; width: 300px;">Work-order Description</th>
-                                <th scope="col" style="min-width: 300px; width: 300px;">Asset Description</th>
+                                <th scope="col" style="min-width: 80px; width: 80px;">Wo Order</th>
+                                <th scope="col" style="min-width: 80px; width: 80px;">Asset No</th>
+                                <th scope="col" style="min-width: 200px; width: 200px;">Work-order Description</th>
+                                <th scope="col" style="min-width: 200px; width: 200px;">Asset Description</th>
                                 <th scope="col">Department</th>
                                 <th scope="col">Actions</th>
                             </tr>
@@ -120,8 +120,8 @@
     </div>
 @endsection
 @section('page-script')
-    <script src="{{ asset('assets/libs/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables/dataTables.bootstrap5.min.js') }}"></script>
+    {{--    <script src="{{ asset('assets/libs/datatables/jquery.dataTables.min.js') }}"></script>--}}
+    {{--    <script src="{{ asset('assets/libs/datatables/dataTables.bootstrap5.min.js') }}"></script>--}}
     <script>
         $(document).ready(function () {
 
@@ -231,5 +231,19 @@
 @endsection
 
 @section('page-style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/libs/datatables/dataTables.bootstrap5.min.css') }}">
+    <style>
+        div#datatable_length {
+            margin-bottom: 10px;
+        }
+
+        div#datatable_info {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        div#datatable_paginate {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+    </style>
 @endsection
