@@ -75,8 +75,8 @@ class SupervisorNoteController extends Controller
         $supervisor = Supervisor::where('date', $log_date)->where('shift', $note_type === 'day_shift' ? 'day' : 'night')->first();
         $labours = Labour::where('date', $log_date)->where('shift', $note_type === 'day_shift' ? 'day' : 'night')->pluck('name')->toArray();
 
-        if(!$supervisor_notes){
-            return redirect()->back()->with('error', 'Supervisor note not found');
+        if (!$supervisor_notes) {
+            return redirect()->back()->with('error', 'Handover note not found');
         }
 
         $data = [
@@ -88,6 +88,6 @@ class SupervisorNoteController extends Controller
         ];
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.handover-note', $data);
-        return $pdf->stream('handover-note.pdf');
+        return $pdf->stream('handover-note-' . $log_date .'-'. time() .'.pdf');
     }
 }
