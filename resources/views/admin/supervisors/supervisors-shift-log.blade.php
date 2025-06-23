@@ -6,7 +6,7 @@
             <!-- Left: Koormal logo and filter -->
             <div class="col-md-2 mb-3 mb-md-0 d-flex flex-column align-items-center">
                 <div class="py-3 text-center">
-                    <img src="{{ asset('assets/logos/koormal-logo.png') }}" style="width: 180px;" alt="Koormal Logo"
+                    <img src="{{ asset('assets/logos/koormal-logo.png') }}" style="width: 170px;" alt="Koormal Logo"
                          class="mb-2">
                 </div>
                 <select name="filter" class="form-select w-75 mt-2" id="filter">
@@ -38,14 +38,14 @@
                 </h4>
                 <div class="row">
                     <!-- Supervisor Shift -->
-                    <div class="col-md-4">
+                    <div class="col-md-4 px-0">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
                             <div class="d-flex align-items-center gap-2">
                                 <p class="mb-0">
                                     <strong>
                                         <u>
-                                            Supervisor for Dayshift
+                                            Supervisor for Day Shift
                                         </u>
                                     </strong>
                                 </p>
@@ -65,7 +65,7 @@
                                 <p class="mb-0">
                                     <strong>
                                         <u>
-                                            Supervisor for Nightshift
+                                            Supervisor for Night Shift
                                         </u>
                                     </strong>
                                 </p>
@@ -82,16 +82,29 @@
                     <div class="col-md-8">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
-                            <strong><u>Labour for Dayshift</u></strong><br>
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <strong><u>Labour for Day Shift</u></strong><br>
+                                <button class="btn btn-sm btn-primary loadCrew" data-shift="day"
+                                        style="line-height: 1;">
+                                    Load a Crew
+                                </button>
+                            </div>
                             <div class="editable" data-shift="day" contenteditable="true">
-                                {{ implode(', ', $labours_day) }}
+                                {{--                                {{ implode(', ', $labours_day) }}--}}
                             </div>
                         </div>
 
                         <div class="border border-success rounded p-2">
-                            <strong><u>Labour for Nightshift</u></strong><br>
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <strong><u>Labour for Night Shift</u></strong><br>
+                                <button class="btn btn-sm btn-primary loadCrew" data-shift="night"
+                                        style="line-height: 1;">
+                                    Load a Crew
+                                </button>
+                            </div>
+
                             <div class="editable" data-shift="night" contenteditable="true">
-                                {{ implode(', ', $labours_night) }}
+                                {{--                                {{ implode(', ', $labours_night) }}--}}
                             </div>
                         </div>
                     </div>
@@ -114,12 +127,12 @@
 
                 <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
                    data-type="day_shift">
-                    Supervisor's Notes – Dayshift
+                    Supervisor's Notes – Day Shift
                 </a>
 
                 <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
                    data-type="night_shift">
-                    Supervisor's Notes – Nightshift
+                    Supervisor's Notes – Night Shift
                 </a>
             </div>
         </div>
@@ -206,6 +219,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Load Crew Modal -->
+    <div class="modal fade" id="loadCrewModal" tabindex="-1" aria-labelledby="loadCrewModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <!-- DataTables JS and dependencies (if not already included globally) -->
@@ -217,6 +240,8 @@
     <!-- Flatpickr assets -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="{{asset('assets/libs/choices.js/public/assets/scripts/choices.min.js')}}"></script>
+    {{--    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>--}}
 
     {!! $dataTable->scripts() !!}
 
@@ -226,7 +251,8 @@
             if (typeof str !== "string") return str;
             return str.replace(/\n/g, '<br>');
         }
-        $(document).ready(function() {
+
+        $(document).ready(function () {
 
             $('#job_id').on('change', function () {
                 let jobName = $(this).find(':selected').data('tooltip');
@@ -672,10 +698,65 @@
                 }
             })
         })
+
+        $('body').on('click', '.loadCrew', function () {
+            let shift = $(this).data('shift');
+            let date = $('#flatpickr-date').val();
+            let url = "{{ route('load-crew.index') }}?shift=" + shift + "&date=" + date;
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (res) {
+                    $('#loadCrewModal .modal-content').html(res);
+                    $('#loadCrewModal').modal('show');
+                }
+            })
+        })
+
+        $('body').on('change', '#crew_id', function () {
+            let crew_id = $(this).val();
+
+            $.ajax({
+                url: "{{ route('get-labour-by-crew', ':crew_id') }}".replace(':crew_id', crew_id),
+                method: 'GET',
+                beforeSend: function () {
+                    $('.labour-container').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+                },
+                success: function (res) {
+                    $('.labour-container').html('');
+                    let html = '';
+                    html += '<label for="labour" class="form-label">Labour</label>';
+                    html += '<select name="labour[]" id="labour" class="form-select" multiple required>';
+                    html += '<option value="">Select Labour</option>';
+                    $.each(res.data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    html += '</select>';
+                    $('.labour-container').html(html);
+
+                    // Initialize Choices.js
+                    if (typeof Choices !== 'undefined') {
+                        new Choices('#labour', {
+                            removeItemButton: true,
+                            placeholderValue: 'Select Labour',
+                            searchPlaceholderValue: 'Search Labour',
+                            noResultsText: 'No Labour Found'
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    $('.labour-container').html('');
+                    notify('error', xhr.responseJSON?.message || 'Something went wrong. Please try again.');
+                }
+            });
+        });
+
     </script>
 @endpush
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="{{asset('assets/libs/choices.js/public/assets/styles/choices.min.css')}}">
+    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />--}}
     <style>
         .drag-handle {
             cursor: move;
@@ -738,6 +819,36 @@
 
         .form-select-sm {
             padding: .35rem 24px .35rem .9rem !important;
+        }
+
+        .labour-container {
+            overflow: visible !important;
+            position: relative;
+            z-index: 1;
+        }
+
+        .choices__list--dropdown .choices__list {
+            margin: 0;
+        }
+
+        .choices__list.choices__list--dropdown.is-active {
+            padding: 2px;
+        }
+
+        .choices__list--multiple .choices__item {
+            padding: 1px 6px !important;
+        }
+
+        .choices__input {
+            margin-bottom: 0 !important;
+        }
+
+        .choices__inner {
+            padding: 3px 10px;
+        }
+        .choices__list--dropdown .choices__item, .choices__list[aria-expanded] .choices__item
+        {
+            font-size: 12px !important;
         }
     </style>
 @endpush

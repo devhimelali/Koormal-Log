@@ -39,12 +39,12 @@ class SupervisorsShiftLogController extends Controller
         }
 
         $inputDate = $request->query('date', date('d-m-Y'));
-        $laboursQuery = Labour::where('date', $inputDate)->get();
+//        $laboursQuery = Labour::where('date', $inputDate)->get();
         $supervisorQuery = Supervisor::where('date', $inputDate)->get();
         return $dataTable->render('admin.supervisors.supervisors-shift-log', [
             'selectedDate' => $inputDate,
-            'labours_day' => (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray(),
-            'labours_night' => (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray(),
+//            'labours_day' => (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray(),
+//            'labours_night' => (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray(),
             'supervisors_day' => (clone $supervisorQuery)->where('shift', 'day')->pluck('name')->toArray(),
             'supervisors_night' => (clone $supervisorQuery)->where('shift', 'night')->pluck('name')->toArray(),
             'opportuneJobs' => OpportuneJob::get(),

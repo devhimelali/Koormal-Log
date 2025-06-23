@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CrewRequest;
 use App\Models\Crew;
+use App\Models\Labour;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -91,6 +92,24 @@ class CrewController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Crew deleted successfully'
+        ]);
+    }
+
+    public function loadCrew(Request $request)
+    {
+        $shift = $request->shift;
+        $date = $request->date;
+        $crews = Crew::get();
+        return view('admin.crews.load-crew-modal', compact('shift', 'date', 'crews'));
+    }
+
+    public function getLabourByCrew($id)
+    {
+        $labours = Labour::where('crew_id', $id)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $labours
         ]);
     }
 }

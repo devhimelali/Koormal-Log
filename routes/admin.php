@@ -54,4 +54,7 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::get('handover-completions/{id}', [HandoverCompletionController::class, 'show'])->name('handover-completions.show');
     Route::resource('crews', CrewController::class)->except('show');
     Route::resource('labours', LabourController::class)->except('show');
+    Route::get('load-crew', [CrewController::class, 'loadCrew'])->name('load-crew.index');
+    Route::get('get-labour-by-crew/{id}', [CrewController::class, 'getLabourByCrew'])->name('get-labour-by-crew');
+    Route::post('load-crew', [CrewController::class, 'storeCrew'])->name('load-crew.store');
 });
