@@ -4,7 +4,7 @@
     <div class="my-4 p-4 border bg-white">
         <div class="d-flex justify-content-between">
             <h2>Notes</h2>
-            <button class="btn btn-success mb-3" id="addNoteBtn">Add Note</button>
+            <button class="btn btn-secondary mb-3" id="addNoteBtn">Add Note</button>
         </div>
         {!! $dataTable->table(['class' => 'table table-striped'], false) !!}
     </div>
@@ -59,7 +59,15 @@
                     $('#notes-table').DataTable().ajax.reload();
                 },
                 error: function (xhr) {
-                    alert(xhr.responseJSON.message);
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+                        for (let key in errors) {
+                            notify('error', errors[key][0]);
+                            let input = $('[name="' + key + '"]');
+                            input.addClass('is-invalid');
+                            input.next('.invalid-feedback').text(errors[key][0]);
+                        }
+                    }
                 }
             });
         });
