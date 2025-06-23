@@ -57,6 +57,7 @@ class NoteDataTable extends DataTable
             ->addAction(['title' => 'Action', 'width' => '138px', 'printable' => false])
             ->parameters([
                 'order' => [[2, 'asc']],
+                'footer' => false,
             ]);
     }
 

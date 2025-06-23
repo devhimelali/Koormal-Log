@@ -6,7 +6,7 @@
             <h2>Notes</h2>
             <button class="btn btn-success mb-3" id="addNoteBtn">Add Note</button>
         </div>
-        {!! $dataTable->table(['class' => 'table table-bordered'], true) !!}
+        {!! $dataTable->table(['class' => 'table table-striped'], false) !!}
     </div>
     @include('admin.notes.modal')
 @endsection
