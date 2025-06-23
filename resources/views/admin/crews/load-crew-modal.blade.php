@@ -47,7 +47,7 @@
             },
             success: function (res) {
                 if (res.status == 'success') {
-                    $('#handoverCompletionModal').modal('hide');
+                    $('#loadCrewModal').modal('hide');
                     $('#jobTable').DataTable().ajax.reload(null, false);
                 }
             },

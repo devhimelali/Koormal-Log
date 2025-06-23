@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CrewRequest;
+use App\Http\Requests\LoadCrewRequest;
 use App\Models\Crew;
 use App\Models\Labour;
+use App\Models\LabourShift;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -110,6 +112,22 @@ class CrewController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $labours
+        ]);
+    }
+
+    public function storeCrew(LoadCrewRequest $request)
+    {
+        foreach ($request->labours as $labour) {
+            LabourShift::create([
+                'labour_id' => $labour,
+                'shift' => $request->shift,
+                'date' => $request->date
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Labour added successfully'
         ]);
     }
 }

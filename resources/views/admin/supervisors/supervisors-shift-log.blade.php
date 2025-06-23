@@ -726,7 +726,7 @@
                     $('.labour-container').html('');
                     let html = '';
                     html += '<label for="labour" class="form-label">Labour</label>';
-                    html += '<select name="labour[]" id="labour" class="form-select" multiple required>';
+                    html += '<select name="labours[]" id="labour" class="form-select" multiple required>';
                     html += '<option value="">Select Labour</option>';
                     $.each(res.data, function (index, value) {
                         html += '<option value="' + value.id + '">' + value.name + '</option>';
