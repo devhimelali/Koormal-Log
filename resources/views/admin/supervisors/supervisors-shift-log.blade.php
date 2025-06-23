@@ -90,7 +90,7 @@
                                 </button>
                             </div>
                             <div class="editable" data-shift="day" contenteditable="true">
-                                {{--                                {{ implode(', ', $labours_day) }}--}}
+                                {{ $day_labours }}
                             </div>
                         </div>
 
@@ -104,7 +104,7 @@
                             </div>
 
                             <div class="editable" data-shift="night" contenteditable="true">
-                                {{--                                {{ implode(', ', $labours_night) }}--}}
+                                {{ $night_labours }}
                             </div>
                         </div>
                     </div>
@@ -846,8 +846,8 @@
         .choices__inner {
             padding: 3px 10px;
         }
-        .choices__list--dropdown .choices__item, .choices__list[aria-expanded] .choices__item
-        {
+
+        .choices__list--dropdown .choices__item, .choices__list[aria-expanded] .choices__item {
             font-size: 12px !important;
         }
     </style>

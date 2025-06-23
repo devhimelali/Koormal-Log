@@ -48,7 +48,7 @@
             success: function (res) {
                 if (res.status == 'success') {
                     $('#loadCrewModal').modal('hide');
-                    $('#jobTable').DataTable().ajax.reload(null, false);
+                    window.location.reload();
                 }
             },
             error: function (xhr) {

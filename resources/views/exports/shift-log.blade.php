@@ -110,11 +110,11 @@
                     <td style="width: 70%; padding-left: 5px; vertical-align: top;">
                         <div class="labour-box" style="margin-bottom: 5px;">
                             <strong>Labour for Dayshift:</strong><br>
-                            {{ implode(', ', $dayLabour) }}
+                            {{ $dayLabour }}
                         </div>
                         <div class="labour-box">
                             <strong>Labour for Nightshift:</strong><br>
-                            {{ implode(', ', $nightLabour) }}
+                            {{ $nightLabour }}
                         </div>
                     </td>
                 </tr>
@@ -196,7 +196,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="12">No data found</td>
+                <td colspan="12" style="text-align: center">No data found</td>
             </tr>
         @endforelse
         </tbody>
@@ -273,7 +273,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="12">No data found</td>
+                <td colspan="12" style="text-align: center">No data found</td>
             </tr>
         @endforelse
         </tbody>

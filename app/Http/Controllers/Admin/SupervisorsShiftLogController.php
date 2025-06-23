@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\DataTables\ShiftLogsDataTable;
 use App\Models\HandoverCompletion;
+use App\Models\LabourShift;
 use App\Models\OpportuneJob;
 use App\Models\Supervisor;
 use App\Models\SupervisorNote;
@@ -39,12 +40,27 @@ class SupervisorsShiftLogController extends Controller
         }
 
         $inputDate = $request->query('date', date('d-m-Y'));
-//        $laboursQuery = Labour::where('date', $inputDate)->get();
+        $day_labours = LabourShift::with('labour')
+            ->where('date', $inputDate)
+            ->where('shift', 'day')
+            ->get()
+            ->pluck('labour.name')
+            ->filter()
+            ->implode(', ');
+
+        $night_labours = LabourShift::with('labour')
+            ->where('date', $inputDate)
+            ->where('shift', 'night')
+            ->get()
+            ->pluck('labour.name')
+            ->filter()
+            ->implode(', ');
+
         $supervisorQuery = Supervisor::where('date', $inputDate)->get();
         return $dataTable->render('admin.supervisors.supervisors-shift-log', [
             'selectedDate' => $inputDate,
-//            'labours_day' => (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray(),
-//            'labours_night' => (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray(),
+            'day_labours' => $day_labours,
+            'night_labours' => $night_labours,
             'supervisors_day' => (clone $supervisorQuery)->where('shift', 'day')->pluck('name')->toArray(),
             'supervisors_night' => (clone $supervisorQuery)->where('shift', 'night')->pluck('name')->toArray(),
             'opportuneJobs' => OpportuneJob::get(),
@@ -195,7 +211,7 @@ class SupervisorsShiftLogController extends Controller
             'date' => 'required|date',
             'export' => 'required|in:csv,xlsx,pdf',
         ]);
-        $laboursQuery = Labour::where('date', $request->date)->get();
+
         $supervisorQuery = Supervisor::where('date', $request->date)->get();
 
         if ($request->export == 'pdf') {
@@ -207,11 +223,23 @@ class SupervisorsShiftLogController extends Controller
 
             $supervisorDayShiftNotes = SupervisorNote::with('media')->where('log_date', $request->date)->where('note_type', 'day_shift')->first();
             $supervisorNightShiftNotes = SupervisorNote::with('media')->where('log_date', $request->date)->where('note_type', 'night_shift')->first();
+            $day_labours = LabourShift::with('labour')
+                ->where('date', $request->date)
+                ->where('shift', 'day')
+                ->get()
+                ->pluck('labour.name')
+                ->filter()
+                ->implode(', ');
 
+            $night_labours = LabourShift::with('labour')
+                ->where('date', $request->date)
+                ->where('shift', 'night')
+                ->get()
+                ->pluck('labour.name')
+                ->filter()
+                ->implode(', ');
 
             $logs = $query->get();
-            $dayLabour = (clone $laboursQuery)->where('shift', 'day')->pluck('name')->toArray();
-            $nightLabour = (clone $laboursQuery)->where('shift', 'night')->pluck('name')->toArray();
             $daySupervisor = (clone $supervisorQuery)->where('shift', 'day')->pluck('name')->toArray();
             $nightSupervisor = (clone $supervisorQuery)->where('shift', 'night')->pluck('name')->toArray();
             PDF::setOptions(['isPhpEnabled' => true]);
@@ -224,8 +252,8 @@ class SupervisorsShiftLogController extends Controller
                     'nightLogs' => $nightLogs,
                     'shift' => 'both',
                     'date' => $request->date,
-                    'dayLabour' => $dayLabour,
-                    'nightLabour' => $nightLabour,
+                    'dayLabour' => $day_labours,
+                    'nightLabour' => $night_labours,
                     'daySupervisor' => $daySupervisor,
                     'nightSupervisor' => $nightSupervisor,
                     'supervisorDayShiftNotes' => $supervisorDayShiftNotes,
@@ -242,8 +270,8 @@ class SupervisorsShiftLogController extends Controller
                     'logs' => $logs,
                     'shift' => $request->shift,
                     'date' => $request->date,
-                    'dayLabour' => $dayLabour,
-                    'nightLabour' => $nightLabour,
+                    'dayLabour' => $day_labours,
+                    'nightLabour' => $night_labours,
                     'daySupervisor' => $daySupervisor,
                     'nightSupervisor' => $nightSupervisor,
                     'supervisorNotes' => $supervisorNotes,
