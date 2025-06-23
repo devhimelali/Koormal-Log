@@ -69,6 +69,15 @@
             background-color: #f9f9f9;
             margin: 3px;
         }
+
+        .labour-box {
+            margin-bottom: 4px;
+            padding: 4px;
+            border: 1px solid #4CAF50;
+            background-color: #f9f9f9;
+            text-align: center;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -83,8 +92,8 @@
                 HANDOVER NOTES - {{ $log_date }}
             </div>
             <div class="header-details">
-                <p><strong>Shift:</strong> {{ $note_type }}</p>
-                <p><strong>Supervisor Name:</strong> {{ $supervisor->name ?? 'N/A' }}</p>
+                <p><strong style="color: #1e2d58;">Shift:</strong> {{ $note_type }}</p>
+                <p><strong style="color: #1e2d58;">Supervisor Name:</strong> {{ $supervisor->name ?? 'N/A' }}</p>
             </div>
         </td>
         <td style="width: 15%; text-align: right;">
@@ -94,27 +103,37 @@
 </table>
 
 <hr>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; margin-top: -10px;">
+    <tr>
+        <td style="width: 100%;">
+            <div class="labour-box">
+                <strong style="font-size: 16px; line-height: 1.3; color: #1e2d58;">Labour for Nightshift:</strong><br>
+                {{ implode(', ', $labours) }}
+            </div>
+        </td>
+    </tr>
+</table>
 
 <div class="note-section">
-    <p style="margin-bottom: 0; margin-top: -10px;"><strong>Note:</strong></p>
+    <p style="margin-bottom: 0; margin-top: -10px; color: #1e2d58;"><strong>Note:</strong></p>
     <p style="margin-top: 0; line-height: 1.3">{!! nl2br(e($supervisor_notes->note)) !!}</p>
 
     @if($supervisor_notes->media->isNotEmpty())
         <div style="clear: both;"></div>
-        <p style="margin-top: 10px;"><strong>Attached Images:</strong></p>
-        <div class="attached-images">
-            @foreach($supervisor_notes->media as $media)
-                @php
-                    $path = public_path($media->url);
-                    $base64 = file_exists($path) ? getBase64Image($path) : '';
-                @endphp
-                @if($base64)
-                    <div style="display: inline-block; margin: 3px;">
-                        <img src="{{ $base64 }}" style="max-width: 200px; max-height: 130px; border: 1px solid #ccc;">
-                    </div>
-                @endif
-            @endforeach
-        </div>
+        <p style="margin-top: 10px; color: #1e2d58;"><strong>Attached Images:</strong></p>
+
+        @foreach($supervisor_notes->media as $media)
+            @php
+                $path = public_path($media->url);
+                $base64 = file_exists($path) ? getBase64Image($path) : '';
+            @endphp
+
+            @if($base64)
+                <div style="page-break-after: always; text-align: center; margin-top: 30px;">
+                    <img src="{{ $base64 }}" style="max-width: 100%; max-height: 90%; border: 1px solid #ccc;">
+                </div>
+            @endif
+        @endforeach
     @endif
 </div>
 
