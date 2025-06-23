@@ -20,7 +20,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Completion Question Lists</h4>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                             data-bs-target="#addOrEditHandoverCompletionModal">
                         Add New
                     </button>
@@ -63,8 +63,9 @@
                                         class="text-danger">*</span></label>
                             <textarea class="form-control" id="question" name="question"
                                       placeholder="Enter Question" cols="30" rows="5"></textarea>
+                            <div class="invalid-feedback"></div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-1">
                             <label for="sort_by" class="form-label">Sorting Order Number <span
                                         class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="sort_by" name="sort_by" value="1"
@@ -72,8 +73,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="handoverCompletionAddBtn">Save</button>
+                        <button type="submit" class="btn btn-secondary" id="handoverCompletionAddBtn">Save</button>
+                        <button type="button" class="btn btn-subtle-danger" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>
