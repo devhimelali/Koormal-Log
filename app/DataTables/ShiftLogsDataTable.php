@@ -123,6 +123,9 @@ class ShiftLogsDataTable extends DataTable
                         <a href="' . $url . '" class="btn btn-sm btn-info">
                             <i class="bi bi-info-circle"></i> More
                         </a>
+                        <button class="btn btn-warning btn-sm move-btn" data-id="' . $job->id . '" data-shift="' . $job->shift_name . '" data-date="' . $job->log_date . '" data-wo-number="' . $job->wo_number . '">
+                            <i class="bi bi-arrows-move me-2"></i> Move
+                        </button>
                         <button class="btn btn-sm btn-danger deleteRowBtn" data-id="' . $job->id . '">
                             <i class="bi bi-trash"></i> Delete
                         </button>
