@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class LabourShift extends Model
 {
     protected $fillable = [
-        'labour_id',
+        'name',
         'date',
         'shift'
     ];

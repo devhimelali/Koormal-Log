@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('labour_shifts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('labour_id')->constrained('labours')->cascadeOnDelete();
+            $table->longText('name')->nullable()->comment('name of the labour');
             $table->string('date');
             $table->string('shift');
             $table->timestamps();

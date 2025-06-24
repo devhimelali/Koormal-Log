@@ -29,12 +29,22 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
         $nextPosition = ShiftLog::max('position') + 1;
 
         foreach ($rows as $row) {
+            // Skip entirely empty rows
             if (empty(array_filter($row->toArray()))) {
                 continue;
             }
 
+            // Default shift name
+            $shiftName = 'day';
+
+            // If work description contains "nightshift" in any case
+            if (stripos($row['description'] ?? '', 'nightshift') !== false) {
+                $shiftName = 'night';
+            }
+
+
             ShiftLog::create([
-                'shift_name' => 'day',
+                'shift_name' => $shiftName,
                 'wo_number' => $row['wo_no'] ?? null,
                 'work_description' => $row['description'] ?? null,
                 'duration' => $row['duration'] ?? null,
