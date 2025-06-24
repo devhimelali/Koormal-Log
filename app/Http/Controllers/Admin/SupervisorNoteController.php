@@ -78,10 +78,7 @@ class SupervisorNoteController extends Controller
         $labours = LabourShift::with('labour')
             ->where('date', $log_date)
             ->where('shift', $note_type === 'day_shift' ? 'day' : 'night')
-            ->get()
-            ->pluck('labour.name')
-            ->filter()
-            ->implode(', ');
+            ->first();
 
         if (!$supervisor_notes) {
             return redirect()->back()->with('error', 'Handover note not found');

@@ -110,11 +110,11 @@
                     <td style="width: 70%; padding-left: 5px; vertical-align: top;">
                         <div class="labour-box" style="margin-bottom: 5px;">
                             <strong>Labour for Dayshift:</strong><br>
-                            {{ $dayLabour }}
+                            {{ $dayLabour?->name }}
                         </div>
                         <div class="labour-box">
                             <strong>Labour for Nightshift:</strong><br>
-                            {{ $nightLabour }}
+                            {{ $nightLabour?->name }}
                         </div>
                     </td>
                 </tr>

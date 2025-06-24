@@ -50,7 +50,7 @@ class ShiftLogsDataTable extends DataTable
                     $job->shift_name === 'night' => 'background-color: #939393a8;',
                     default => '',
                 };
-                return '<select class="form-select form-select-sm shift_name" data-field="shift_name" style="text-transform: capitalize; width: 68px; font-size: 10px;' . $style . '">
+                return '<select class="form-select form-select-sm shift_name" data-field="shift_name" style="text-transform: capitalize; width: 100%; font-size: 10px;' . $style . '">
                         <option value="">Select Shift</option>
                         <option value="day" ' . $selectedDay . '>Day</option>
                         <option value="night" ' . $selectedNight . '>Night</option>
@@ -123,7 +123,7 @@ class ShiftLogsDataTable extends DataTable
                         <a href="' . $url . '" class="btn btn-sm btn-info">
                             <i class="bi bi-info-circle"></i> More
                         </a>
-                        <button class="btn btn-warning btn-sm move-btn" data-id="' . $job->id . '" data-shift="' . $job->shift_name . '" data-date="' . $job->log_date . '" data-wo-number="' . $job->wo_number . '">
+                        <button class="btn btn-warning btn-sm move-work-order-number-btn" data-id="' . $job->id . '" data-shift="' . $job->shift_name . '" data-date="' . $job->log_date . '" data-wo-number="' . $job->wo_number . '">
                             <i class="bi bi-arrows-move me-2"></i> Move
                         </button>
                         <button class="btn btn-sm btn-danger deleteRowBtn" data-id="' . $job->id . '">
@@ -182,6 +182,7 @@ class ShiftLogsDataTable extends DataTable
                 'searching' => false,
                 'ordering' => true,
                 'responsive' => true,
+                'order' => [[1, 'asc']],
             ]);
     }
 
@@ -199,8 +200,8 @@ class ShiftLogsDataTable extends DataTable
                 ->title('Shift')
                 ->orderable(true)
                 ->searchable(false)
-                ->width('45px')
-                ->addClass('align-content-center'),
+                ->width('60px')
+                ->addClass('align-content-center col-shift'),
 
             Column::make('wo_number')
                 ->title('WO Number')
@@ -250,7 +251,7 @@ class ShiftLogsDataTable extends DataTable
                 ->addClass('align-content-center'),
 
             Column::computed('action')
-                ->title('<div class="d-flex align-items-center gap-3">
+                ->title('<div class="d-flex align-items-center justify-content-center gap-3">
                                     <div>
                                         Action
                                     </div>
@@ -260,8 +261,8 @@ class ShiftLogsDataTable extends DataTable
                 ->printable(false)
                 ->orderable(false)
                 ->searchable(false)
-                ->width('160px')
-                ->addClass('text-center'),
+                ->width('280px')
+                ->addClass('text-center align-content-center'),
         ];
     }
 }

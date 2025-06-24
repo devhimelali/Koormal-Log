@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CrewController;
 use App\Http\Controllers\Admin\HandoverCompletionController;
 use App\Http\Controllers\Admin\HandoverCompletionQuestionController;
 use App\Http\Controllers\Admin\LabourController;
+use App\Http\Controllers\Admin\LabourShiftController;
 use App\Http\Controllers\Admin\NoteController;
 use App\Http\Controllers\Admin\OpportuneJobController;
 use App\Http\Controllers\Admin\SupervisorController;
@@ -32,7 +33,6 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::get('/export-shift-logs', [SupervisorsShiftLogController::class, 'export'])->name('supervisors-shift-log.export');
 
     // Labourer routes
-    Route::post('labour-shift/update', [LabourController::class, 'updateLabour'])->name('labour-shift.update');
     Route::post('supervisor-shift/update', [SupervisorController::class, 'updateSupervisor'])->name('supervisor-shift.update');
 
     Route::resource('notes', NoteController::class);
@@ -56,5 +56,6 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::resource('labours', LabourController::class)->except('show');
     Route::get('load-crew', [CrewController::class, 'loadCrew'])->name('load-crew.index');
     Route::get('get-labour-by-crew/{id}', [CrewController::class, 'getLabourByCrew'])->name('get-labour-by-crew');
-    Route::post('load-crew', [CrewController::class, 'storeCrew'])->name('load-crew.store');
+    Route::post('labour-shift', [LabourShiftController::class, 'store'])->name('load-crew.store');
+    Route::post('labour-shift/update', [LabourShiftController::class, 'updateLabour'])->name('labour-shift.update');
 });

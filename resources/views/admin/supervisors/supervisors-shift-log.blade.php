@@ -2,43 +2,43 @@
 @section('title', 'Supervisors Shift Log')
 @section('content')
     <div class="my-4 p-4 border bg-white">
-        <div class="row align-items-center text-center text-md-start my-5">
+        <div class="row align-items-center text-center text-md-start mb-5">
             <!-- Left: Koormal logo and filter -->
-            <div class="col-md-2 mb-3 mb-md-0 d-flex flex-column align-items-center">
+            <div class="col-xl-2 mb-3 mb-lg-0 d-flex d-lg-block flex-column flex-sm-row gap-md-5 gap-lg-0 align-items-center">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/koormal-logo.png') }}" style="width: 170px;" alt="Koormal Logo"
-                        class="mb-2">
+                         class="mb-2">
                 </div>
-                <select name="filter" class="form-select w-75 mt-2" id="filter">
-                    <option value="both">Both</option>
-                    <option value="day">Day</option>
-                    <option value="night">Night</option>
-                </select>
-                <select name="export" class="form-select w-75 mt-2" id="export">
-                    <option value="">Export</option>
-                    <option value="pdf">PDF</option>
-                    <option value="csv">CSV</option>
-                </select>
-
-
+                <div class="w-100 d-flex flex-sm-row flex-md-column gap-2 gap-md-0">
+                    <select name="filter" class="form-select w-75 mt-2" id="filter">
+                        <option value="both">Both</option>
+                        <option value="day">Day</option>
+                        <option value="night">Night</option>
+                    </select>
+                    <select name="export" class="form-select w-75 mt-2" id="export">
+                        <option value="">Export</option>
+                        <option value="pdf">PDF</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Center: Title and Shift Labour -->
-            <div class="col-md-8 text-center">
+            <div class="col-xl-8 text-center">
                 @php
                     $selectedDate = request()->get('date', \Carbon\Carbon::now()->format('d-m-Y'));
                 @endphp
 
-                <!-- Center: Title and Shift Labour -->
+                        <!-- Center: Title and Shift Labour -->
                 <h4 class="fw-bold fst-italic mb-4">
                     SUPERVISORS SHIFT LOG –
-                    <input type="text" id="flatpickr-date" class="form-control d-inline-block w-auto mt-3 mt-md-0"
-                        value="{{ $selectedDate }}" placeholder="Select Date"
-                        style="font-weight: bold;font-size: 18px;font-style: italic;">
+                    <input type="text" id="flatpickr-date" class="form-control d-inline-block w-75 mt-3 mt-md-0"
+                           value="{{ $selectedDate }}" placeholder="Select Date"
+                           style="font-weight: bold;font-size: 18px;font-style: italic;">
                 </h4>
                 <div class="row">
                     <!-- Supervisor Shift -->
-                    <div class="col-md-4 px-0 mb-3 mb-md-0">
+                    <div class="col-md-5 col-xl-4 px-0 mb-3 mb-md-0">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
                             <div class="d-flex align-items-center justify-content-center gap-2">
@@ -50,7 +50,7 @@
                                     </strong>
                                 </p>
                                 <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                    data-shift="day">Handover
+                                        data-shift="day">Handover
                                     Complete
                                 </button>
                             </div>
@@ -70,7 +70,7 @@
                                     </strong>
                                 </p>
                                 <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                    data-shift="night">Handover Complete
+                                        data-shift="night">Handover Complete
                                 </button>
                             </div>
                             <div class="supervisor-editable" data-shift="night" contenteditable="true">
@@ -79,30 +79,32 @@
                         </div>
                     </div>
                     <!-- Labour Shift -->
-                    <div class="col-md-8">
+                    <div class="col-md-7 col-xl-8">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
                             <div class="d-flex align-items-center justify-content-center gap-2">
                                 <strong><u>Labour for Day Shift</u></strong><br>
-                                <button class="btn btn-sm btn-primary loadCrew" data-shift="day" style="line-height: 1;">
+                                <button class="btn btn-sm btn-primary loadCrew" data-shift="day"
+                                        style="line-height: 1;">
                                     Load a Crew
                                 </button>
                             </div>
                             <div class="editable" data-shift="day" contenteditable="true">
-                                {{ $day_labours }}
+                                {{ $day_labours?->name }}
                             </div>
                         </div>
 
                         <div class="border border-success rounded p-2">
                             <div class="d-flex align-items-center justify-content-center gap-2">
                                 <strong><u>Labour for Night Shift</u></strong><br>
-                                <button class="btn btn-sm btn-primary loadCrew" data-shift="night" style="line-height: 1;">
+                                <button class="btn btn-sm btn-primary loadCrew" data-shift="night"
+                                        style="line-height: 1;">
                                     Load a Crew
                                 </button>
                             </div>
 
                             <div class="editable" data-shift="night" contenteditable="true">
-                                {{ $night_labours }}
+                                {{ $night_labours?->name }}
                             </div>
                         </div>
                     </div>
@@ -111,27 +113,29 @@
             </div>
 
             <!-- Right: 4EMUS logo and buttons -->
-            <div class="col-md-2 mb-3 mb-md-0 d-flex flex-column align-items-center">
+            <div class="col-xl-2 mb-3 mt-2 mt-lg-0 mb-md-0 d-flex flex-lg-column flex-md-row align-items-center justify-content-between gap-md-5 gap-lg-0">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/4emus-logo.png') }}" style="width: 180px;" alt="4EMUS Logo"
-                        class="mb-2">
+                         class="mb-2">
                 </div>
-                <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
-                    data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
-                    Sheet
-                </button>
-                <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
-                </button>
+                <div class="text-center">
+                    <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
+                            data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
+                        Sheet
+                    </button>
+                    <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
+                    </button>
 
-                <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
-                    data-type="day_shift">
-                    Supervisor's Notes – Day Shift
-                </a>
+                    <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
+                       data-type="day_shift">
+                        Supervisor's Notes – Day Shift
+                    </a>
 
-                <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
-                    data-type="night_shift">
-                    Supervisor's Notes – Night Shift
-                </a>
+                    <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
+                       data-type="night_shift">
+                        Supervisor's Notes – Night Shift
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -140,7 +144,7 @@
 
     <!-- Modal -->
     <div class="modal fade" id="supervisorsShiftLogModal" tabindex="-1" aria-labelledby="supervisorsShiftLogModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary-subtle pb-3">
@@ -148,11 +152,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('supervisors-shift-log.csv.import') }}" method="POST"
-                    enctype="multipart/form-data" id="csvImportForm">
+                      enctype="multipart/form-data" id="csvImportForm">
                     <div class="modal-body p-3 mb-3">
                         @csrf
                         <label for="csv_file" class="form-label fw-semibold">Upload File <span
-                                class="text-danger">*</span></label>
+                                    class="text-danger">*</span></label>
                         <input type="file" name="csv_file" class="form-control" required>
                     </div>
 
@@ -165,67 +169,18 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addOpportuneJobModal" tabindex="-1" aria-labelledby="addOpportuneJobModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary-subtle pb-3">
-                    <h1 class="modal-title fs-5" id="addOpportuneJobModalLabel">Add a job - Opportune work</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ route('store-shift-log-from-opportune-jobs') }}" method="POST"
-                    id="addOpportuneJobForm">
-                    <div class="modal-body p-3 mb-3">
-                        @csrf
-                        <div class="mb-2">
-                            <label for="shift_name" class="form-label">Shift <span class="text-danger">*</span></label>
-                            <select class="form-select" name="shift_name" id="shift_name">
-                                <option value="">Select a Shift</option>
-                                <option value="day">Day shift</option>
-                                <option value="night">Night Shift</option>
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <label for="job_id" class="form-label">Select a Job</label>
-                            <select class="form-select" name="job_id" id="job_id">
-                                <option value="">Select a Job</option>
-                                @foreach ($opportuneJobs as $job)
-                                    <option value="{{ $job->id }}" data-tooltip="{{ $job->work_description }}">
-                                        {{ $job->wo_number }} - {{ $job->asset_no }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div id="jobDetails" class="mt-2 text-muted"></div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-subtle-danger" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-secondary" id="addOpportuneJobSubmitBtn">Save</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- Add Opportune Job Modal -->
+    @include('components.admin.supervisors.modal.opportune-job')
 
     <!-- Handover Completion Modal -->
-    <div class="modal fade" id="handoverCompletionModal" tabindex="-1" aria-labelledby="handoverCompletionModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-            </div>
-        </div>
-    </div>
+    @include('components.admin.supervisors.modal.handover-completion')
 
     <!-- Load Crew Modal -->
-    <div class="modal fade" id="loadCrewModal" tabindex="-1" aria-labelledby="loadCrewModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+    @include('components.admin.supervisors.modal.load-crew')
 
-            </div>
-        </div>
-    </div>
+    <!-- Move Work Order Modal -->
+    @include('components.admin.supervisors.modal.move-work-order')
+
 @endsection
 @push('scripts')
     <!-- DataTables JS and dependencies (if not already included globally) -->
@@ -244,14 +199,171 @@
 
 
     <script>
+        let currentStep = 1;
+        $('#to_date').flatpickr({
+            dateFormat: 'd-m-Y',
+        });
+
+        // Open modal and initialize step 1
+        $('body').on('click', '.move-work-order-number-btn', function () {
+            const id = $(this).data('id');
+            const shift = $(this).data('shift');
+            const date = $(this).data('date');
+            const wo_number = $(this).data('wo-number');
+
+            currentStep = 1;
+
+            $('#wo_number').val(wo_number);
+            $('#from_date').val(date);
+            $('#from_shift').val(shift);
+            $('#workorder_number_display').text(wo_number);
+            $('#moveWorkOrderModal').modal('show');
+
+            showStep(currentStep);
+        });
+
+        // Show the current step
+        function showStep(step) {
+            $('.form-step').addClass('d-none');
+            $('.step-' + step).removeClass('d-none');
+
+            $('#prevStep').toggleClass('d-none', step === 1);
+            $('#nextStep').toggleClass('d-none', step >= 4);
+            $('#submitMove').toggleClass('d-none', step < 4);
+
+            if (step === 4) {
+                const workorder = $('#workorder_number_display').text();
+                const date = $('#to_date').val();
+                const shift = $('input[name="to_shift"]:checked').val();
+                $('#confirmation_text').text(`Are you sure you want to move Work Order ${workorder} to ${date} (${shift})?`);
+            }
+        }
+
+        // Handle next step
+        $('#nextStep').on('click', function () {
+            if (currentStep === 1 && !$('#reason').val().trim()) {
+                notify('error', 'Please enter a reason.');
+                $('#reason').addClass('is-invalid');
+                return;
+            }
+            if (currentStep === 2 && !$('#to_date').val()) {
+                notify('error', 'Please select a date.');
+                $('#to_date').addClass('is-invalid');
+                return;
+            }
+            if (currentStep === 3 && !$('input[name="to_shift"]:checked').val()) {
+                notify('error', 'Please select a shift.');
+                $('input[name="to_shift"]').addClass('is-invalid');
+                return;
+            }
+            currentStep++;
+            showStep(currentStep);
+        });
+
+        // Handle previous step
+        $('#prevStep').on('click', function () {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+
+        // Submit form
+        $('#moveWorkOrderForm').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    alert('Work Order moved successfully!');
+                    $('#moveWorkOrderModal').modal('hide');
+                    location.reload(); // Optional: Reload the table/list
+                },
+                error: function (xhr) {
+                    alert('An error occurred while moving the work order.');
+                }
+            });
+        });
+
+        function setupShiftToggle(selector = '#shiftSelector') {
+            const $container = $(selector);
+
+            // On page load: set the initial states based on checked input
+            $container.find('input[name="to_shift"]').each(function () {
+                let label = $(this).closest('label');
+                if ($(this).is(':checked')) {
+                    activateLabel(label);
+                } else {
+                    deactivateLabel(label);
+                }
+            });
+
+            // On change: toggle active classes and button styles
+            $container.on('change', 'input[name="to_shift"]', function () {
+                $container.find('input[name="to_shift"]').each(function () {
+                    let label = $(this).closest('label');
+                    if ($(this).is(':checked')) {
+                        activateLabel(label);
+                    } else {
+                        deactivateLabel(label);
+                    }
+                });
+            });
+
+            function activateLabel($label) {
+                if ($label.find('input').val() === 'Day') {
+                    $label.removeClass('btn-outline-primary').addClass('btn-primary');
+                } else {
+                    $label.removeClass('btn-outline-secondary').addClass('btn-secondary');
+                }
+                $label.addClass('active');
+            }
+
+            function deactivateLabel($label) {
+                if ($label.find('input').val() === 'Day') {
+                    $label.removeClass('btn-primary').addClass('btn-outline-primary');
+                } else {
+                    $label.removeClass('btn-secondary').addClass('btn-outline-secondary');
+                }
+                $label.removeClass('active');
+            }
+        }
+
+        // Initialize after DOM is ready or modal shown
+        $(function () {
+            setupShiftToggle();
+        });
+
+        $('#moveWorkOrderModal').on('hidden.bs.modal', function () {
+            // Reset the form fields
+            $('#moveWorkOrderForm')[0].reset();
+
+            // Reset step
+            currentStep = 1;
+            showStep(currentStep);
+
+            // Clear the displayed workorder number
+            $('#workorder_number_display').text('');
+
+            // Reset shift toggle buttons styles
+            setupShiftToggle();
+
+            $('#reason').removeClass('is-invalid');
+            $('#to_date').removeClass('is-invalid');
+            $('input[name="to_shift"]').removeClass('is-invalid');
+        });
+
+
         function js_nl2br(str) {
             if (typeof str !== "string") return str;
             return str.replace(/\n/g, '<br>');
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-            $('#job_id').on('change', function() {
+            $('#job_id').on('change', function () {
                 let jobName = $(this).find(':selected').data('tooltip');
                 let formattedJobName = js_nl2br(jobName);
                 $('#jobDetails').html('<span class="fw-bold text-danger">Work Description: </span>' +
@@ -260,7 +372,7 @@
 
         });
 
-        $('#csvImportForm').submit(function(e) {
+        $('#csvImportForm').submit(function (e) {
             e.preventDefault();
 
             let log_date = $('#flatpickr-date').val();
@@ -274,13 +386,13 @@
                 processData: false,
                 contentType: false,
                 dataType: 'json',
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#csvImportBtn').attr('disabled', true);
                     $('#csvImportBtn').html(
                         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...'
                     );
                 },
-                success: function(res) {
+                success: function (res) {
                     if (res.status == 'success') {
                         Swal.fire({
                             icon: 'success',
@@ -301,47 +413,47 @@
                         });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     let errors = xhr.responseJSON.errors;
-                    $.each(errors, function(key, value) {
+                    $.each(errors, function (key, value) {
                         notify('error', value);
                     });
                 },
-                complete: function() {
+                complete: function () {
                     $('#csvImportBtn').attr('disabled', false);
                     $('#csvImportBtn').html('Import');
                 }
             });
         });
 
-        $('#filter').on('change', function() {
+        $('#filter').on('change', function () {
             reloadTableWithFilters();
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             flatpickr("#flatpickr-date", {
                 dateFormat: "d-m-Y",
                 defaultDate: "{{ $selectedDate ?? now()->format('d-m-Y') }}",
-                onChange: function(selectedDates, dateStr, instance) {
+                onChange: function (selectedDates, dateStr, instance) {
                     window.location.href = "{{ route('supervisors-shift-log.index') }}?date=" +
                         dateStr;
                 }
             });
         });
 
-        $(document).on('draw.dt', function() {
+        $(document).on('draw.dt', function () {
             $('#jobTable tbody').sortable({
                 items: "tr",
                 handle: ".drag-handle",
                 helper: fixHelper,
                 cancel: '[contenteditable]',
-                start: function(e, ui) {
+                start: function (e, ui) {
                     ui.placeholder.height(ui.item.height());
                 },
-                update: function() {
+                update: function () {
                     updateLineNumbers();
                     let order = [];
-                    $('#jobTable tbody tr').each(function(index) {
+                    $('#jobTable tbody tr').each(function (index) {
                         order.push({
                             id: $(this).data('id'),
                             position: index + 1
@@ -354,10 +466,10 @@
                             order: order,
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             console.log('Order updated successfully');
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error('Failed to update order');
                         }
                     });
@@ -365,7 +477,7 @@
             });
         });
 
-        $('#export').on('change', function() {
+        $('#export').on('change', function () {
             let selectedValue = $(this).val();
             if (selectedValue) {
                 let date = $('#flatpickr-date').val();
@@ -378,7 +490,7 @@
 
         })
 
-        $('#jobTable').on('blur', '[contenteditable="true"]', function() {
+        $('#jobTable').on('blur', '[contenteditable="true"]', function () {
             let td = $(this);
             let field = td.data('field');
             let value = td.text().trim();
@@ -388,7 +500,7 @@
 
         });
 
-        $('#addJobBtn').on('click', function() {
+        $('#addJobBtn').on('click', function () {
             Swal.fire({
                 title: 'Add a Job',
                 text: 'Choose how you want to add a job:',
@@ -408,7 +520,7 @@
             });
         })
 
-        $('#addOpportuneJobForm').on('submit', function(e) {
+        $('#addOpportuneJobForm').on('submit', function (e) {
             e.preventDefault();
             let log_date = $('#flatpickr-date').val();
             let formData = new FormData(this);
@@ -421,7 +533,7 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     if (response.status == 'success') {
                         $('#addOpportuneJobModal').modal('hide');
                         $('#jobTable').DataTable().ajax.reload();
@@ -429,10 +541,10 @@
                         $('#addOpportuneJobForm')[0].reset();
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     if (xhr.status == 422) {
                         let errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, value) {
+                        $.each(errors, function (key, value) {
                             notify('error', value);
                             let input = $('[name="' + key + '"]');
                             input.addClass('is-invalid');
@@ -444,8 +556,8 @@
         });
 
 
-        $(document).ready(function() {
-            $('.editable').on('blur', function() {
+        $(document).ready(function () {
+            $('.editable').on('blur', function () {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -459,18 +571,19 @@
                         labour: content,
                         date: date
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
-                    error: function() {}
+                    error: function () {
+                    }
                 });
             });
         });
 
-        $(document).ready(function() {
-            $('.supervisor-editable').on('blur', function() {
+        $(document).ready(function () {
+            $('.supervisor-editable').on('blur', function () {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -484,19 +597,19 @@
                         supervisor: content,
                         date: date
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.log(xhr);
                     }
                 });
             });
         });
 
-        $('#jobTable').on('change', '.shift_name', function() {
+        $('#jobTable').on('change', '.shift_name', function () {
             let select = $(this);
             let field = select.data('field'); // should be "shift_name"
             let value = select.val();
@@ -505,7 +618,7 @@
             editField(select, field, value, id, true);
         });
 
-        $('#jobTable').on('change', '.complete_progress', function() {
+        $('#jobTable').on('change', '.complete_progress', function () {
             let select = $(this);
             let field = select.data('field');
             let value = select.val();
@@ -515,7 +628,7 @@
         });
 
 
-        $(document).on('click', '.deleteRowBtn', function() {
+        $(document).on('click', '.deleteRowBtn', function () {
             let id = $(this).data('id');
             Swal.fire({
                 title: 'Are you sure?',
@@ -542,11 +655,11 @@
                     _method: 'DELETE',
                     _token: '{{ csrf_token() }}',
                 },
-                success: function() {
+                success: function () {
                     reloadTableWithFilters();
                     notify('success', 'Work Order deleted successfully');
                 },
-                error: function() {
+                error: function () {
                     reloadTableWithFilters();
                 }
             });
@@ -560,11 +673,11 @@
                     _token: '{{ csrf_token() }}',
                     date: $('#flatpickr-date').val(),
                 },
-                success: function(response) {
+                success: function (response) {
                     notify('success', response.message);
                     reloadTableWithFilters();
                 },
-                error: function() {
+                error: function () {
 
                 }
             });
@@ -588,8 +701,8 @@
         }
 
 
-        const fixHelper = function(e, ui) {
-            ui.children().each(function() {
+        const fixHelper = function (e, ui) {
+            ui.children().each(function () {
                 $(this).width($(this).width());
             });
             return ui;
@@ -604,28 +717,28 @@
                     field: field,
                     value: value
                 },
-                success: function(res) {
+                success: function (res) {
                     td.css('background-color', '#d4edda');
                     setTimeout(() => td.css('background-color', ''), 1000);
                     if (table_reload) {
                         $('#jobTable').DataTable().ajax.reload(null, false);
                     }
                 },
-                error: function() {
+                error: function () {
                     td.css('background-color', '#f8d7da');
                 }
             });
         }
 
         function updateLineNumbers() {
-            $('#jobTable tbody tr').each(function(index) {
+            $('#jobTable tbody tr').each(function (index) {
                 $(this).find('.line-no-text').text(index + 1);
             });
         }
 
         implementAutoAjaxLoading();
 
-        $('.supervisor-note-btn').on('click', function(e) {
+        $('.supervisor-note-btn').on('click', function (e) {
             e.preventDefault();
 
             const logDate = $('#flatpickr-date').val();
@@ -643,7 +756,7 @@
             window.location.href = url;
         });
 
-        $(document).on('click', '#delete-selected', function() {
+        $(document).on('click', '#delete-selected', function () {
             Swal.fire({
                 title: 'Are you sure you want to delete all work orders from this shift log?',
                 icon: 'warning',
@@ -662,13 +775,13 @@
                             _token: '{{ csrf_token() }}',
                             log_date: log_date
                         },
-                        success: function(res) {
+                        success: function (res) {
                             if (res.status == 'success') {
                                 notify('success', res.message);
                                 $('#jobTable').DataTable().ajax.reload(null, false);
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.log(xhr)
                             if (xhr.status == 404) {
                                 notify('error', xhr.responseJSON.message ||
@@ -687,53 +800,53 @@
             });
         });
 
-        $('.addCompletion').on('click', function() {
+        $('.addCompletion').on('click', function () {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('handover-completions.create') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(res) {
+                success: function (res) {
                     $('#handoverCompletionModal .modal-content').html(res);
                     $('#handoverCompletionModal').modal('show');
                 }
             })
         })
 
-        $('body').on('click', '.loadCrew', function() {
+        $('body').on('click', '.loadCrew', function () {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('load-crew.index') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(res) {
+                success: function (res) {
                     $('#loadCrewModal .modal-content').html(res);
                     $('#loadCrewModal').modal('show');
                 }
             })
         })
 
-        $('body').on('change', '#crew_id', function() {
+        $('body').on('change', '#crew_id', function () {
             let crew_id = $(this).val();
 
             $.ajax({
                 url: "{{ route('get-labour-by-crew', ':crew_id') }}".replace(':crew_id', crew_id),
                 method: 'GET',
-                beforeSend: function() {
+                beforeSend: function () {
                     $('.labour-container').html(
                         '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>'
                     );
                 },
-                success: function(res) {
+                success: function (res) {
                     $('.labour-container').html('');
                     let html = '';
                     html += '<label for="labour" class="form-label">Labour</label>';
                     html +=
                         '<select name="labours[]" id="labour" class="form-select" multiple required>';
                     html += '<option value="">Select Labour</option>';
-                    $.each(res.data, function(index, value) {
+                    $.each(res.data, function (index, value) {
                         html += '<option value="' + value.id + '">' + value.name + '</option>';
                     });
                     html += '</select>';
@@ -749,7 +862,7 @@
                         });
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     $('.labour-container').html('');
                     notify('error', xhr.responseJSON?.message ||
                         'Something went wrong. Please try again.');
@@ -761,7 +874,6 @@
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}">
-    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" /> --}}
     <style>
         /* Table Structure */
         #jobTable {
@@ -777,7 +889,8 @@
         }
 
         .col-shift {
-            width: 61px !important;
+            width: 70px !important;
+            min-width: 70px !important;
         }
 
         .col-wo {
@@ -799,12 +912,12 @@
         }
 
         .col-note {
-            width: 200px !important;
-            min-width: 200px;
+            width: 150px !important;
+            min-width: 150px;
         }
 
         .col-req {
-            width: 292px !important;
+            width: 80px !important;
         }
 
         /* Table Cell Styling */
@@ -897,6 +1010,15 @@
         /* Flatpickr Override */
         .flatpickr-months {
             background-color: #ffffff;
+        }
+
+        .btn-group-toggle .btn input[type="radio"]:checked + span {
+            font-weight: bold;
+        }
+
+        .btn-group-toggle .btn.active {
+            background-color: #007bff;
+            color: #fff;
         }
     </style>
 @endpush

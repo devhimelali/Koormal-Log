@@ -115,19 +115,5 @@ class CrewController extends Controller
         ]);
     }
 
-    public function storeCrew(LoadCrewRequest $request)
-    {
-        foreach ($request->labours as $labour) {
-            LabourShift::create([
-                'labour_id' => $labour,
-                'shift' => $request->shift,
-                'date' => $request->date
-            ]);
-        }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Labour added successfully'
-        ]);
-    }
 }

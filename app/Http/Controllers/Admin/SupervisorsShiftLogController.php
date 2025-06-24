@@ -43,18 +43,12 @@ class SupervisorsShiftLogController extends Controller
         $day_labours = LabourShift::with('labour')
             ->where('date', $inputDate)
             ->where('shift', 'day')
-            ->get()
-            ->pluck('labour.name')
-            ->filter()
-            ->implode(', ');
+            ->first();
 
         $night_labours = LabourShift::with('labour')
             ->where('date', $inputDate)
             ->where('shift', 'night')
-            ->get()
-            ->pluck('labour.name')
-            ->filter()
-            ->implode(', ');
+            ->first();
 
         $supervisorQuery = Supervisor::where('date', $inputDate)->get();
         return $dataTable->render('admin.supervisors.supervisors-shift-log', [
@@ -223,21 +217,14 @@ class SupervisorsShiftLogController extends Controller
 
             $supervisorDayShiftNotes = SupervisorNote::with('media')->where('log_date', $request->date)->where('note_type', 'day_shift')->first();
             $supervisorNightShiftNotes = SupervisorNote::with('media')->where('log_date', $request->date)->where('note_type', 'night_shift')->first();
-            $day_labours = LabourShift::with('labour')
-                ->where('date', $request->date)
+            $day_labours = LabourShift::where('date', $request->date)
                 ->where('shift', 'day')
-                ->get()
-                ->pluck('labour.name')
-                ->filter()
-                ->implode(', ');
+                ->first();
 
             $night_labours = LabourShift::with('labour')
                 ->where('date', $request->date)
                 ->where('shift', 'night')
-                ->get()
-                ->pluck('labour.name')
-                ->filter()
-                ->implode(', ');
+                ->first();
 
             $logs = $query->get();
             $daySupervisor = (clone $supervisorQuery)->where('shift', 'day')->pluck('name')->toArray();
