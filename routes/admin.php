@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OpportuneJobController;
 use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Admin\SupervisorNoteController;
 use App\Http\Controllers\Admin\SupervisorsShiftLogController;
+use App\Http\Controllers\Admin\WorkOrderMoveController;
 use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
@@ -58,4 +59,5 @@ Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
     Route::get('get-labour-by-crew/{id}', [CrewController::class, 'getLabourByCrew'])->name('get-labour-by-crew');
     Route::post('labour-shift', [LabourShiftController::class, 'store'])->name('load-crew.store');
     Route::post('labour-shift/update', [LabourShiftController::class, 'updateLabour'])->name('labour-shift.update');
+    Route::resource('work-order-moves', WorkOrderMoveController::class);
 });

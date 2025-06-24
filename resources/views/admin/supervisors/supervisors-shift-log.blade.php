@@ -216,6 +216,7 @@
             $('#wo_number').val(wo_number);
             $('#from_date').val(date);
             $('#from_shift').val(shift);
+            $('#shift_log_id').val(id);
             $('#workorder_number_display').text(wo_number);
             $('#moveWorkOrderModal').modal('show');
 
@@ -273,7 +274,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: '/',
+                url: "{{route('work-order-moves.store')}}",
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function (response) {

@@ -3,6 +3,7 @@
     <div class="modal-dialog">
         <form id="moveWorkOrderForm">
             @csrf
+            <input type="hidden" name="shift_log_id" id="shift_log_id">
             <input type="hidden" name="wo_number" id="wo_number">
             <input type="hidden" name="from_date" id="from_date">
             <input type="hidden" name="from_shift" id="from_shift">
@@ -28,11 +29,11 @@
                         <label class="form-label d-block mb-2 font-weight-bold">Select Shift:</label>
                         <div class="btn-group" data-toggle="buttons" id="shiftSelector">
                             <label class="btn btn-outline-primary">
-                                <input type="radio" name="to_shift" value="Day" autocomplete="off" required>
+                                <input type="radio" name="to_shift" value="day" autocomplete="off" required>
                                 <span class="mr-1">🌞</span> Day
                             </label>
                             <label class="btn btn-outline-secondary ml-2">
-                                <input type="radio" name="to_shift" value="Night" autocomplete="off">
+                                <input type="radio" name="to_shift" value="night" autocomplete="off">
                                 <span class="mr-1">🌙</span> Night
                             </label>
                         </div>
