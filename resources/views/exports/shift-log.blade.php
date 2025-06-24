@@ -190,7 +190,7 @@
             <tr>
                 <td colspan="12">
                     <div style="{{$log->supervisor_notes == null ? 'min-height: 5px;' : 'overflow-wrap: break-word;'}}">
-                        {{ $log->supervisor_notes }}
+                        {!! nl2br(e($log->supervisor_notes)) !!}
                     </div>
                 </td>
             </tr>
@@ -267,7 +267,7 @@
             <tr>
                 <td colspan="12">
                     <div style="{{$log->supervisor_notes == null ? 'min-height: 5px;' : 'overflow-wrap: break-word;'}}">
-                        {{ $log->supervisor_notes }}
+                        {!! nl2br(e($log->supervisor_notes)) !!}
                     </div>
                 </td>
             </tr>
@@ -350,7 +350,7 @@
             <tr>
                 <td colspan="12">
                     <div style="{{$log->supervisor_notes == null ? 'min-height: 5px;' : 'overflow-wrap: break-word;'}}">
-                        {{ $log->supervisor_notes }}
+                        {!! nl2br(e($log->supervisor_notes)) !!}
                     </div>
                 </td>
         @empty

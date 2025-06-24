@@ -51,7 +51,7 @@ class SupervisorNoteController extends Controller
             }
         }
         return redirect()
-            ->route('supervisors-shift-log.index')
+            ->route('supervisors-shift-log.index', ['date' => $request->log_date])
             ->with('success', 'Supervisor note added successfully');
     }
 
