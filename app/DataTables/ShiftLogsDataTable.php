@@ -232,6 +232,7 @@ class ShiftLogsDataTable extends DataTable
                 ->title('Note')
                 ->orderable(false)
                 ->searchable(false)
+                ->width('200px')
                 ->addClass('col-note'),
 
             Column::make('requisition')

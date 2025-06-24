@@ -7,7 +7,7 @@
             <div class="col-md-2 mb-3 mb-md-0 d-flex flex-column align-items-center">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/koormal-logo.png') }}" style="width: 170px;" alt="Koormal Logo"
-                         class="mb-2">
+                        class="mb-2">
                 </div>
                 <select name="filter" class="form-select w-75 mt-2" id="filter">
                     <option value="both">Both</option>
@@ -29,12 +29,12 @@
                     $selectedDate = request()->get('date', \Carbon\Carbon::now()->format('d-m-Y'));
                 @endphp
 
-                        <!-- Center: Title and Shift Labour -->
+                <!-- Center: Title and Shift Labour -->
                 <h4 class="fw-bold fst-italic mb-4">
                     SUPERVISORS SHIFT LOG –
                     <input type="text" id="flatpickr-date" class="form-control d-inline-block w-auto mt-3 mt-md-0"
-                           value="{{ $selectedDate }}"
-                           placeholder="Select Date" style="font-weight: bold;font-size: 18px;font-style: italic;">
+                        value="{{ $selectedDate }}" placeholder="Select Date"
+                        style="font-weight: bold;font-size: 18px;font-style: italic;">
                 </h4>
                 <div class="row">
                     <!-- Supervisor Shift -->
@@ -50,7 +50,7 @@
                                     </strong>
                                 </p>
                                 <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                        data-shift="day">Handover
+                                    data-shift="day">Handover
                                     Complete
                                 </button>
                             </div>
@@ -70,7 +70,7 @@
                                     </strong>
                                 </p>
                                 <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                        data-shift="night">Handover Complete
+                                    data-shift="night">Handover Complete
                                 </button>
                             </div>
                             <div class="supervisor-editable" data-shift="night" contenteditable="true">
@@ -84,8 +84,7 @@
                         <div class="border border-success rounded p-2 mb-3">
                             <div class="d-flex align-items-center justify-content-center gap-2">
                                 <strong><u>Labour for Day Shift</u></strong><br>
-                                <button class="btn btn-sm btn-primary loadCrew" data-shift="day"
-                                        style="line-height: 1;">
+                                <button class="btn btn-sm btn-primary loadCrew" data-shift="day" style="line-height: 1;">
                                     Load a Crew
                                 </button>
                             </div>
@@ -97,8 +96,7 @@
                         <div class="border border-success rounded p-2">
                             <div class="d-flex align-items-center justify-content-center gap-2">
                                 <strong><u>Labour for Night Shift</u></strong><br>
-                                <button class="btn btn-sm btn-primary loadCrew" data-shift="night"
-                                        style="line-height: 1;">
+                                <button class="btn btn-sm btn-primary loadCrew" data-shift="night" style="line-height: 1;">
                                     Load a Crew
                                 </button>
                             </div>
@@ -116,33 +114,33 @@
             <div class="col-md-2 mb-3 mb-md-0 d-flex flex-column align-items-center">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/4emus-logo.png') }}" style="width: 180px;" alt="4EMUS Logo"
-                         class="mb-2">
+                        class="mb-2">
                 </div>
                 <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
-                        data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
+                    data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
                     Sheet
                 </button>
                 <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
                 </button>
 
                 <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
-                   data-type="day_shift">
+                    data-type="day_shift">
                     Supervisor's Notes – Day Shift
                 </a>
 
                 <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
-                   data-type="night_shift">
+                    data-type="night_shift">
                     Supervisor's Notes – Night Shift
                 </a>
             </div>
         </div>
 
-        {!! $dataTable->table(['class' => 'cell-border w-100 nowrap', 'id' => 'jobTable'], true) !!}
+        {!! $dataTable->table(['class' => 'cell-border ', 'id' => 'jobTable'], true) !!}
     </div>
 
     <!-- Modal -->
     <div class="modal fade" id="supervisorsShiftLogModal" tabindex="-1" aria-labelledby="supervisorsShiftLogModalLabel"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary-subtle pb-3">
@@ -150,11 +148,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('supervisors-shift-log.csv.import') }}" method="POST"
-                      enctype="multipart/form-data" id="csvImportForm">
+                    enctype="multipart/form-data" id="csvImportForm">
                     <div class="modal-body p-3 mb-3">
                         @csrf
                         <label for="csv_file" class="form-label fw-semibold">Upload File <span
-                                    class="text-danger">*</span></label>
+                                class="text-danger">*</span></label>
                         <input type="file" name="csv_file" class="form-control" required>
                     </div>
 
@@ -168,7 +166,7 @@
     </div>
 
     <div class="modal fade" id="addOpportuneJobModal" tabindex="-1" aria-labelledby="addOpportuneJobModalLabel"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary-subtle pb-3">
@@ -176,7 +174,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('store-shift-log-from-opportune-jobs') }}" method="POST"
-                      id="addOpportuneJobForm">
+                    id="addOpportuneJobForm">
                     <div class="modal-body p-3 mb-3">
                         @csrf
                         <div class="mb-2">
@@ -191,7 +189,7 @@
                             <label for="job_id" class="form-label">Select a Job</label>
                             <select class="form-select" name="job_id" id="job_id">
                                 <option value="">Select a Job</option>
-                                @foreach($opportuneJobs as $job)
+                                @foreach ($opportuneJobs as $job)
                                     <option value="{{ $job->id }}" data-tooltip="{{ $job->work_description }}">
                                         {{ $job->wo_number }} - {{ $job->asset_no }}
                                     </option>
@@ -212,7 +210,7 @@
 
     <!-- Handover Completion Modal -->
     <div class="modal fade" id="handoverCompletionModal" tabindex="-1" aria-labelledby="handoverCompletionModalLabel"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
@@ -221,8 +219,7 @@
     </div>
 
     <!-- Load Crew Modal -->
-    <div class="modal fade" id="loadCrewModal" tabindex="-1" aria-labelledby="loadCrewModalLabel"
-         aria-hidden="true">
+    <div class="modal fade" id="loadCrewModal" tabindex="-1" aria-labelledby="loadCrewModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -240,8 +237,8 @@
     <!-- Flatpickr assets -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="{{asset('assets/libs/choices.js/public/assets/scripts/choices.min.js')}}"></script>
-    {{--    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>--}}
+    <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+    {{--    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script> --}}
 
     {!! $dataTable->scripts() !!}
 
@@ -252,17 +249,18 @@
             return str.replace(/\n/g, '<br>');
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $('#job_id').on('change', function () {
+            $('#job_id').on('change', function() {
                 let jobName = $(this).find(':selected').data('tooltip');
                 let formattedJobName = js_nl2br(jobName);
-                $('#jobDetails').html('<span class="fw-bold text-danger">Work Description: </span>' + formattedJobName);
+                $('#jobDetails').html('<span class="fw-bold text-danger">Work Description: </span>' +
+                    formattedJobName);
             });
 
         });
 
-        $('#csvImportForm').submit(function (e) {
+        $('#csvImportForm').submit(function(e) {
             e.preventDefault();
 
             let log_date = $('#flatpickr-date').val();
@@ -276,11 +274,13 @@
                 processData: false,
                 contentType: false,
                 dataType: 'json',
-                beforeSend: function () {
+                beforeSend: function() {
                     $('#csvImportBtn').attr('disabled', true);
-                    $('#csvImportBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...');
+                    $('#csvImportBtn').html(
+                        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...'
+                    );
                 },
-                success: function (res) {
+                success: function(res) {
                     if (res.status == 'success') {
                         Swal.fire({
                             icon: 'success',
@@ -301,46 +301,47 @@
                         });
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     let errors = xhr.responseJSON.errors;
-                    $.each(errors, function (key, value) {
+                    $.each(errors, function(key, value) {
                         notify('error', value);
                     });
                 },
-                complete: function () {
+                complete: function() {
                     $('#csvImportBtn').attr('disabled', false);
                     $('#csvImportBtn').html('Import');
                 }
             });
         });
 
-        $('#filter').on('change', function () {
+        $('#filter').on('change', function() {
             reloadTableWithFilters();
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             flatpickr("#flatpickr-date", {
                 dateFormat: "d-m-Y",
                 defaultDate: "{{ $selectedDate ?? now()->format('d-m-Y') }}",
-                onChange: function (selectedDates, dateStr, instance) {
-                    window.location.href = "{{ route('supervisors-shift-log.index') }}?date=" + dateStr;
+                onChange: function(selectedDates, dateStr, instance) {
+                    window.location.href = "{{ route('supervisors-shift-log.index') }}?date=" +
+                        dateStr;
                 }
             });
         });
 
-        $(document).on('draw.dt', function () {
+        $(document).on('draw.dt', function() {
             $('#jobTable tbody').sortable({
                 items: "tr",
                 handle: ".drag-handle",
                 helper: fixHelper,
                 cancel: '[contenteditable]',
-                start: function (e, ui) {
+                start: function(e, ui) {
                     ui.placeholder.height(ui.item.height());
                 },
-                update: function () {
+                update: function() {
                     updateLineNumbers();
                     let order = [];
-                    $('#jobTable tbody tr').each(function (index) {
+                    $('#jobTable tbody tr').each(function(index) {
                         order.push({
                             id: $(this).data('id'),
                             position: index + 1
@@ -353,10 +354,10 @@
                             order: order,
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function (response) {
+                        success: function(response) {
                             console.log('Order updated successfully');
                         },
-                        error: function (xhr) {
+                        error: function(xhr) {
                             console.error('Failed to update order');
                         }
                     });
@@ -364,7 +365,7 @@
             });
         });
 
-        $('#export').on('change', function () {
+        $('#export').on('change', function() {
             let selectedValue = $(this).val();
             if (selectedValue) {
                 let date = $('#flatpickr-date').val();
@@ -377,7 +378,7 @@
 
         })
 
-        $('#jobTable').on('blur', '[contenteditable="true"]', function () {
+        $('#jobTable').on('blur', '[contenteditable="true"]', function() {
             let td = $(this);
             let field = td.data('field');
             let value = td.text().trim();
@@ -387,7 +388,7 @@
 
         });
 
-        $('#addJobBtn').on('click', function () {
+        $('#addJobBtn').on('click', function() {
             Swal.fire({
                 title: 'Add a Job',
                 text: 'Choose how you want to add a job:',
@@ -407,7 +408,7 @@
             });
         })
 
-        $('#addOpportuneJobForm').on('submit', function (e) {
+        $('#addOpportuneJobForm').on('submit', function(e) {
             e.preventDefault();
             let log_date = $('#flatpickr-date').val();
             let formData = new FormData(this);
@@ -420,7 +421,7 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function (response) {
+                success: function(response) {
                     if (response.status == 'success') {
                         $('#addOpportuneJobModal').modal('hide');
                         $('#jobTable').DataTable().ajax.reload();
@@ -428,10 +429,10 @@
                         $('#addOpportuneJobForm')[0].reset();
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     if (xhr.status == 422) {
                         let errors = xhr.responseJSON.errors;
-                        $.each(errors, function (key, value) {
+                        $.each(errors, function(key, value) {
                             notify('error', value);
                             let input = $('[name="' + key + '"]');
                             input.addClass('is-invalid');
@@ -443,8 +444,8 @@
         });
 
 
-        $(document).ready(function () {
-            $('.editable').on('blur', function () {
+        $(document).ready(function() {
+            $('.editable').on('blur', function() {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -458,19 +459,18 @@
                         labour: content,
                         date: date
                     },
-                    success: function (res) {
+                    success: function(res) {
                         if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
-                    error: function () {
-                    }
+                    error: function() {}
                 });
             });
         });
 
-        $(document).ready(function () {
-            $('.supervisor-editable').on('blur', function () {
+        $(document).ready(function() {
+            $('.supervisor-editable').on('blur', function() {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -484,19 +484,19 @@
                         supervisor: content,
                         date: date
                     },
-                    success: function (res) {
+                    success: function(res) {
                         if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         console.log(xhr);
                     }
                 });
             });
         });
 
-        $('#jobTable').on('change', '.shift_name', function () {
+        $('#jobTable').on('change', '.shift_name', function() {
             let select = $(this);
             let field = select.data('field'); // should be "shift_name"
             let value = select.val();
@@ -505,7 +505,7 @@
             editField(select, field, value, id, true);
         });
 
-        $('#jobTable').on('change', '.complete_progress', function () {
+        $('#jobTable').on('change', '.complete_progress', function() {
             let select = $(this);
             let field = select.data('field');
             let value = select.val();
@@ -515,7 +515,7 @@
         });
 
 
-        $(document).on('click', '.deleteRowBtn', function () {
+        $(document).on('click', '.deleteRowBtn', function() {
             let id = $(this).data('id');
             Swal.fire({
                 title: 'Are you sure?',
@@ -542,11 +542,11 @@
                     _method: 'DELETE',
                     _token: '{{ csrf_token() }}',
                 },
-                success: function () {
+                success: function() {
                     reloadTableWithFilters();
                     notify('success', 'Work Order deleted successfully');
                 },
-                error: function () {
+                error: function() {
                     reloadTableWithFilters();
                 }
             });
@@ -560,11 +560,11 @@
                     _token: '{{ csrf_token() }}',
                     date: $('#flatpickr-date').val(),
                 },
-                success: function (response) {
+                success: function(response) {
                     notify('success', response.message);
                     reloadTableWithFilters();
                 },
-                error: function () {
+                error: function() {
 
                 }
             });
@@ -588,8 +588,8 @@
         }
 
 
-        const fixHelper = function (e, ui) {
-            ui.children().each(function () {
+        const fixHelper = function(e, ui) {
+            ui.children().each(function() {
                 $(this).width($(this).width());
             });
             return ui;
@@ -604,28 +604,28 @@
                     field: field,
                     value: value
                 },
-                success: function (res) {
+                success: function(res) {
                     td.css('background-color', '#d4edda');
                     setTimeout(() => td.css('background-color', ''), 1000);
                     if (table_reload) {
                         $('#jobTable').DataTable().ajax.reload(null, false);
                     }
                 },
-                error: function () {
+                error: function() {
                     td.css('background-color', '#f8d7da');
                 }
             });
         }
 
         function updateLineNumbers() {
-            $('#jobTable tbody tr').each(function (index) {
+            $('#jobTable tbody tr').each(function(index) {
                 $(this).find('.line-no-text').text(index + 1);
             });
         }
 
         implementAutoAjaxLoading();
 
-        $('.supervisor-note-btn').on('click', function (e) {
+        $('.supervisor-note-btn').on('click', function(e) {
             e.preventDefault();
 
             const logDate = $('#flatpickr-date').val();
@@ -643,7 +643,7 @@
             window.location.href = url;
         });
 
-        $(document).on('click', '#delete-selected', function () {
+        $(document).on('click', '#delete-selected', function() {
             Swal.fire({
                 title: 'Are you sure you want to delete all work orders from this shift log?',
                 icon: 'warning',
@@ -662,22 +662,24 @@
                             _token: '{{ csrf_token() }}',
                             log_date: log_date
                         },
-                        success: function (res) {
+                        success: function(res) {
                             if (res.status == 'success') {
                                 notify('success', res.message);
                                 $('#jobTable').DataTable().ajax.reload(null, false);
                             }
                         },
-                        error: function (xhr) {
+                        error: function(xhr) {
                             console.log(xhr)
                             if (xhr.status == 404) {
-                                notify('error', xhr.responseJSON.message || 'No data found for the given date.')
+                                notify('error', xhr.responseJSON.message ||
+                                    'No data found for the given date.')
                             } else if (xhr.status == 422) {
                                 let errors = xhr.responseJSON.errors;
                                 let firstError = Object.values(errors)[0][0];
                                 notify('error', firstError || 'Validation failed.')
                             } else {
-                                notify('error', xhr.responseJSON.message || 'Something went wrong. Please try again.')
+                                notify('error', xhr.responseJSON.message ||
+                                    'Something went wrong. Please try again.')
                             }
                         }
                     });
@@ -685,50 +687,53 @@
             });
         });
 
-        $('.addCompletion').on('click', function () {
+        $('.addCompletion').on('click', function() {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('handover-completions.create') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function (res) {
+                success: function(res) {
                     $('#handoverCompletionModal .modal-content').html(res);
                     $('#handoverCompletionModal').modal('show');
                 }
             })
         })
 
-        $('body').on('click', '.loadCrew', function () {
+        $('body').on('click', '.loadCrew', function() {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('load-crew.index') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function (res) {
+                success: function(res) {
                     $('#loadCrewModal .modal-content').html(res);
                     $('#loadCrewModal').modal('show');
                 }
             })
         })
 
-        $('body').on('change', '#crew_id', function () {
+        $('body').on('change', '#crew_id', function() {
             let crew_id = $(this).val();
 
             $.ajax({
                 url: "{{ route('get-labour-by-crew', ':crew_id') }}".replace(':crew_id', crew_id),
                 method: 'GET',
-                beforeSend: function () {
-                    $('.labour-container').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+                beforeSend: function() {
+                    $('.labour-container').html(
+                        '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>'
+                    );
                 },
-                success: function (res) {
+                success: function(res) {
                     $('.labour-container').html('');
                     let html = '';
                     html += '<label for="labour" class="form-label">Labour</label>';
-                    html += '<select name="labours[]" id="labour" class="form-select" multiple required>';
+                    html +=
+                        '<select name="labours[]" id="labour" class="form-select" multiple required>';
                     html += '<option value="">Select Labour</option>';
-                    $.each(res.data, function (index, value) {
+                    $.each(res.data, function(index, value) {
                         html += '<option value="' + value.id + '">' + value.name + '</option>';
                     });
                     html += '</select>';
@@ -744,34 +749,77 @@
                         });
                     }
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     $('.labour-container').html('');
-                    notify('error', xhr.responseJSON?.message || 'Something went wrong. Please try again.');
+                    notify('error', xhr.responseJSON?.message ||
+                        'Something went wrong. Please try again.');
                 }
             });
         });
-
     </script>
 @endpush
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="{{asset('assets/libs/choices.js/public/assets/styles/choices.min.css')}}">
-    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />--}}
+    <link rel="stylesheet" href="{{ asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}">
+    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" /> --}}
     <style>
-        .drag-handle {
-            cursor: move;
+        /* Table Structure */
+        #jobTable {
+            /* width: 100% !important; */
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-        .line-no-text {
-            display: inline-block;
-            width: 20px;
-            text-align: center;
+        /* Column Widths */
+        .line-number {
+            width: 40px !important;
         }
 
+        .col-shift {
+            width: 61px !important;
+        }
+
+        .col-wo {
+            width: 100px !important;
+        }
+
+        .col-asset {
+            width: 151px !important;
+        }
+
+        .col-desc {
+            width: 300px !important;
+            min-width: 300px;
+        }
+
+        .col-labour {
+            width: 200px !important;
+            min-width: 200px;
+        }
+
+        .col-note {
+            width: 200px !important;
+            min-width: 200px;
+        }
+
+        .col-req {
+            width: 292px !important;
+        }
+
+        /* Table Cell Styling */
         #jobTable tbody tr td {
-            vertical-align: middle;
+            vertical-align: middle !important;
+            padding: 8px 10px !important;
+            border: 1px solid #dee2e6;
         }
 
+        /* Header Styling */
+        thead {
+            background-color: #c0c2c3;
+        }
+
+        /* Special Row Styles */
         .row-complete {
             background-color: #ffef3bc2 !important;
         }
@@ -780,51 +828,18 @@
             background-color: #939393a8 !important;
         }
 
-        .line-number {
-            width: 40px;
-            text-align: center;
+        /* Drag Handle */
+        .drag-handle {
+            cursor: move;
         }
 
-        .flatpickr-months {
-            background-color: #ffffff;
-        }
-
-        thead {
-            background-color: #e0e0e0;
-        }
-
-        table th,
-        table td {
-            padding: 2px 3px;
-            text-align: left;
-            vertical-align: top;
-            font-size: 10px;
-            line-height: 1.4;
-        }
-
-        table.dataTable tbody th,
-        table.dataTable tbody td {
-            padding: 6px !important;
-        }
-
-        .form-select {
-            padding: .525rem 24px .525rem .9rem !important;
-        }
-
-        .dataTables_scrollHeadInner {
-            width: 100% !important;
-        }
-
-        .form-select-sm {
-            padding: .35rem 24px .35rem .9rem !important;
-        }
-
+        /* Labour Container */
         .labour-container {
-            overflow: visible !important;
             position: relative;
             z-index: 1;
         }
 
+        /* Choices.js Overrides */
         .choices__list--dropdown .choices__list {
             margin: 0;
         }
@@ -845,26 +860,43 @@
             padding: 3px 10px;
         }
 
-        .choices__list--dropdown .choices__item, .choices__list[aria-expanded] .choices__item {
+        .choices__list--dropdown .choices__item {
             font-size: 12px !important;
         }
-        th.col-note, td.col-note {
-            width: 300px !important;
+
+        /* DataTables Overrides */
+        .dataTables_scrollBody {
+            overflow-x: auto !important;
+            overflow-y: hidden;
         }
 
-        th.col-req, td.col-req {
-            width: 200px !important;
+        .dataTables_wrapper .dropdown-menu {
+            z-index: 1001 !important;
         }
 
-        /* Responsive override for mobile */
-        /*@media (max-width: 768px) {*/
-        /*    th.col-note, td.col-note {*/
-        /*        width: 200px !important;*/
-        /*    }*/
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
 
-        /*    th.col-req, td.col-req {*/
-        /*        width: 140px !important;*/
-        /*    }*/
-        /*}*/
+            .col-desc,
+            .col-labour,
+            .col-note {
+                width: 150px !important;
+                min-width: 150px;
+            }
+
+            #jobTable tbody tr td {
+                padding: 6px 8px !important;
+                font-size: 12px;
+            }
+
+            .col-req {
+                width: 80px !important;
+            }
+        }
+
+        /* Flatpickr Override */
+        .flatpickr-months {
+            background-color: #ffffff;
+        }
     </style>
 @endpush
