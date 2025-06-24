@@ -92,7 +92,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('labours.index') }}"
                                    class="nav-link {{ Route::current()->getName() == 'labours.index' ? 'active' : '' }}"
-                                   data-key="t-labours">Labours</a>
+                                   data-key="t-labour">Labour</a>
                             </li>
                         </ul>
                     </div>

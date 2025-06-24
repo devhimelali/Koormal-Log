@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -17,3 +18,9 @@ Route::get('/', function () {
     }
     return view('auth.login');
 })->name('login');
+
+
+//Route::get('storage-link', function () {
+//    Artisan::call('storage:link');
+//    return 'done';
+//});

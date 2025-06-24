@@ -178,6 +178,7 @@ class ShiftLogsDataTable extends DataTable
                 'paging' => false,
                 'searching' => false,
                 'ordering' => true,
+                'responsive' => true,
             ]);
     }
 
@@ -228,15 +229,15 @@ class ShiftLogsDataTable extends DataTable
                 ->title('Note')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('180px')
-                ->addClass('align-content-center'),
+                ->addClass('col-note'),
 
             Column::make('requisition')
                 ->title('Req')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('60px')
-                ->addClass('align-content-center'),
+                ->addClass('col-req'),
+
+
 
             Column::make('progress')
                 ->title('% Complete')

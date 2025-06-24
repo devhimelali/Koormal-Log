@@ -32,16 +32,16 @@
                         <!-- Center: Title and Shift Labour -->
                 <h4 class="fw-bold fst-italic mb-4">
                     SUPERVISORS SHIFT LOG –
-                    <input type="text" id="flatpickr-date" class="form-control d-inline-block w-auto"
+                    <input type="text" id="flatpickr-date" class="form-control d-inline-block w-auto mt-3 mt-md-0"
                            value="{{ $selectedDate }}"
                            placeholder="Select Date" style="font-weight: bold;font-size: 18px;font-style: italic;">
                 </h4>
                 <div class="row">
                     <!-- Supervisor Shift -->
-                    <div class="col-md-4 px-0">
+                    <div class="col-md-4 px-0 mb-3 mb-md-0">
                         <!-- Date Picker Input (you can hide it if needed) -->
                         <div class="border border-success rounded p-2 mb-3">
-                            <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
                                 <p class="mb-0">
                                     <strong>
                                         <u>
@@ -61,7 +61,7 @@
 
                         <div class="border border-success rounded p-2">
 
-                            <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
                                 <p class="mb-0">
                                     <strong>
                                         <u>
@@ -137,7 +137,7 @@
             </div>
         </div>
 
-        {!! $dataTable->table(['class' => 'cell-border w-100', 'id' => 'jobTable'], true) !!}
+        {!! $dataTable->table(['class' => 'cell-border w-100 nowrap', 'id' => 'jobTable'], true) !!}
     </div>
 
     <!-- Modal -->
@@ -796,11 +796,9 @@
         table th,
         table td {
             padding: 2px 3px;
-            /* very tight */
             text-align: left;
             vertical-align: top;
             font-size: 10px;
-            /* very compact */
             line-height: 1.4;
         }
 
@@ -850,5 +848,23 @@
         .choices__list--dropdown .choices__item, .choices__list[aria-expanded] .choices__item {
             font-size: 12px !important;
         }
+        th.col-note, td.col-note {
+            width: 300px !important;
+        }
+
+        th.col-req, td.col-req {
+            width: 200px !important;
+        }
+
+        /* Responsive override for mobile */
+        /*@media (max-width: 768px) {*/
+        /*    th.col-note, td.col-note {*/
+        /*        width: 200px !important;*/
+        /*    }*/
+
+        /*    th.col-req, td.col-req {*/
+        /*        width: 140px !important;*/
+        /*    }*/
+        /*}*/
     </style>
 @endpush
