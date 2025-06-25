@@ -97,6 +97,14 @@
                         </ul>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a href="{{route('work-order-moves.index')}}"
+                       class="nav-link menu-link @if (Route::current()->getName() == 'work-order-moves.index') active @endif"
+                       aria-expanded="false">
+                        <i class="ph ph-arrow-up-right"></i>
+                        <span data-key="t-move-work-orders">Move Work Orders</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->
