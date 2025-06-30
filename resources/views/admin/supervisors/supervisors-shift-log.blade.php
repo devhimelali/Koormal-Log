@@ -119,10 +119,12 @@
                         class="mb-2">
                 </div>
                 <div class="text-center">
-                    <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
-                        data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
-                        Sheet
-                    </button>
+                    @hasrole('admin')
+                        <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
+                            data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
+                            Sheet
+                        </button>
+                    @endhasrole
                     <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
                     </button>
 
@@ -200,16 +202,44 @@
 
     <script>
         let currentStep = 1;
+
+        // Helper: Parse dd-mm-yyyy to JS Date
+        function parseDMY(dateStr) {
+            const [day, month, year] = dateStr.split('-');
+            return new Date(year, month - 1, day); // month is 0-indexed
+        }
+
+        // Helper: Format Date as dd-mm-yyyy
+        function formatDate(date) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            return `${d}-${m}-${y}`;
+        }
+
+        // Initialize date picker
         $('#to_date').flatpickr({
             dateFormat: 'd-m-Y',
         });
 
         // Open modal and initialize step 1
         $('body').on('click', '.move-work-order-number-btn', function() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // remove time
             const id = $(this).data('id');
             const shift = $(this).data('shift');
-            const date = $(this).data('date');
+            const date = $(this).data('date'); // dd-mm-yyyy
             const wo_number = $(this).data('wo-number');
+            const fromDate = parseDMY(date);
+
+            if (fromDate < today) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Cannot move a work order to a day before today’s date - ' + date,
+                });
+                return;
+            }
 
             currentStep = 1;
 
@@ -237,7 +267,8 @@
                 const date = $('#to_date').val();
                 const shift = $('input[name="to_shift"]:checked').val();
                 $('#confirmation_text').text(
-                    `Are you sure you want to move Work Order ${workorder} to ${date} (${shift})?`);
+                    `Are you sure you want to move Work Order ${workorder} to ${date} (${shift})?`
+                );
             }
         }
 
@@ -248,16 +279,49 @@
                 $('#reason').addClass('is-invalid');
                 return;
             }
-            if (currentStep === 2 && !$('#to_date').val()) {
-                notify('error', 'Please select a date.');
-                $('#to_date').addClass('is-invalid');
-                return;
+
+            if (currentStep === 2) {
+                const toDateStr = $('#to_date').val();
+                const fromDateStr = $('#from_date').val();
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (!toDateStr) {
+                    notify('error', 'Please select a date.');
+                    $('#to_date').addClass('is-invalid');
+                    return;
+                }
+
+                const toDate = parseDMY(toDateStr);
+                const fromDate = parseDMY(fromDateStr);
+
+                // ❌ Cannot move to past
+                if (toDate < today) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Date',
+                        text: `Cannot move a work order to a day before today’s date - ${toDateStr}`
+                    });
+                    return;
+                }
+
+                // ❌ If from future, allow only move back to today
+                if (fromDate > today && toDate < fromDate && toDate.getTime() !== today.getTime()) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Move',
+                        text: `Future work orders can only be moved back to today's date - ${formatDate(today)}`
+                    });
+                    return;
+                }
             }
+
             if (currentStep === 3 && !$('input[name="to_shift"]:checked').val()) {
                 notify('error', 'Please select a shift.');
                 $('input[name="to_shift"]').addClass('is-invalid');
                 return;
             }
+
             currentStep++;
             showStep(currentStep);
         });
@@ -279,15 +343,116 @@
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {
-                    alert('Work Order moved successfully!');
                     $('#moveWorkOrderModal').modal('hide');
                     location.reload(); // Optional: Reload the table/list
+                    notify('success', 'Work Order moved successfully!');
                 },
                 error: function(xhr) {
-                    alert('An error occurred while moving the work order.');
+                    notify('error', 'An error occurred while moving the work order.');
                 }
             });
         });
+
+        // let currentStep = 1;
+        // $('#to_date').flatpickr({
+        //     dateFormat: 'd-m-Y',
+        // });
+
+        // // Open modal and initialize step 1
+        // $('body').on('click', '.move-work-order-number-btn', function() {
+        //     const today = new Date();
+        //     const id = $(this).data('id');
+        //     const shift = $(this).data('shift');
+        //     const date = $(this).data('date');
+        //     const wo_number = $(this).data('wo-number');
+        //     const fromDate = parseDMY(date);
+
+        //     if (fromDate < today) {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Error',
+        //             text: 'Cannot move a work order to a day before today’s date ' + date,
+        //         });
+        //         return;
+        //     }
+
+        //     currentStep = 1;
+
+        //     $('#wo_number').val(wo_number);
+        //     $('#from_date').val(date);
+        //     $('#from_shift').val(shift);
+        //     $('#shift_log_id').val(id);
+        //     $('#workorder_number_display').text(wo_number);
+        //     $('#moveWorkOrderModal').modal('show');
+
+        //     showStep(currentStep);
+        // });
+
+        // // Show the current step
+        // function showStep(step) {
+        //     $('.form-step').addClass('d-none');
+        //     $('.step-' + step).removeClass('d-none');
+
+        //     $('#prevStep').toggleClass('d-none', step === 1);
+        //     $('#nextStep').toggleClass('d-none', step >= 4);
+        //     $('#submitMove').toggleClass('d-none', step < 4);
+
+        //     if (step === 4) {
+        //         const workorder = $('#workorder_number_display').text();
+        //         const date = $('#to_date').val();
+        //         const shift = $('input[name="to_shift"]:checked').val();
+        //         $('#confirmation_text').text(
+        //             `Are you sure you want to move Work Order ${workorder} to ${date} (${shift})?`);
+        //     }
+        // }
+
+        // // Handle next step
+        // $('#nextStep').on('click', function() {
+        //     if (currentStep === 1 && !$('#reason').val().trim()) {
+        //         notify('error', 'Please enter a reason.');
+        //         $('#reason').addClass('is-invalid');
+        //         return;
+        //     }
+        //     if (currentStep === 2 && !$('#to_date').val()) {
+        //         notify('error', 'Please select a date.');
+        //         $('#to_date').addClass('is-invalid');
+        //         return;
+        //     }
+        //     if (currentStep === 3 && !$('input[name="to_shift"]:checked').val()) {
+        //         notify('error', 'Please select a shift.');
+        //         $('input[name="to_shift"]').addClass('is-invalid');
+        //         return;
+        //     }
+        //     currentStep++;
+        //     showStep(currentStep);
+        // });
+
+        // // Handle previous step
+        // $('#prevStep').on('click', function() {
+        //     if (currentStep > 1) {
+        //         currentStep--;
+        //         showStep(currentStep);
+        //     }
+        // });
+
+        // // Submit form
+        // $('#moveWorkOrderForm').on('submit', function(e) {
+        //     e.preventDefault();
+
+        //     $.ajax({
+        //         url: "{{ route('work-order-moves.store') }}",
+        //         type: 'POST',
+        //         data: $(this).serialize(),
+        //         success: function(response) {
+        //             $('#moveWorkOrderModal').modal('hide');
+        //             location.reload(); // Optional: Reload the table/list
+        //             notify('success', 'Work Order moved successfully!');
+        //         },
+        //         error: function(xhr) {
+        //             notify('error', 'An error occurred while moving the work order.');
+        //         }
+        //     });
+        // });
 
         function setupShiftToggle(selector = '#shiftSelector') {
             const $container = $(selector);

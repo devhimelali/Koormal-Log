@@ -135,21 +135,29 @@
 
                 <!-- Buttons -->
                 <div class="mt-4 d-flex justify-content-between flex-wrap gap-2">
-                    @if ($log->mark_as_complete == 0)
-                        {{-- <button type="button" class="btn btn-primary">
+                    <div>
+                        @if ($log->mark_as_complete == 0)
+                            {{-- <button type="button" class="btn btn-primary">
                             <i class="bi bi-check-circle me-1"></i> Mark As Completed
                         </button> --}}
-                        <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-primary">
-                            <i class="bi bi-check-circle me-1"></i> Mark As Completed
-                        </a>
-                    @else
-                        {{-- <button type="button" class="btn btn-success">
+                            <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i> Mark As Completed
+                            </a>
+                        @else
+                            {{-- <button type="button" class="btn btn-success">
                             <i class="bi bi-check-circle me-1"></i> Job Completed
                         </button> --}}
-                        <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-success">
-                            <i class="bi bi-check-circle me-1"></i> Job Completed
-                        </a>
-                    @endif
+                            <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-success">
+                                <i class="bi bi-check-circle me-1"></i> Job Completed
+                            </a>
+                        @endif
+                        @if ($log->progress < 100)
+                            <a href="{{ route('shift-logs.resetProgress', $log->id) }}" class="btn btn-danger">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                            </a>
+                        @endif
+                    </div>
+
                     <div class="d-flex gap-2">
                         <a href="{{ route('supervisors-shift-log.index', [
                             'role' => $role,

@@ -21,6 +21,7 @@ Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function
     Route::put('supervisors-shift-log/{id}', [SupervisorsShiftLogController::class, 'update'])->name('supervisors-shift-log.update');
     Route::put('shift-logs/update-details/{shift_log}', [SupervisorsShiftLogController::class, 'updateDetails'])->name('shift-logs.update-details');
     Route::get('shift-logs/mark-complete/{shift_log}', [SupervisorsShiftLogController::class, 'markComplete'])->name('shift-logs.markComplete');
+    Route::get('shift-logs/reset-progress/{id}', [SupervisorsShiftLogController::class, 'resetProgress'])->name('shift-logs.resetProgress');
 
     Route::post('supervisors-shift-log/reorder', [SupervisorsShiftLogController::class, 'reorder'])->name('supervisors-shift-log.reorder');
     Route::delete('/supervisors-shift-log/{id}', [SupervisorsShiftLogController::class, 'destroy'])->name('supervisors-shift-log.destroy');

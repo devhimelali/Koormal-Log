@@ -138,7 +138,7 @@ class SupervisorsShiftLogController extends Controller
     public function markComplete(Request $request, $id)
     {
         $shiftLog = ShiftLog::find($id);
-        $shiftLog->update(['mark_as_complete' => !$shiftLog->mark_as_complete]);
+        $shiftLog->update(['mark_as_complete' => !$shiftLog->mark_as_complete, 'progress' => '100']);
         if ($shiftLog->mark_as_complete == 1) {
             return redirect()->back()->with('success', 'Job marked as completed');
         } else {
@@ -340,5 +340,15 @@ class SupervisorsShiftLogController extends Controller
             'status' => 'success',
             'message' => 'New Job Added Successfully',
         ]);
+    }
+
+    public function resetProgress($id)
+    {
+        $shiftLog = ShiftLog::findOrFail($id);
+
+        $shiftLog->progress = 0;
+        $shiftLog->save();
+
+        return redirect()->back()->with('success', 'Progress reset successfully');
     }
 }
