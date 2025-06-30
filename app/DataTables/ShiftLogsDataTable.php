@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\Note;
 use Carbon\Carbon;
 use App\Models\ShiftLog;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\Html\Column;
 
@@ -13,6 +14,7 @@ class ShiftLogsDataTable extends DataTable
 {
     public function dataTable($query)
     {
+        $role = Auth::user()->roles()->pluck('name')->first();
         $index = 0;
         return datatables()
             ->eloquent($query)
@@ -72,7 +74,7 @@ class ShiftLogsDataTable extends DataTable
                 $editable = 'contenteditable=true';
                 return "<div {$editable} data-field='labour' class='py-3 m-0'>{$job->labour}</div>";
             })
-            ->addColumn('note', function ($job) {
+            ->addColumn('note', function ($job) use ($role) {
                 $notes = Note::orderBy('sort_by', 'asc')->get();
                 $options = '<option value="">Select Note</option>';
 
@@ -81,10 +83,10 @@ class ShiftLogsDataTable extends DataTable
                     $shortText = strlen($note->note) > 25 ? substr($note->note, 0, 25) . '...' : $note->note;
                     $options .= "<option value=\"{$note->id}\" {$selected}>{$shortText}</option>";
                 }
-
+                $disabled = $role === "supervisor" ? 'disabled' : '';
                 return '
                     <select
-                        class="form-select form-select-sm shift_name"
+                        class="form-select form-select-sm shift_name" ' . $disabled . '
                         data-field="note_id"
                         data-id="' . $job->id . '"
                         style="
@@ -101,24 +103,32 @@ class ShiftLogsDataTable extends DataTable
                         ' . $options . '
                     </select>';
             })
-            ->addColumn('requisition', function ($job) {
+            ->addColumn('requisition', function ($job) use ($role) {
                 $selected = $job->requisition === 'yes' ? 'selected' : '';
-                return '<select class="form-control w-100 shift_name" data-field="requisition" style="text-transform: capitalize; font-size: 10px;">
+                $disabled = $role === "supervisor" ? 'disabled' : '';
+                return '<select class="form-control w-100 shift_name" data-field="requisition" style="text-transform: capitalize; font-size: 10px;" ' . $disabled . '>
                             <option value="no" ' . $selected . '>No</option>
                             <option value="yes" ' . $selected . '>Yes</option>
                         </select>';
             })
-            ->addColumn('progress', fn($job) => '<div style="position: relative; display: inline-block;">
+            ->addColumn('progress', function ($job) use ($role) {
+                $readonly = $role === 'supervisor' ? 'readonly' : '';
+
+                return '<div style="position: relative; display: inline-block;">
                 <input data-field="progress" type="number"
                        class="form-control text-center complete_progress"
                        min="0" max="100" value="' . $job->progress . '"
                        style="width: 68px; padding-right: 24px;"
+                       ' . $readonly . '
                        oninput="this.value = Math.max(0, Math.min(100, this.value))">
                 <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none;">%</span>
-            </div>')
+            </div>';
+            })
             ->addColumn('action', function ($job) {
-                $url = route('supervisors-shift-log.show', $job->id);
-                return '
+                $isLocked = now()->greaterThan(Carbon::parse($job->log_date)->addDay()->setTime(6, 0));
+                if (!$isLocked) {
+                    $url = route('supervisors-shift-log.show', $job->id);
+                    return '
                     <div class="btn-group">
                         <a href="' . $url . '" class="btn btn-sm btn-info">
                             <i class="bi bi-info-circle"></i> More
@@ -130,6 +140,14 @@ class ShiftLogsDataTable extends DataTable
                             <i class="bi bi-trash"></i> Delete
                         </button>
                     </div>';
+                } else {
+                    return '
+                    <div class="btn-group">
+                        <a href="#" class="btn btn-sm btn-info">
+                            <i class="bi bi-info-circle"></i> More
+                        </a>
+                    </div>';
+                }
             })
             ->rawColumns(['line', 'requisition', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'progress', 'action']);
     }

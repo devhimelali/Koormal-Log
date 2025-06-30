@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\DataTables\ShiftLogsDataTable;
-use App\Models\HandoverCompletion;
+use Carbon\Carbon;
+use App\Models\Labour;
+use App\Models\ShiftLog;
+use App\Models\Supervisor;
 use App\Models\LabourShift;
 use App\Models\OpportuneJob;
-use App\Models\Supervisor;
-use App\Models\SupervisorNote;
-use Carbon\Carbon;
-use App\Models\ShiftLog;
 use Illuminate\Http\Request;
+use App\Models\SupervisorNote;
 use App\Imports\ShiftLogImport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\ShiftLogCsvExport;
+use App\Models\HandoverCompletion;
 use App\Http\Controllers\Controller;
-use App\Models\Labour;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\DataTables\ShiftLogsDataTable;
 use Illuminate\Support\Facades\Storage;
 
 class SupervisorsShiftLogController extends Controller
@@ -87,7 +88,8 @@ class SupervisorsShiftLogController extends Controller
     public function show($id)
     {
         $log = ShiftLog::find($id);
-        return view('admin.supervisors.supervisors-shift-log-show', compact('log'));
+        $isLocked = $this->isLocked($log);
+        return view('admin.supervisors.supervisors-shift-log-show', compact('log', 'isLocked'));
     }
 
     public function update(Request $request, $id)
@@ -350,5 +352,15 @@ class SupervisorsShiftLogController extends Controller
         $shiftLog->save();
 
         return redirect()->back()->with('success', 'Progress reset successfully');
+    }
+
+    private function getUserRole()
+    {
+        return Auth::user()->roles->pluck('name')->first();
+    }
+
+    private function isLocked($log)
+    {
+        return $isLocked = now()->greaterThan(Carbon::parse($log->log_date)->addDay()->setTime(6, 0));
     }
 }
