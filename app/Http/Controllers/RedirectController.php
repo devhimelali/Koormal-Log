@@ -10,6 +10,8 @@ class RedirectController extends Controller
     {
         if (auth()->user()->roles->pluck('name')->first() == 'admin') {
             return redirect()->route('admin.dashboard');
+        } else if (auth()->user()->roles->pluck('name')->first() == 'supervisor') {
+            return redirect()->route('supervisor.dashboard');
         } else {
             return redirect()->route('user.dashboard');
         }
