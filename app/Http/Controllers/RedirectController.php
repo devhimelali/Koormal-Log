@@ -15,7 +15,10 @@ class RedirectController extends Controller
                 return redirect()->route('user.dashboard');
             }
 
-            return redirect()->route("supervisors-shift-log.index", ['role' => $role, 'date' => date('d-m-Y')]);
+            return redirect()->route("supervisors-shift-log.index", [
+                'role' => $role,
+                'date' => date('d-m-Y')
+            ]);
         }
     }
 }

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\SupervisorNoteRequest;
-use App\Models\Labour;
-use App\Models\LabourShift;
 use App\Models\Media;
+use App\Models\Labour;
 use App\Models\ShiftLog;
-use App\Models\Supervisor;
-use App\Models\SupervisorNote;
 use Barryvdh\DomPDF\PDF;
+use App\Models\Supervisor;
+use App\Models\LabourShift;
 use Illuminate\Http\Request;
+use App\Models\SupervisorNote;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\SupervisorNoteRequest;
 
 class SupervisorNoteController extends Controller
 {
@@ -22,7 +23,10 @@ class SupervisorNoteController extends Controller
         $logDate = $request->log_date;
         if (!$logDate && !$noteType) {
             return redirect()
-                ->route('supervisors-shift-log.index')
+                ->route('supervisors-shift-log.index', [
+                    'role' => $this->getUserRole(),
+                    'date' => date('d-m-Y')
+                ])
                 ->withErrors(['error' => 'Please select date and note type']);
         }
         $supervisor_notes = SupervisorNote::with('media')->where('log_date', $logDate)->where('note_type', $noteType)->first();
@@ -51,7 +55,10 @@ class SupervisorNoteController extends Controller
             }
         }
         return redirect()
-            ->route('supervisors-shift-log.index', ['date' => $request->log_date])
+            ->route('supervisors-shift-log.index', [
+                'role' => $this->getUserRole(),
+                'date' => $request->log_date
+            ])
             ->with('success', 'Supervisor note added successfully');
     }
 
@@ -94,5 +101,10 @@ class SupervisorNoteController extends Controller
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.handover-note', $data);
         return $pdf->stream('handover-note-' . $log_date . '-' . time() . '.pdf');
+    }
+
+    private function getUserRole()
+    {
+        return Auth::user()->roles->pluck('name')->first();
     }
 }

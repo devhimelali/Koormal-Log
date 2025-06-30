@@ -1,7 +1,7 @@
 <div class="app-menu navbar-menu">
     <!-- LOGO -->
     <div class="navbar-brand-box">
-        <a href="{{ route('admin.dashboard') }}" class="logo logo-dark">
+        <a href="{{ route('redirect') }}" class="logo logo-dark">
             <span class="logo-sm">
                 <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="logo" height="36">
             </span>
@@ -9,7 +9,7 @@
                 <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="" height="36">
             </span>
         </a>
-        <a href="{{ route('admin.dashboard') }}" class="logo logo-light">
+        <a href="{{ route('redirect') }}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="" height="22">
             </span>
@@ -33,7 +33,10 @@
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
 
                 <li class="nav-item">
-                    <a href="{{ route('supervisors-shift-log.index', ['role' => $role, 'date' => date('d-m-Y')]) }}"
+                    <a href="{{ route('supervisors-shift-log.index', [
+                        'role' => $role,
+                        'date' => date('d-m-Y'),
+                    ]) }}"
                         class="nav-link menu-link @if (Route::current()->getName() == 'supervisors-shift-log.index') active @endif"
                         aria-expanded="false">
                         <i class="ph ph-clock-counter-clockwise"></i>
