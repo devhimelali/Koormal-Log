@@ -14,13 +14,13 @@ use App\Http\Controllers\Admin\WorkOrderMoveController;
 use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'role:admin', 'verified'])->group(function () {
+Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return redirect()->route('supervisors-shift-log.index', ['date' => date('d-m-Y')]);
         return view('admin.dashboard.index');
     })->name('admin.dashboard');
 
-    Route::get('supervisors-shift-log', [SupervisorsShiftLogController::class, 'index'])->name('supervisors-shift-log.index');
+    // Route::get('supervisors-shift-log', [SupervisorsShiftLogController::class, 'index'])->name('supervisors-shift-log.index');
     Route::post('supervisors-shift-log', [SupervisorsShiftLogController::class, 'store'])->name('supervisors-shift-log.store');
     Route::get('supervisors-shift-log/{id}', [SupervisorsShiftLogController::class, 'show'])->name('supervisors-shift-log.show');
 

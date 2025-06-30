@@ -177,6 +177,9 @@
         </div>
     </div>
 </div>
+@php
+    $role = Auth::user()->roles->pluck('name')->first();
+@endphp
 <style>
     .logoutBtn {
         background: transparent;

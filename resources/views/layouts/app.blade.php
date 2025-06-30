@@ -94,7 +94,6 @@
 </head>
 
 <body>
-
     <!-- Global AJAX Loader -->
     <div id="ajaxLoaderOverlay" style="display: none;">
         <div class="loader-container">
