@@ -20,10 +20,12 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Crew Lists</h4>
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                        data-bs-target="#addOrEditCrewModal">
-                        Add New
-                    </button>
+                    @if ($role == 'admin')
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                            data-bs-target="#addOrEditCrewModal">
+                            Add New
+                        </button>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -32,7 +34,9 @@
                                 <tr>
                                     <th scope="col" style="max-width: 50px; width: 50px;">S.No</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col" style="max-width: 180px; width: 180px;">Actions</th>
+                                    @if ($role == 'admin')
+                                        <th scope="col" style="max-width: 180px; width: 180px;">Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody style="vertical-align: middle">
@@ -104,27 +108,33 @@
 @section('page-script')
     <script>
         $(document).ready(function() {
+            const role = "{{ $role }}"
+            const columns = [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                }
+            ];
+
+            if (role === 'admin') {
+                columns.push({
+                    data: 'actions',
+                    name: 'actions',
+                    orderable: false,
+                    searchable: false
+                });
+            }
+
             let table = $('#datatable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('crews.index') }}",
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'actions',
-                        name: 'actions',
-                        orderable: false,
-                        searchable: false
-                    },
-                ],
+                columns: columns,
                 order: [
                     [1, 'asc']
                 ]
