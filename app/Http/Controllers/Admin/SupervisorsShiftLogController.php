@@ -52,6 +52,11 @@ class SupervisorsShiftLogController extends Controller
             ->first();
 
         $supervisorQuery = Supervisor::where('date', $inputDate)->get();
+
+        $role = $this->getUserRole();
+        $isLocked = $this->isLocked($inputDate);
+        $isEditable = $role === 'supervisor' && !$isLocked;
+
         return $dataTable->render('admin.supervisors.supervisors-shift-log', [
             'selectedDate' => $inputDate,
             'day_labours' => $day_labours,
@@ -59,6 +64,7 @@ class SupervisorsShiftLogController extends Controller
             'supervisors_day' => (clone $supervisorQuery)->where('shift', 'day')->pluck('name')->toArray(),
             'supervisors_night' => (clone $supervisorQuery)->where('shift', 'night')->pluck('name')->toArray(),
             'opportuneJobs' => OpportuneJob::get(),
+            'isEditable' => $isEditable,
         ]);
     }
 
@@ -359,8 +365,8 @@ class SupervisorsShiftLogController extends Controller
         return Auth::user()->roles->pluck('name')->first();
     }
 
-    private function isLocked($log)
+    private function isLocked($log_date)
     {
-        return $isLocked = now()->greaterThan(Carbon::parse($log->log_date)->addDay()->setTime(6, 0));
+        return $isLocked = now()->greaterThan(Carbon::parse($log_date)->addDay()->setTime(6, 0));
     }
 }

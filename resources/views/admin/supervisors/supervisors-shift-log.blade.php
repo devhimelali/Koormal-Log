@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Supervisors Shift Log')
 @section('content')
+
     <div class="my-4 p-4 border bg-white">
         <div class="row align-items-center text-center text-md-start mb-5">
             <!-- Left: Koormal logo and filter -->
@@ -55,7 +56,9 @@
                                     Complete
                                 </button>
                             </div>
-                            <div class="supervisor-editable" data-shift="day" contenteditable="true">
+                            {{ now()->format('d-m-Y H:i:s') }}
+                            <div class="supervisor-editable" data-shift="day"
+                                contenteditable="{{($isEditable || $role == 'admin') ? 'true' : 'false'}}">
                                 {{ implode(', ', $supervisors_day) }}
                             </div>
                         </div>
@@ -74,7 +77,8 @@
                                     data-shift="night">Handover Complete
                                 </button>
                             </div>
-                            <div class="supervisor-editable" data-shift="night" contenteditable="true">
+                            <div class="supervisor-editable" data-shift="night"
+                                contenteditable="{{($isEditable || $role == 'admin') ? 'true' : 'false'}}">
                                 {{ implode(', ', $supervisors_night) }}
                             </div>
                         </div>
@@ -85,11 +89,14 @@
                         <div class="border border-success rounded p-2 mb-3">
                             <div class="d-flex align-items-center justify-content-center gap-2">
                                 <strong><u>Labour for Day Shift</u></strong><br>
-                                <button class="btn btn-sm btn-primary loadCrew" data-shift="day" style="line-height: 1;">
-                                    Load a Crew
-                                </button>
+                                @if ($isEditable || $role == 'admin')
+                                    <button class="btn btn-sm btn-primary loadCrew" data-shift="day" style="line-height: 1;">
+                                        Load a Crew
+                                    </button>
+                                @endif
                             </div>
-                            <div class="editable" data-shift="day" contenteditable="true">
+                            <div class="editable" data-shift="day"
+                                contenteditable="{{($isEditable || $role == 'admin') ? 'true' : 'false'}}">
                                 {{ $day_labours?->name }}
                             </div>
                         </div>
@@ -97,12 +104,15 @@
                         <div class="border border-success rounded p-2">
                             <div class="d-flex align-items-center justify-content-center gap-2">
                                 <strong><u>Labour for Night Shift</u></strong><br>
-                                <button class="btn btn-sm btn-primary loadCrew" data-shift="night" style="line-height: 1;">
-                                    Load a Crew
-                                </button>
+                                @if ($isEditable || $role == 'admin')
+                                    <button class="btn btn-sm btn-primary loadCrew" data-shift="night" style="line-height: 1;">
+                                        Load a Crew
+                                    </button>
+                                @endif
                             </div>
 
-                            <div class="editable" data-shift="night" contenteditable="true">
+                            <div class="editable" data-shift="night"
+                                contenteditable="{{($isEditable || $role == 'admin') ? 'true' : 'false'}}">
                                 {{ $night_labours?->name }}
                             </div>
                         </div>
@@ -120,10 +130,10 @@
                 </div>
                 <div class="text-center">
                     @hasrole('admin')
-                        <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
-                            data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
-                            Sheet
-                        </button>
+                    <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
+                        data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
+                        Sheet
+                    </button>
                     @endhasrole
                     <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
                     </button>
@@ -153,8 +163,8 @@
                     <h1 class="modal-title fs-5" id="supervisorsShiftLogModalLabel">Upload Excel Sheet</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('supervisors-shift-log.csv.import') }}" method="POST"
-                    enctype="multipart/form-data" id="csvImportForm">
+                <form action="{{ route('supervisors-shift-log.csv.import') }}" method="POST" enctype="multipart/form-data"
+                    id="csvImportForm">
                     <div class="modal-body p-3 mb-3">
                         @csrf
                         <label for="csv_file" class="form-label fw-semibold">Upload File <span
@@ -195,7 +205,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
-    {{--    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script> --}}
+    {{--
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script> --}}
 
     {!! $dataTable->scripts() !!}
 
@@ -223,7 +234,7 @@
         });
 
         // Open modal and initialize step 1
-        $('body').on('click', '.move-work-order-number-btn', function() {
+        $('body').on('click', '.move-work-order-number-btn', function () {
             const today = new Date();
             today.setHours(0, 0, 0, 0); // remove time
             const id = $(this).data('id');
@@ -273,7 +284,7 @@
         }
 
         // Handle next step
-        $('#nextStep').on('click', function() {
+        $('#nextStep').on('click', function () {
             if (currentStep === 1 && !$('#reason').val().trim()) {
                 notify('error', 'Please enter a reason.');
                 $('#reason').addClass('is-invalid');
@@ -327,7 +338,7 @@
         });
 
         // Handle previous step
-        $('#prevStep').on('click', function() {
+        $('#prevStep').on('click', function () {
             if (currentStep > 1) {
                 currentStep--;
                 showStep(currentStep);
@@ -335,19 +346,19 @@
         });
 
         // Submit form
-        $('#moveWorkOrderForm').on('submit', function(e) {
+        $('#moveWorkOrderForm').on('submit', function (e) {
             e.preventDefault();
 
             $.ajax({
                 url: "{{ route('work-order-moves.store') }}",
                 type: 'POST',
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     $('#moveWorkOrderModal').modal('hide');
                     location.reload(); // Optional: Reload the table/list
                     notify('success', 'Work Order moved successfully!');
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     notify('error', 'An error occurred while moving the work order.');
                 }
             });
@@ -458,7 +469,7 @@
             const $container = $(selector);
 
             // On page load: set the initial states based on checked input
-            $container.find('input[name="to_shift"]').each(function() {
+            $container.find('input[name="to_shift"]').each(function () {
                 let label = $(this).closest('label');
                 if ($(this).is(':checked')) {
                     activateLabel(label);
@@ -468,8 +479,8 @@
             });
 
             // On change: toggle active classes and button styles
-            $container.on('change', 'input[name="to_shift"]', function() {
-                $container.find('input[name="to_shift"]').each(function() {
+            $container.on('change', 'input[name="to_shift"]', function () {
+                $container.find('input[name="to_shift"]').each(function () {
                     let label = $(this).closest('label');
                     if ($(this).is(':checked')) {
                         activateLabel(label);
@@ -499,11 +510,11 @@
         }
 
         // Initialize after DOM is ready or modal shown
-        $(function() {
+        $(function () {
             setupShiftToggle();
         });
 
-        $('#moveWorkOrderModal').on('hidden.bs.modal', function() {
+        $('#moveWorkOrderModal').on('hidden.bs.modal', function () {
             // Reset the form fields
             $('#moveWorkOrderForm')[0].reset();
 
@@ -528,9 +539,9 @@
             return str.replace(/\n/g, '<br>');
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-            $('#job_id').on('change', function() {
+            $('#job_id').on('change', function () {
                 let jobName = $(this).find(':selected').data('tooltip');
                 let formattedJobName = js_nl2br(jobName);
                 $('#jobDetails').html('<span class="fw-bold text-danger">Work Description: </span>' +
@@ -539,7 +550,7 @@
 
         });
 
-        $('#csvImportForm').submit(function(e) {
+        $('#csvImportForm').submit(function (e) {
             e.preventDefault();
 
             let log_date = $('#flatpickr-date').val();
@@ -553,13 +564,13 @@
                 processData: false,
                 contentType: false,
                 dataType: 'json',
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#csvImportBtn').attr('disabled', true);
                     $('#csvImportBtn').html(
                         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...'
                     );
                 },
-                success: function(res) {
+                success: function (res) {
                     if (res.status == 'success') {
                         Swal.fire({
                             icon: 'success',
@@ -580,28 +591,28 @@
                         });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     let errors = xhr.responseJSON.errors;
-                    $.each(errors, function(key, value) {
+                    $.each(errors, function (key, value) {
                         notify('error', value);
                     });
                 },
-                complete: function() {
+                complete: function () {
                     $('#csvImportBtn').attr('disabled', false);
                     $('#csvImportBtn').html('Import');
                 }
             });
         });
 
-        $('#filter').on('change', function() {
+        $('#filter').on('change', function () {
             reloadTableWithFilters();
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             flatpickr("#flatpickr-date", {
                 dateFormat: "d-m-Y",
                 defaultDate: "{{ $selectedDate ?? now()->format('d-m-Y') }}",
-                onChange: function(selectedDates, dateStr, instance) {
+                onChange: function (selectedDates, dateStr, instance) {
                     window.location.href =
                         "{{ route('supervisors-shift-log.index', ['role' => $role]) }}?date=" +
                         dateStr;
@@ -609,19 +620,19 @@
             });
         });
 
-        $(document).on('draw.dt', function() {
+        $(document).on('draw.dt', function () {
             $('#jobTable tbody').sortable({
                 items: "tr",
                 handle: ".drag-handle",
                 helper: fixHelper,
                 cancel: '[contenteditable]',
-                start: function(e, ui) {
+                start: function (e, ui) {
                     ui.placeholder.height(ui.item.height());
                 },
-                update: function() {
+                update: function () {
                     updateLineNumbers();
                     let order = [];
-                    $('#jobTable tbody tr').each(function(index) {
+                    $('#jobTable tbody tr').each(function (index) {
                         order.push({
                             id: $(this).data('id'),
                             position: index + 1
@@ -634,10 +645,10 @@
                             order: order,
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             console.log('Order updated successfully');
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error('Failed to update order');
                         }
                     });
@@ -645,7 +656,7 @@
             });
         });
 
-        $('#export').on('change', function() {
+        $('#export').on('change', function () {
             let selectedValue = $(this).val();
             if (selectedValue) {
                 let date = $('#flatpickr-date').val();
@@ -658,7 +669,7 @@
 
         })
 
-        $('#jobTable').on('blur', '[contenteditable="true"]', function() {
+        $('#jobTable').on('blur', '[contenteditable="true"]', function () {
             let td = $(this);
             let field = td.data('field');
             let value = td.text().trim();
@@ -668,7 +679,7 @@
 
         });
 
-        $('#addJobBtn').on('click', function() {
+        $('#addJobBtn').on('click', function () {
             Swal.fire({
                 title: 'Add a Job',
                 text: 'Choose how you want to add a job:',
@@ -688,7 +699,7 @@
             });
         })
 
-        $('#addOpportuneJobForm').on('submit', function(e) {
+        $('#addOpportuneJobForm').on('submit', function (e) {
             e.preventDefault();
             let log_date = $('#flatpickr-date').val();
             let formData = new FormData(this);
@@ -701,7 +712,7 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     if (response.status == 'success') {
                         $('#addOpportuneJobModal').modal('hide');
                         $('#jobTable').DataTable().ajax.reload();
@@ -709,10 +720,10 @@
                         $('#addOpportuneJobForm')[0].reset();
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     if (xhr.status == 422) {
                         let errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, value) {
+                        $.each(errors, function (key, value) {
                             notify('error', value);
                             let input = $('[name="' + key + '"]');
                             input.addClass('is-invalid');
@@ -724,8 +735,8 @@
         });
 
 
-        $(document).ready(function() {
-            $('.editable').on('blur', function() {
+        $(document).ready(function () {
+            $('.editable').on('blur', function () {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -739,18 +750,18 @@
                         labour: content,
                         date: date
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
-                    error: function() {}
+                    error: function () { }
                 });
             });
         });
 
-        $(document).ready(function() {
-            $('.supervisor-editable').on('blur', function() {
+        $(document).ready(function () {
+            $('.supervisor-editable').on('blur', function () {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -764,19 +775,19 @@
                         supervisor: content,
                         date: date
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.log(xhr);
                     }
                 });
             });
         });
 
-        $('#jobTable').on('change', '.shift_name', function() {
+        $('#jobTable').on('change', '.shift_name', function () {
             let select = $(this);
             let field = select.data('field'); // should be "shift_name"
             let value = select.val();
@@ -785,7 +796,7 @@
             editField(select, field, value, id, true);
         });
 
-        $('#jobTable').on('change', '.complete_progress', function() {
+        $('#jobTable').on('change', '.complete_progress', function () {
             let select = $(this);
             let field = select.data('field');
             let value = select.val();
@@ -795,7 +806,7 @@
         });
 
 
-        $(document).on('click', '.deleteRowBtn', function() {
+        $(document).on('click', '.deleteRowBtn', function () {
             let id = $(this).data('id');
             Swal.fire({
                 title: 'Are you sure?',
@@ -822,11 +833,11 @@
                     _method: 'DELETE',
                     _token: '{{ csrf_token() }}',
                 },
-                success: function() {
+                success: function () {
                     reloadTableWithFilters();
                     notify('success', 'Work Order deleted successfully');
                 },
-                error: function() {
+                error: function () {
                     reloadTableWithFilters();
                 }
             });
@@ -840,11 +851,11 @@
                     _token: '{{ csrf_token() }}',
                     date: $('#flatpickr-date').val(),
                 },
-                success: function(response) {
+                success: function (response) {
                     notify('success', response.message);
                     reloadTableWithFilters();
                 },
-                error: function() {
+                error: function () {
 
                 }
             });
@@ -868,8 +879,8 @@
         }
 
 
-        const fixHelper = function(e, ui) {
-            ui.children().each(function() {
+        const fixHelper = function (e, ui) {
+            ui.children().each(function () {
                 $(this).width($(this).width());
             });
             return ui;
@@ -884,28 +895,28 @@
                     field: field,
                     value: value
                 },
-                success: function(res) {
+                success: function (res) {
                     td.css('background-color', '#d4edda');
                     setTimeout(() => td.css('background-color', ''), 1000);
                     if (table_reload) {
                         $('#jobTable').DataTable().ajax.reload(null, false);
                     }
                 },
-                error: function() {
+                error: function () {
                     td.css('background-color', '#f8d7da');
                 }
             });
         }
 
         function updateLineNumbers() {
-            $('#jobTable tbody tr').each(function(index) {
+            $('#jobTable tbody tr').each(function (index) {
                 $(this).find('.line-no-text').text(index + 1);
             });
         }
 
         implementAutoAjaxLoading();
 
-        $('.supervisor-note-btn').on('click', function(e) {
+        $('.supervisor-note-btn').on('click', function (e) {
             e.preventDefault();
 
             const logDate = $('#flatpickr-date').val();
@@ -923,7 +934,7 @@
             window.location.href = url;
         });
 
-        $(document).on('click', '#delete-selected', function() {
+        $(document).on('click', '#delete-selected', function () {
             Swal.fire({
                 title: 'Are you sure you want to delete all work orders from this shift log?',
                 icon: 'warning',
@@ -942,13 +953,13 @@
                             _token: '{{ csrf_token() }}',
                             log_date: log_date
                         },
-                        success: function(res) {
+                        success: function (res) {
                             if (res.status == 'success') {
                                 notify('success', res.message);
                                 $('#jobTable').DataTable().ajax.reload(null, false);
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.log(xhr)
                             if (xhr.status == 404) {
                                 notify('error', xhr.responseJSON.message ||
@@ -967,53 +978,53 @@
             });
         });
 
-        $('.addCompletion').on('click', function() {
+        $('.addCompletion').on('click', function () {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('handover-completions.create') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(res) {
+                success: function (res) {
                     $('#handoverCompletionModal .modal-content').html(res);
                     $('#handoverCompletionModal').modal('show');
                 }
             })
         })
 
-        $('body').on('click', '.loadCrew', function() {
+        $('body').on('click', '.loadCrew', function () {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('load-crew.index') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(res) {
+                success: function (res) {
                     $('#loadCrewModal .modal-content').html(res);
                     $('#loadCrewModal').modal('show');
                 }
             })
         })
 
-        $('body').on('change', '#crew_id', function() {
+        $('body').on('change', '#crew_id', function () {
             let crew_id = $(this).val();
 
             $.ajax({
                 url: "{{ route('get-labour-by-crew', ':crew_id') }}".replace(':crew_id', crew_id),
                 method: 'GET',
-                beforeSend: function() {
+                beforeSend: function () {
                     $('.labour-container').html(
                         '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>'
                     );
                 },
-                success: function(res) {
+                success: function (res) {
                     $('.labour-container').html('');
                     let html = '';
                     html += '<label for="labour" class="form-label">Labour</label>';
                     html +=
                         '<select name="labours[]" id="labour" class="form-select" multiple required>';
                     html += '<option value="">Select Labour</option>';
-                    $.each(res.data, function(index, value) {
+                    $.each(res.data, function (index, value) {
                         html += '<option value="' + value.id + '">' + value.name + '</option>';
                     });
                     html += '</select>';
@@ -1029,7 +1040,7 @@
                         });
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     $('.labour-container').html('');
                     notify('error', xhr.responseJSON?.message ||
                         'Something went wrong. Please try again.');
