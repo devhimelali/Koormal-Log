@@ -201,13 +201,14 @@ class ShiftLogsDataTable extends DataTable
 
     protected function getColumns()
     {
-        return [
+        $columns = [
             Column::make('line')
                 ->title('#')
                 ->orderable(false)
                 ->searchable(false)
                 ->width('40px')
                 ->addClass('align-content-center'),
+
             Column::make('shift')
                 ->name('shift_name')
                 ->title('Shift')
@@ -255,27 +256,42 @@ class ShiftLogsDataTable extends DataTable
                 ->searchable(false)
                 ->addClass('col-req'),
 
-
-
             Column::make('progress')
                 ->title('% Complete')
                 ->orderable(false)
                 ->searchable(false)
                 ->addClass('align-content-center'),
+        ];
 
-            Column::computed('action')
+        // Add action column conditionally
+        $role = Auth::user()->roles()->pluck('name')->first();
+
+        if ($role === 'admin') {
+            $columns[] = Column::computed('action')
                 ->title('<div class="d-flex align-items-center justify-content-center gap-3">
-                                    <div>
-                                        Action
-                                    </div>
-                                    <div><button id="delete-selected" class="btn btn-sm btn-danger">Delete All</button></div>
-                                </div>')
+                        <div>Action</div>
+                        <div><button id="delete-selected" class="btn btn-sm btn-danger">Delete All</button></div>
+                    </div>')
                 ->exportable(false)
                 ->printable(false)
                 ->orderable(false)
                 ->searchable(false)
                 ->width('280px')
-                ->addClass('text-center align-content-center'),
-        ];
+                ->addClass('text-center align-content-center');
+        } else {
+            $columns[] = Column::computed('action')
+                ->title('<div class="d-flex align-items-center justify-content-center gap-3">
+                        <div>Action</div>
+                    </div>')
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false)
+                ->width('280px')
+                ->addClass('text-center align-content-center');
+        }
+
+        return $columns;
     }
+
 }

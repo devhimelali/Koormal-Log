@@ -1,7 +1,7 @@
 <div class="app-menu navbar-menu">
     <!-- LOGO -->
     <div class="navbar-brand-box">
-        <a href="{{ route('supervisor.dashboard') }}" class="logo logo-dark">
+        <a href="{{ route('redirect') }}" class="logo logo-dark">
             <span class="logo-sm">
                 <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="logo" height="36">
             </span>
@@ -9,7 +9,7 @@
                 <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="" height="36">
             </span>
         </a>
-        <a href="{{ route('supervisor.dashboard') }}" class="logo logo-light">
+        <a href="{{ route('redirect') }}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ asset('assets/logos/koormal-logo.png') }}" alt="" height="22">
             </span>
