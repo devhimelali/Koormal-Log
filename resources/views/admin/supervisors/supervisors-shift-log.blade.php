@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Supervisors Shift Log')
 @section('content')
-
     <div class="my-4 p-4 border bg-white">
         <div class="row align-items-center text-center text-md-start mb-5">
             <!-- Left: Koormal logo and filter -->
@@ -28,7 +27,11 @@
             <!-- Center: Title and Shift Labour -->
             <div class="col-xl-8 text-center">
                 @php
-                    $selectedDate = request()->get('date', \Carbon\Carbon::now()->format('d-m-Y'));
+                    use Carbon\Carbon;
+                    $selectedDate = request()->get('date', Carbon::now()->format('d-m-Y'));
+                    $logDate = Carbon::createFromFormat('d-m-Y', $selectedDate);
+                    $today = now()->startOfDay();
+                    $isPast = $logDate->lt($today);
                 @endphp
 
                 <!-- Center: Title and Shift Labour -->
@@ -51,10 +54,12 @@
                                         </u>
                                     </strong>
                                 </p>
-                                <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                    data-shift="day">Handover
-                                    Complete
-                                </button>
+                                @if ($isEditable || $role == 'admin')
+                                    <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
+                                        data-shift="day">Handover
+                                        Complete
+                                    </button>
+                                @endif
                             </div>
                             <div class="supervisor-editable" data-shift="day"
                                 contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
@@ -72,9 +77,11 @@
                                         </u>
                                     </strong>
                                 </p>
-                                <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                    data-shift="night">Handover Complete
-                                </button>
+                                @if ($isEditable || $role == 'admin')
+                                    <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
+                                        data-shift="night">Handover Complete
+                                    </button>
+                                @endif
                             </div>
                             <div class="supervisor-editable" data-shift="night"
                                 contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
@@ -136,8 +143,10 @@
                             Sheet
                         </button>
                     @endhasrole
-                    <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
-                    </button>
+                    @if ($role === 'admin' || ($role === 'supervisor' && !$isPast))
+                        <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
+                        </button>
+                    @endif
 
                     <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
                         data-type="day_shift">
