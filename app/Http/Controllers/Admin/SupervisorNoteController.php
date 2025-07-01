@@ -52,7 +52,7 @@ class SupervisorNoteController extends Controller
             'log_date' => $request->log_date,
             'note_type' => $request->note_type,
         ], [
-            'note' => $request->note,
+            'note' => $this->cleanNoteInput($request->note),
             'log_date' => $request->log_date,
             'note_type' => $request->note_type,
         ]);
@@ -124,5 +124,16 @@ class SupervisorNoteController extends Controller
     private function isLocked($log_date)
     {
         return $isLocked = now()->greaterThan(Carbon::parse($log_date)->addDay()->setTime(6, 0));
+    }
+
+    private function cleanNoteInput(string $note): string
+    {
+        // Remove UTF-8 BOM if it exists
+        $note = preg_replace('/^\xEF\xBB\xBF/', '', $note);
+
+        // Optionally convert to valid UTF-8
+        $note = mb_convert_encoding($note, 'UTF-8', 'UTF-8');
+
+        return $note;
     }
 }
