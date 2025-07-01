@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\Media;
 use App\Models\Labour;
 use App\Models\ShiftLog;
@@ -21,16 +22,28 @@ class SupervisorNoteController extends Controller
     {
         $noteType = $request->note_type;
         $logDate = $request->log_date;
+        $role = $this->getUserRole();
+
         if (!$logDate && !$noteType) {
             return redirect()
                 ->route('supervisors-shift-log.index', [
-                    'role' => $this->getUserRole(),
+                    'role' => $role,
                     'date' => date('d-m-Y')
                 ])
                 ->withErrors(['error' => 'Please select date and note type']);
         }
-        $supervisor_notes = SupervisorNote::with('media')->where('log_date', $logDate)->where('note_type', $noteType)->first();
-        return view('admin.supervisor-notes.create', compact('supervisor_notes', 'noteType'));
+
+        $isLocked = $this->isLocked($logDate);
+
+        $isEditable = $role === 'supervisor' && !$isLocked;
+
+        $supervisor_notes = SupervisorNote::with('media')
+            ->where('log_date', $logDate)
+            ->where('note_type', $noteType)
+            ->first();
+
+
+        return view('admin.supervisor-notes.create', compact('supervisor_notes', 'noteType', 'isEditable'));
     }
 
     public function store(SupervisorNoteRequest $request)
@@ -106,5 +119,10 @@ class SupervisorNoteController extends Controller
     private function getUserRole()
     {
         return Auth::user()->roles->pluck('name')->first();
+    }
+
+    private function isLocked($log_date)
+    {
+        return $isLocked = now()->greaterThan(Carbon::parse($log_date)->addDay()->setTime(6, 0));
     }
 }

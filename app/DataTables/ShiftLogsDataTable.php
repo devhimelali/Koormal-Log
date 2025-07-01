@@ -44,7 +44,8 @@ class ShiftLogsDataTable extends DataTable
                         <i class="bi bi-arrows-move"></i>
                     </span>';
             })
-            ->addColumn('shift', function ($job) {
+            ->addColumn('shift', function ($job) use ($role) {
+                $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
                 $selectedDay = $job->shift_name === 'day' ? 'selected' : '';
                 $selectedNight = $job->shift_name === 'night' ? 'selected' : '';
                 $style = match (true) {
@@ -52,7 +53,7 @@ class ShiftLogsDataTable extends DataTable
                     $job->shift_name === 'night' => 'background-color: #939393a8;',
                     default => '',
                 };
-                return '<select class="form-select form-select-sm shift_name" data-field="shift_name" style="text-transform: capitalize; width: 100%; font-size: 10px;' . $style . '">
+                return '<select class="form-select form-select-sm shift_name" ' . $disabled . ' data-field="shift_name" style="text-transform: capitalize; width: 100%; font-size: 10px;' . $style . '">
                         <option value="">Select Shift</option>
                         <option value="day" ' . $selectedDay . '>Day</option>
                         <option value="night" ' . $selectedNight . '>Night</option>
@@ -70,8 +71,8 @@ class ShiftLogsDataTable extends DataTable
                 $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
                 return "<div {$editable} data-field='work_description' class='py-3 m-0'>{$job->work_description}</div>";
             })
-            ->addColumn('labour', function ($job) {
-                $editable = 'contenteditable=true';
+            ->addColumn('labour', function ($job) use ($role) {
+                $editable = ($role != 'admin' && $job->isLocked) ? '' : "contenteditable=true";
                 return "<div {$editable} data-field='labour' class='py-3 m-0'>{$job->labour}</div>";
             })
             ->addColumn('note', function ($job) use ($role) {
@@ -83,7 +84,7 @@ class ShiftLogsDataTable extends DataTable
                     $shortText = strlen($note->note) > 25 ? substr($note->note, 0, 25) . '...' : $note->note;
                     $options .= "<option value=\"{$note->id}\" {$selected}>{$shortText}</option>";
                 }
-                $disabled = $role === "supervisor" ? 'disabled' : '';
+                $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
                 return '
                     <select
                         class="form-select form-select-sm shift_name" ' . $disabled . '
@@ -105,49 +106,43 @@ class ShiftLogsDataTable extends DataTable
             })
             ->addColumn('requisition', function ($job) use ($role) {
                 $selected = $job->requisition === 'yes' ? 'selected' : '';
-                $disabled = $role === "supervisor" ? 'disabled' : '';
+                $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
                 return '<select class="form-control w-100 shift_name" data-field="requisition" style="text-transform: capitalize; font-size: 10px;" ' . $disabled . '>
                             <option value="no" ' . $selected . '>No</option>
                             <option value="yes" ' . $selected . '>Yes</option>
                         </select>';
             })
             ->addColumn('progress', function ($job) use ($role) {
-                $readonly = $role === 'supervisor' ? 'readonly' : '';
+                $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
 
                 return '<div style="position: relative; display: inline-block;">
                 <input data-field="progress" type="number"
                        class="form-control text-center complete_progress"
                        min="0" max="100" value="' . $job->progress . '"
                        style="width: 68px; padding-right: 24px;"
-                       ' . $readonly . '
+                       ' . $disabled . '
                        oninput="this.value = Math.max(0, Math.min(100, this.value))">
                 <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none;">%</span>
             </div>';
             })
-            ->addColumn('action', function ($job) {
-                $isLocked = now()->greaterThan(Carbon::parse($job->log_date)->addDay()->setTime(6, 0));
-                if (!$isLocked) {
-                    $url = route('supervisors-shift-log.show', $job->id);
-                    return '
+            ->addColumn('action', function ($job) use ($role) {
+                $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
+
+                // if (!$isLocked) {
+                $url = route('supervisors-shift-log.show', $job->id);
+                return '
                     <div class="btn-group">
                         <a href="' . $url . '" class="btn btn-sm btn-info">
                             <i class="bi bi-info-circle"></i> More
                         </a>
-                        <button class="btn btn-warning btn-sm move-work-order-number-btn" data-id="' . $job->id . '" data-shift="' . $job->shift_name . '" data-date="' . $job->log_date . '" data-wo-number="' . $job->wo_number . '">
+
+                        <button class="btn btn-warning btn-sm move-work-order-number-btn" data-id="' . $job->id . '" data-shift="' . $job->shift_name . '" data-date="' . $job->log_date . '" data-wo-number="' . $job->wo_number . '" ' . ($disabled ? 'disabled' : '') . '>
                             <i class="bi bi-arrows-move me-2"></i> Move
                         </button>
-                        <button class="btn btn-sm btn-danger deleteRowBtn" data-id="' . $job->id . '">
+                        <button class="btn btn-sm btn-danger deleteRowBtn" data-id="' . $job->id . '" ' . ($disabled ? 'disabled' : '') . '>
                             <i class="bi bi-trash"></i> Delete
                         </button>
                     </div>';
-                } else {
-                    return '
-                    <div class="btn-group">
-                        <a href="#" class="btn btn-sm btn-info">
-                            <i class="bi bi-info-circle"></i> More
-                        </a>
-                    </div>';
-                }
             })
             ->rawColumns(['line', 'requisition', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'progress', 'action']);
     }

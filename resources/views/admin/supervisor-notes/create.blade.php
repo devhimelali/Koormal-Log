@@ -55,24 +55,26 @@
                             <!-- Note -->
                             <div class="col-md-12 mb-3">
                                 <label for="note" class="form-label">Note</label>
-                                <textarea name="note" id="note" cols="30" rows="10"
+                                <textarea name="note" id="note" cols="30" rows="10" {{ !$isEditable ? 'readonly' : '' }}
                                     class="form-control @error('note') is-invalid @enderror">{{ old('note', $supervisor_notes?->note) }}</textarea>
                                 @error('note')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-
-                            <!-- Upload New Images -->
-                            <div class="col-md-12 mb-3">
-                                <label for="images" class="form-label">Upload Images</label>
-                                <input type="file" name="images[]" id="images"
-                                    class="form-control @error('images') is-invalid @enderror" multiple accept="image/*">
-                                @error('images')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <div class="row mt-2" id="image-preview"></div>
-                            </div>
+                            @if ($isEditable)
+                                <!-- Upload New Images -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="images" class="form-label">Upload Images</label>
+                                    <input type="file" name="images[]" id="images"
+                                        class="form-control @error('images') is-invalid @enderror" multiple
+                                        accept="image/*">
+                                    @error('images')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="row mt-2" id="image-preview"></div>
+                                </div>
+                            @endif
 
                             <!-- Existing Images -->
                             @if (!empty($supervisor_notes?->media) && count($supervisor_notes->media))
@@ -99,7 +101,9 @@
 
                             <!-- Buttons -->
                             <div class="col-md-12 mt-4 d-flex justify-content-between">
-                                <button type="submit" class="btn btn-secondary">Save</button>
+                                @if ($isEditable)
+                                    <button type="submit" class="btn btn-secondary">Save</button>
+                                @endif
                                 <button type="button" class="btn btn-danger" id="exportPdf">
                                     <i class="bi bi-filetype-pdf me-1"></i>
                                     Export PDF

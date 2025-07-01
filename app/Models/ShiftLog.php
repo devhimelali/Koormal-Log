@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -70,5 +71,12 @@ class ShiftLog extends Model
     public function supervisorNotes(): HasMany
     {
         return $this->hasMany(SupervisorNote::class);
+    }
+
+    public function getIsLockedAttribute(): bool
+    {
+        return now()->greaterThan(
+            Carbon::createFromFormat('d-m-Y', $this->log_date)->addDay()->setTime(6, 0)
+        );
     }
 }

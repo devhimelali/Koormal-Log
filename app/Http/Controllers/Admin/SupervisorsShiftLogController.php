@@ -94,7 +94,7 @@ class SupervisorsShiftLogController extends Controller
     public function show($id)
     {
         $log = ShiftLog::find($id);
-        $isLocked = $this->isLocked($log);
+        $isLocked = $this->isLocked($log->log_date);
         return view('admin.supervisors.supervisors-shift-log-show', compact('log', 'isLocked'));
     }
 
