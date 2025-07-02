@@ -24,10 +24,10 @@ class OpportuneJobController extends Controller
                     return nl2br($row->asset_description);
                 })
                 ->addColumn('actions', function ($row) {
-                    $btn = '<div class="btn-group">';
-                    $btn .= ' <a href="javascript:void(0)" data-id="' . $row->id . '" class="delete btn btn-danger btn-sm">Delete</a>';
-                    $btn .= '</div>';
-                    return $btn;
+                    $checkbox = '<input type="checkbox" class="row-checkbox p-2" style="width: 18px; height: 18px;" value="' . $row->id . '">';
+                    $deleteBtn = '<a href="javascript:void(0)" data-id="' . $row->id . '" class="delete btn btn-danger btn-sm me-2">Delete</a>';
+
+                    return '<div class="d-flex align-items-center justify-content-center">' . $deleteBtn . $checkbox . '</div>';
                 })
                 ->rawColumns(['work_description', 'asset_description', 'actions'])
                 ->make(true);
@@ -41,6 +41,16 @@ class OpportuneJobController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Opportune job deleted successfully.'
+        ]);
+    }
+
+    public function bulkDestroy()
+    {
+        $deleted = OpportuneJob::truncate();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'All opportune jobs have been deleted successfully.'
         ]);
     }
 
@@ -63,16 +73,28 @@ class OpportuneJobController extends Controller
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
 
-            if (str_contains($errorMessage, 'Undefined index') || str_contains($errorMessage,
-                    'Trying to access array offset')) {
+            if (
+                str_contains($errorMessage, 'Undefined index') || str_contains(
+                    $errorMessage,
+                    'Trying to access array offset'
+                )
+            ) {
                 $friendlyMessage = 'The uploaded file appears to be missing some expected columns.';
             } elseif (str_contains($errorMessage, 'File does not exist')) {
                 $friendlyMessage = 'The uploaded file could not be found. Please try again.';
-            } elseif (str_contains($errorMessage, 'PHPExcel_Reader_Exception') || str_contains($errorMessage,
-                    'Reader')) {
+            } elseif (
+                str_contains($errorMessage, 'PHPExcel_Reader_Exception') || str_contains(
+                    $errorMessage,
+                    'Reader'
+                )
+            ) {
                 $friendlyMessage = 'There was a problem reading the Excel file. Please ensure it is a valid .xlsx or .xls file.';
-            } elseif (str_contains($errorMessage, 'SQLSTATE') || str_contains($errorMessage,
-                    'database') || str_contains($errorMessage, 'Integrity constraint')) {
+            } elseif (
+                str_contains($errorMessage, 'SQLSTATE') || str_contains(
+                    $errorMessage,
+                    'database'
+                ) || str_contains($errorMessage, 'Integrity constraint')
+            ) {
                 $friendlyMessage = 'A database error occurred. Please ensure your file contains valid and unique data.';
             } else {
                 $friendlyMessage = 'An unexpected error occurred during import. Please check your file and try again.';

@@ -31,10 +31,14 @@
                     <div class="flex-grow-1">
                         <h5 class="card-title mb-0">Opportune Jobs List</h5>
                     </div>
-                    <div class="flex-shrink-0">
-                        <button type="button" class="btn btn-secondary d-flex align-items-center" data-bs-toggle="modal"
-                            data-bs-target="#bulkImportModal">
-                            <i class="bx bx-upload me-2"></i>
+                    <div class="flex-shrink-0 d-flex gap-2">
+                        <button type="button" id="addToLogBtn" class="btn btn-sm btn-primary d-flex align-items-center">
+                            <i class="bx bx-plus me-1"></i>
+                            Add to Log
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary d-flex align-items-center"
+                            data-bs-toggle="modal" data-bs-target="#bulkImportModal">
+                            <i class="bx bx-upload me-1"></i>
                             Import Opportune Jobs
                         </button>
                     </div>
@@ -50,7 +54,13 @@
                                     <th scope="col" style="min-width: 200px; width: 200px;">Work-order Description</th>
                                     <th scope="col" style="min-width: 200px; width: 200px;">Asset Description</th>
                                     <th scope="col">Department</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col" style="min-width: 150px; width: 150px;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>Actions</span>
+                                            <button type="button" id="bulkDeleteBtn" class="btn btn-sm btn-danger">Delete
+                                                All</button>
+                                        </div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody style="vertical-align: middle">
@@ -119,10 +129,44 @@
             </div>
         </div>
     </div>
+
+
+    <div id="addToLogModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
+        style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Add To Log</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+                </div>
+                <form action="">
+                    <input type="hidden" name="opportune_job_ids" id="opportune_job_ids">
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label for="log_date" class="form-label">Date</label>
+                            <input type="text" class="form-control" id="log_date" name="log_date"
+                                placeholder="Select date">
+                        </div>
+                        <div class="mb-2">
+                            <label for="shift" class="form-label">Shift</label>
+                            <select name="shift" class="form-select" id="shift">
+                                <option value="">Select Shift</option>
+                                <option value="day">Day</option>
+                                <option value="night">Night</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary">Save</button>
+                        <button type="button" class="btn btn-subtle-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 @endsection
 @section('page-script')
-    {{--    <script src="{{ asset('assets/libs/datatables/jquery.dataTables.min.js') }}"></script> --}}
-    {{--    <script src="{{ asset('assets/libs/datatables/dataTables.bootstrap5.min.js') }}"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         $(document).ready(function() {
 
@@ -254,6 +298,60 @@
                     }
                 });
             });
+
+            $('#log_date').flatpickr({
+                dateFormat: 'd-m-Y',
+                minDate: 'today',
+            });
+
+            $('#addToLogBtn').on('click', function() {
+                let selected = $('.row-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+
+                if (selected.length === 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Please select at least one opportune job to add to log.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    return;
+                }
+
+                $('#opportune_job_ids').val(selected);
+                $('#addToLogModal').modal('show');
+            });
+
+            $('#bulkDeleteBtn').on('click', function() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete them!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('bulk-delete-opportune-job') }}",
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                table.ajax.reload();
+                                notify('success', response.message);
+                            },
+                            error: function(xhr) {
+                                notify('error', 'Something went wrong.');
+                            }
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 @endsection

@@ -37,7 +37,8 @@ Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function
     Route::delete('/media/{id}', [MediaController::class, 'destroy'])->name('media.destroy');
     Route::get('supervisor-notes/create', [SupervisorNoteController::class, 'create'])->name('supervisor-notes.create');
     Route::Post('supervisor-notes', [SupervisorNoteController::class, 'store'])->name('supervisor-notes.store');
-    Route::get('supervisor-notes/export-pdf/{log_date}/{note_type}', [SupervisorNoteController::class, 'exportPdf'])->name('supervisor-notes.pdf');;
+    Route::get('supervisor-notes/export-pdf/{log_date}/{note_type}', [SupervisorNoteController::class, 'exportPdf'])->name('supervisor-notes.pdf');
+    ;
     Route::post('/supervisor-notes/delete-image', [SupervisorNoteController::class, 'deleteImage'])->name('supervisor-notes.delete-image');
     Route::post('bulk-delete-supervisor-shift', [SupervisorsShiftLogController::class, 'bulkDelete'])->name('bulk-delete-supervisor-shift');
     Route::resource('opportune-jobs', OpportuneJobController::class);
@@ -55,4 +56,5 @@ Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function
     Route::post('labour-shift', [LabourShiftController::class, 'store'])->name('load-crew.store');
     Route::post('labour-shift/update', [LabourShiftController::class, 'updateLabour'])->name('labour-shift.update');
     Route::resource('work-order-moves', WorkOrderMoveController::class);
+    Route::delete('bulk-delete-opportune-job', [OpportuneJobController::class, 'bulkDestroy'])->name('bulk-delete-opportune-job');
 });
