@@ -60,4 +60,5 @@ Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function
     Route::post('add-to-log-from-opportune-jobs', [OpportuneJobController::class, 'addToLogFromOpportuneJobs'])->name('add-to-log-from-opportune-jobs');
     Route::get('load-labour', [CrewController::class, 'getLabours'])->name('load-labour.index');
     Route::post('load-labour', [CrewController::class, 'storeLabourShift'])->name('load-labour.store');
+    Route::get('reset-progress/{id}', [SupervisorsShiftLogController::class, 'resetJobProgress'])->name('reset-progress');
 });

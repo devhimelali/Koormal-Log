@@ -376,6 +376,20 @@ class SupervisorsShiftLogController extends Controller
         return redirect()->back()->with('success', 'Progress reset successfully');
     }
 
+    public function resetJobProgress($id)
+    {
+        $shiftLog = ShiftLog::findOrFail($id);
+
+        $shiftLog->progress = 0;
+        $shiftLog->mark_as_complete = 0;
+        $shiftLog->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Progress reset successfully',
+        ]);
+    }
+
     private function getUserRole()
     {
         return Auth::user()->roles->pluck('name')->first();

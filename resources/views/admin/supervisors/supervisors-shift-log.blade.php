@@ -986,6 +986,40 @@
                 }
             })
         })
+
+        $(document).on('dblclick', '.reset-progress', function() {
+            Swal.fire({
+                title: 'Are you sure you want to reset the progress?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, reset it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let id = $(this).data('id');
+
+                    let url = "{{ route('reset-progress', ['id' => ':id']) }}".replace(':id',
+                        id);
+
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function(res) {
+                            if (res.status === 'success') {
+                                notify('success', res.message);
+                                $('#jobTable').DataTable().ajax.reload(null, false);
+                            } else {
+                                notify('error', res.message || 'Something went wrong');
+                            }
+                        },
+                        error: function(err) {
+                            notify('error', 'AJAX request failed');
+                        }
+                    });
+                }
+            });
+        });
     </script>
 @endpush
 @push('styles')

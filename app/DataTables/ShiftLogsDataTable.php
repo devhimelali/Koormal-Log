@@ -114,8 +114,9 @@ class ShiftLogsDataTable extends DataTable
             })
             ->addColumn('progress', function ($job) use ($role) {
                 $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
+                $resetClass = 'reset-progress' . ($disabled == 'disabled' ? '' : ' d-none');
 
-                return '<div style="position: relative; display: inline-block;">
+                return '<div style="position: relative; display: inline-block;" >
                 <input data-field="progress" type="number"
                        class="form-control text-center complete_progress"
                        min="0" max="100" value="' . $job->progress . '"
@@ -123,6 +124,9 @@ class ShiftLogsDataTable extends DataTable
                        ' . $disabled . '
                        oninput="this.value = Math.max(0, Math.min(100, this.value))">
                 <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none;">%</span>
+                <span data-id="' . $job->id . '" class="' . $resetClass . '" style="position: absolute; right: 51px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </span>
             </div>';
             })
             ->addColumn('action', function ($job) use ($role) {
