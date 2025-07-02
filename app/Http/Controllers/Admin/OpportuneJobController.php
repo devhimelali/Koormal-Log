@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Imports\OpportuneJobImport;
+use App\Models\ShiftLog;
 use App\Models\OpportuneJob;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Imports\OpportuneJobImport;
+use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\AddToLogFromOpportuneJobRequest;
 
 class OpportuneJobController extends Controller
 {
@@ -34,6 +37,58 @@ class OpportuneJobController extends Controller
         }
         return view('admin.opportune-jobs.index');
     }
+
+    public function addToLogFromOpportuneJobs(AddToLogFromOpportuneJobRequest $request)
+    {
+        $ids = explode(',', $request->opportune_job_ids);
+
+        try {
+            DB::beginTransaction();
+
+            $jobs = OpportuneJob::whereIn('id', $ids)->get();
+
+            foreach ($jobs as $job) {
+                ShiftLog::create([
+                    'shift_name' => $request->shift,
+                    'wo_number' => $job->wo_number,
+                    'asset_no' => $job->asset_no,
+                    'asset_description' => $job->asset_description,
+                    'work_description' => $job->work_description,
+                    'status' => $job->status,
+                    'due_start' => $job->due_start,
+                    'job_type' => $job->job_type,
+                    'priority' => $job->priority,
+                    'raised' => $job->raised,
+                    'start_date' => $job->start_date,
+                    'duration' => $job->duration,
+                    'department' => $job->department,
+                    'material_cost' => $job->material_cost,
+                    'other_cost' => $job->other_cost,
+                    'position' => ShiftLog::max('position') + 1,
+                    'log_date' => $request->log_date,
+                ]);
+            }
+
+            // Delete all jobs after logs are created
+            OpportuneJob::whereIn('id', $ids)->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Jobs added to shift log successfully.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to add jobs to shift log.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     public function destroy(OpportuneJob $opportuneJob)
     {

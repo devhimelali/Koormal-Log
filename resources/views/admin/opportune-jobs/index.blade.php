@@ -139,7 +139,8 @@
                     <h5 class="modal-title" id="myModalLabel">Add To Log</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
                 </div>
-                <form action="">
+                <form action="{{ route('add-to-log-from-opportune-jobs') }}" method="POST" id="addToLogForm">
+                    @csrf
                     <input type="hidden" name="opportune_job_ids" id="opportune_job_ids">
                     <div class="modal-body">
                         <div class="mb-2">
@@ -157,7 +158,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-secondary">Save</button>
+                        <button type="submit" class="btn btn-secondary" id="addToLogSubmitBtn">Save</button>
                         <button type="button" class="btn btn-subtle-danger" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -321,6 +322,58 @@
 
                 $('#opportune_job_ids').val(selected);
                 $('#addToLogModal').modal('show');
+            });
+
+            $('#addToLogForm').submit(function(e) {
+                e.preventDefault();
+                let formData = new FormData(this);
+                let url = $(this).attr('action');
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#addToLogSubmitBtn').attr('disabled', true);
+                        $('#addToLogSubmitBtn').html(
+                            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...'
+                        );
+                    },
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            notify('success', response.message);
+                            table.ajax.reload();
+                            $('#addToLogForm')[0].reset();
+                            $('#addToLogModal').modal('hide');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        if (xhr.status == 422) {
+                            let errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                notify('error', value[0]);
+                                let input = $('[name="' + key + '"]');
+                                input.addClass('is-invalid');
+                                input.next('.invalid-feedback').text(value[0]);
+                            });
+                        } else if (xhr.status === 429) {
+                            notify('error',
+                                'Too many failed attempts. Please try again later.');
+                        } else if (xhr.status === 500) {
+                            if (xhr.responseJSON.message) {
+                                notify('error', xhr.responseJSON.message);
+                            } else {
+                                notify('error', 'Something went wrong!');
+                            }
+                        }
+                    },
+                    complete: function() {
+                        $('#addToLogSubmitBtn').attr('disabled', false);
+                        $('#addToLogSubmitBtn').html('Save');
+                    }
+                });
             });
 
             $('#bulkDeleteBtn').on('click', function() {

@@ -11,7 +11,7 @@ class AddToLogFromOpportuneJobRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class AddToLogFromOpportuneJobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'opportune_job_ids' => ['required', 'string', 'regex:/^(\d+,)*\d+$/'],
+            'log_date' => ['required', 'date_format:d-m-Y'],
+            'shift' => ['required', 'in:day,night'],
         ];
     }
 }

@@ -57,4 +57,5 @@ Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function
     Route::post('labour-shift/update', [LabourShiftController::class, 'updateLabour'])->name('labour-shift.update');
     Route::resource('work-order-moves', WorkOrderMoveController::class);
     Route::delete('bulk-delete-opportune-job', [OpportuneJobController::class, 'bulkDestroy'])->name('bulk-delete-opportune-job');
+    Route::post('add-to-log-from-opportune-jobs', [OpportuneJobController::class, 'addToLogFromOpportuneJobs'])->name('add-to-log-from-opportune-jobs');
 });
