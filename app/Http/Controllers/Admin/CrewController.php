@@ -115,5 +115,36 @@ class CrewController extends Controller
         ]);
     }
 
+    public function getLabours(Request $request)
+    {
+        $shift = $request->shift;
+        $date = $request->date;
+        $labours = Labour::get();
+
+        return view('admin.labours.load-labous', compact('labours', 'shift', 'date'));
+    }
+
+    public function storeLabourShift(Request $request)
+    {
+        $request->validate([
+            'shift' => 'required|in:day,night',
+            'date' => 'required|date_format:d-m-Y',
+            'labour_ids' => 'required|array',
+            'labour_ids.*' => 'required|exists:labours,id',
+        ]);
+
+        $labourNames = Labour::whereIn('id', $request->labour_ids)->pluck('name')->toArray();
+
+        LabourShift::create([
+            'shift' => $request->shift,
+            'date' => $request->date,
+            'name' => implode(', ', $labourNames)
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Labour shift added successfully'
+        ]);
+    }
 
 }

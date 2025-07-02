@@ -100,6 +100,9 @@
                                         style="line-height: 1;">
                                         Load a Crew
                                     </button>
+                                    <button class="btn btn-sm btn-secondary allNames" data-shift="day"
+                                        style="line-height: 1;">All
+                                        Names</button>
                                 @endif
                             </div>
                             <div class="editable" data-shift="day"
@@ -116,6 +119,9 @@
                                         style="line-height: 1;">
                                         Load a Crew
                                     </button>
+                                    <button class="btn btn-sm btn-secondary allNames" data-shift="night"
+                                        style="line-height: 1;">All
+                                        Names</button>
                                 @endif
                             </div>
 
@@ -374,106 +380,7 @@
             });
         });
 
-        // let currentStep = 1;
-        // $('#to_date').flatpickr({
-        //     dateFormat: 'd-m-Y',
-        // });
 
-        // // Open modal and initialize step 1
-        // $('body').on('click', '.move-work-order-number-btn', function() {
-        //     const today = new Date();
-        //     const id = $(this).data('id');
-        //     const shift = $(this).data('shift');
-        //     const date = $(this).data('date');
-        //     const wo_number = $(this).data('wo-number');
-        //     const fromDate = parseDMY(date);
-
-        //     if (fromDate < today) {
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Error',
-        //             text: 'Cannot move a work order to a day before today’s date ' + date,
-        //         });
-        //         return;
-        //     }
-
-        //     currentStep = 1;
-
-        //     $('#wo_number').val(wo_number);
-        //     $('#from_date').val(date);
-        //     $('#from_shift').val(shift);
-        //     $('#shift_log_id').val(id);
-        //     $('#workorder_number_display').text(wo_number);
-        //     $('#moveWorkOrderModal').modal('show');
-
-        //     showStep(currentStep);
-        // });
-
-        // // Show the current step
-        // function showStep(step) {
-        //     $('.form-step').addClass('d-none');
-        //     $('.step-' + step).removeClass('d-none');
-
-        //     $('#prevStep').toggleClass('d-none', step === 1);
-        //     $('#nextStep').toggleClass('d-none', step >= 4);
-        //     $('#submitMove').toggleClass('d-none', step < 4);
-
-        //     if (step === 4) {
-        //         const workorder = $('#workorder_number_display').text();
-        //         const date = $('#to_date').val();
-        //         const shift = $('input[name="to_shift"]:checked').val();
-        //         $('#confirmation_text').text(
-        //             `Are you sure you want to move Work Order ${workorder} to ${date} (${shift})?`);
-        //     }
-        // }
-
-        // // Handle next step
-        // $('#nextStep').on('click', function() {
-        //     if (currentStep === 1 && !$('#reason').val().trim()) {
-        //         notify('error', 'Please enter a reason.');
-        //         $('#reason').addClass('is-invalid');
-        //         return;
-        //     }
-        //     if (currentStep === 2 && !$('#to_date').val()) {
-        //         notify('error', 'Please select a date.');
-        //         $('#to_date').addClass('is-invalid');
-        //         return;
-        //     }
-        //     if (currentStep === 3 && !$('input[name="to_shift"]:checked').val()) {
-        //         notify('error', 'Please select a shift.');
-        //         $('input[name="to_shift"]').addClass('is-invalid');
-        //         return;
-        //     }
-        //     currentStep++;
-        //     showStep(currentStep);
-        // });
-
-        // // Handle previous step
-        // $('#prevStep').on('click', function() {
-        //     if (currentStep > 1) {
-        //         currentStep--;
-        //         showStep(currentStep);
-        //     }
-        // });
-
-        // // Submit form
-        // $('#moveWorkOrderForm').on('submit', function(e) {
-        //     e.preventDefault();
-
-        //     $.ajax({
-        //         url: "{{ route('work-order-moves.store') }}",
-        //         type: 'POST',
-        //         data: $(this).serialize(),
-        //         success: function(response) {
-        //             $('#moveWorkOrderModal').modal('hide');
-        //             location.reload(); // Optional: Reload the table/list
-        //             notify('success', 'Work Order moved successfully!');
-        //         },
-        //         error: function(xhr) {
-        //             notify('error', 'An error occurred while moving the work order.');
-        //         }
-        //     });
-        // });
 
         function setupShiftToggle(selector = '#shiftSelector') {
             const $container = $(selector);
@@ -1057,6 +964,28 @@
                 }
             });
         });
+
+        $('body').on('click', '.allNames', function() {
+            let shift = $(this).data('shift');
+            let date = $('#flatpickr-date').val();
+            let url = "{{ route('load-labour.index') }}?shift=" + shift + "&date=" + date;
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function(res) {
+                    $('#loadCrewModal .modal-content').html(res);
+                    if (typeof Choices !== 'undefined') {
+                        new Choices('#labour_ids', {
+                            removeItemButton: true,
+                            placeholderValue: 'Select Labour',
+                            searchPlaceholderValue: 'Search Labour',
+                            noResultsText: 'No Labour Found'
+                        });
+                    }
+                    $('#loadCrewModal').modal('show');
+                }
+            })
+        })
     </script>
 @endpush
 @push('styles')
