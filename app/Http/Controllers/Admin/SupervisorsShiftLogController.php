@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\DataTables\ShiftLogsDataTable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class SupervisorsShiftLogController extends Controller
@@ -309,11 +310,12 @@ class SupervisorsShiftLogController extends Controller
 
     public function storeShiftLogFromOpportuneJobs(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'shift_name' => 'required|in:day,night',
             'job_id' => 'required|exists:opportune_jobs,id',
             'log_date' => 'required|date_format:d-m-Y',
         ]);
+
 
         $job = OpportuneJob::find($request->job_id);
 
@@ -324,30 +326,44 @@ class SupervisorsShiftLogController extends Controller
             ], 404);
         }
 
-        ShiftLog::create([
-            'shift_name' => $request->shift_name,
-            'wo_number' => $job->wo_number,
-            'asset_no' => $job->asset_no,
-            'asset_description' => $job->asset_description,
-            'work_description' => $job->work_description,
-            'status' => $job->status,
-            'due_start' => $job->due_start,
-            'job_type' => $job->job_type,
-            'priority' => $job->priority,
-            'raised' => $job->raised,
-            'start_date' => $job->start_date,
-            'duration' => $job->duration,
-            'department' => $job->department,
-            'material_cost' => $job->material_cost,
-            'other_cost' => $job->other_cost,
-            'position' => ShiftLog::max('position') + 1,
-            'log_date' => $request->log_date,
-        ]);
+        try {
+            DB::beginTransaction();
+            ShiftLog::create([
+                'shift_name' => $request->shift_name,
+                'wo_number' => $job->wo_number,
+                'asset_no' => $job->asset_no,
+                'asset_description' => $job->asset_description,
+                'work_description' => $job->work_description,
+                'status' => $job->status,
+                'due_start' => $job->due_start,
+                'job_type' => $job->job_type,
+                'priority' => $job->priority,
+                'raised' => $job->raised,
+                'start_date' => $job->start_date,
+                'duration' => $job->duration,
+                'department' => $job->department,
+                'material_cost' => $job->material_cost,
+                'other_cost' => $job->other_cost,
+                'position' => ShiftLog::max('position') + 1,
+                'log_date' => $request->log_date,
+            ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'New Job Added Successfully',
-        ]);
+            $job->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'New Job Added Successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create shift log.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function resetProgress($id)
