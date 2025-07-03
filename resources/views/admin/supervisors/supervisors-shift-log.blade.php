@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('title', 'Supervisors Shift Log')
 @section('content')
+    <style>
+        #flatpickr-date {
+            width: 150px !important;
+            text-align: center;
+        }
+    </style>
     <div class="my-4 p-4 border bg-white">
         <div class="row align-items-center text-center text-md-start mb-5">
             <!-- Left: Koormal logo and filter -->
