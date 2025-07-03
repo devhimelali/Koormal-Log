@@ -88,11 +88,13 @@
                                                     <img src="{{ asset($img->url) }}" class="img-fluid rounded border"
                                                         style="height: 100px; object-fit: cover;">
                                                 </a>
-                                                <button type="button"
-                                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-existing-image"
-                                                    data-id="{{ $img->id }}"
-                                                    style="border-radius: 50%; padding: 0 6px;">×
-                                                </button>
+                                                @if ($isEditable)
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-existing-image"
+                                                        data-id="{{ $img->id }}"
+                                                        style="border-radius: 50%; padding: 0 6px;">×
+                                                    </button>
+                                                @endif
                                             </div>
                                         @endforeach
                                     </div>
