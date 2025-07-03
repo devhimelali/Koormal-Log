@@ -1,4 +1,4 @@
-<div class="modal-header bg-primary-subtle pb-2">
+<div class="modal-header bg-primary-subtle py-2">
     <div>
         <h1 class="modal-title fs-5" id="modalLabel">Load Crew</h1>
     </div>

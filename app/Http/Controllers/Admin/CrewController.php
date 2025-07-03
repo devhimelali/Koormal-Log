@@ -121,7 +121,32 @@ class CrewController extends Controller
         $date = $request->date;
         $labours = Labour::get();
 
-        return view('admin.labours.load-labous', compact('labours', 'shift', 'date'));
+        $existingLabourString = LabourShift::where('date', $date)
+            ->where('shift', $shift)
+            ->value('name');
+
+        if (empty($existingLabourString)) {
+            return view('admin.labours.load-labous', [
+                'labours' => $labours,
+                'shift' => $shift,
+                'date' => $date,
+            ]);
+        }
+
+        // Otherwise split the comma-separated names
+        $existingLabours = collect(explode(',', $existingLabourString))
+            ->map(fn($name) => trim($name))
+            ->filter();
+
+        $availableLabours = $labours->filter(function ($labour) use ($existingLabours) {
+            return !$existingLabours->contains($labour->name);
+        });
+
+        return view('admin.labours.load-labous', [
+            'labours' => $availableLabours,
+            'shift' => $shift,
+            'date' => $date,
+        ]);
     }
 
     public function storeLabourShift(Request $request)

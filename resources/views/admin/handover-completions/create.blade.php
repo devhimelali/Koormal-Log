@@ -1,17 +1,18 @@
-<div class="modal-header bg-primary-subtle pb-2">
+<div class="modal-header bg-primary-subtle py-2">
     <div>
         <h1 class="modal-title fs-5" id="handoverCompletionModalLabel">Handover Completion</h1>
-        <span class="text-danger">If you answer No to any of the questions please add an explanation in your handover notes.</span>
+        <span class="text-danger">If you answer No to any of the questions please add an explanation in your handover
+            notes.</span>
     </div>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
-<form action="{{route('handover-completions.store')}}" method="POST" id="handoverCompletionForm">
+<form action="{{ route('handover-completions.store') }}" method="POST" id="handoverCompletionForm">
     @csrf
-    <input type="hidden" name="shift" id="handoverCompletionShift" value="{{$shift}}">
-    <input type="hidden" name="date" id="handoverCompletionDate" value="{{$date}}">
+    <input type="hidden" name="shift" id="handoverCompletionShift" value="{{ $shift }}">
+    <input type="hidden" name="date" id="handoverCompletionDate" value="{{ $date }}">
     <div class="modal-body p-3 mb-3">
         <div class="row">
-            @foreach($questions as $question)
+            @foreach ($questions as $question)
                 @php
                     $selectedAnswer = $handoverCompletion->answers[$question->question] ?? 'No';
                 @endphp
@@ -32,7 +33,7 @@
 </form>
 
 <script>
-    $('#handoverCompletionForm').on('submit', function (e) {
+    $('#handoverCompletionForm').on('submit', function(e) {
         e.preventDefault();
         let formData = new FormData(this);
         let url = $(this).attr('action');
@@ -44,32 +45,34 @@
             data: formData,
             processData: false, // ✅ FormData support
             contentType: false, // ✅ FormData support
-            beforeSend: function () {
+            beforeSend: function() {
                 $('#handoverCompletionForm').find('.invalid-feedback').remove();
                 $('#handoverCompletionForm').find('.is-invalid').removeClass('is-invalid');
                 $('#handoverCompletionSubmitBtn').attr('disabled', true);
-                $('#handoverCompletionSubmitBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...');
+                $('#handoverCompletionSubmitBtn').html(
+                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...'
+                );
             },
-            success: function (res) {
+            success: function(res) {
                 if (res.status == 'success') {
                     $('#handoverCompletionModal').modal('hide');
                     $('#jobTable').DataTable().ajax.reload(null, false);
                 }
             },
-            error: function (xhr) {
+            error: function(xhr) {
                 if (xhr.status == 422) {
                     let errors = xhr.responseJSON.errors;
                     let firstError = Object.values(errors)[0][0];
                     notify('error', firstError || 'Validation failed.')
                 } else {
-                    notify('error', xhr.responseJSON.message || 'Something went wrong. Please try again.')
+                    notify('error', xhr.responseJSON.message ||
+                        'Something went wrong. Please try again.')
                 }
             },
-            complete: function () {
+            complete: function() {
                 $('#handoverCompletionSubmitBtn').attr('disabled', false);
                 $('#handoverCompletionSubmitBtn').html('Submit');
             }
         });
     });
-
 </script>

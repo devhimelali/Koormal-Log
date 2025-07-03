@@ -1,13 +1,12 @@
 <div class="modal fade" id="addOpportuneJobModal" tabindex="-1" aria-labelledby="addOpportuneJobModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-primary-subtle pb-3">
+            <div class="modal-header bg-primary-subtle py-3">
                 <h1 class="modal-title fs-5" id="addOpportuneJobModalLabel">Add a job - Opportune work</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('store-shift-log-from-opportune-jobs') }}" method="POST"
-                  id="addOpportuneJobForm">
+            <form action="{{ route('store-shift-log-from-opportune-jobs') }}" method="POST" id="addOpportuneJobForm">
                 <div class="modal-body p-3 mb-3">
                     @csrf
                     <div class="mb-2">
