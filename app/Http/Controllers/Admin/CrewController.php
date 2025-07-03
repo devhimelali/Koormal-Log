@@ -133,17 +133,28 @@ class CrewController extends Controller
             'labour_ids.*' => 'required|exists:labours,id',
         ]);
 
+        // Fetch all requested labour names in one query
         $labourNames = Labour::whereIn('id', $request->labour_ids)->pluck('name')->toArray();
 
-        LabourShift::create([
-            'shift' => $request->shift,
+        // Find or create the LabourShift for the given date and shift
+        $labourShift = LabourShift::firstOrNew([
             'date' => $request->date,
-            'name' => implode(', ', $labourNames)
+            'shift' => $request->shift,
         ]);
+
+        // Parse existing names (if any)
+        $existingNames = $labourShift->name ? explode(', ', $labourShift->name) : [];
+
+        // Merge and deduplicate names
+        $mergedNames = array_unique(array_merge($existingNames, $labourNames));
+
+        // Save the updated names
+        $labourShift->name = implode(', ', $mergedNames);
+        $labourShift->save();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Labour shift added successfully'
+            'message' => 'Labour shift added successfully',
         ]);
     }
 

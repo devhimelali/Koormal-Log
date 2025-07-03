@@ -12,52 +12,35 @@ class LabourShiftController extends Controller
 {
     public function store(LoadCrewRequest $request)
     {
-        $labourNames = [];
+        // Fetch all requested labour names in one query
+        $labourNames = Labour::whereIn('id', $request->labours)->pluck('name')->toArray();
 
-        // Get labour names from the request
-        foreach ($request->labours as $labourId) {
-            $labour = Labour::find($labourId);
-            if ($labour) {
-                $labourNames[] = $labour->name;
-            }
-        }
+        // Find or create the LabourShift for the given date and shift
+        $labourShift = LabourShift::firstOrNew([
+            'date' => $request->date,
+            'shift' => $request->shift,
+        ]);
 
-        // Check if a LabourShift already exists
-        $existing = LabourShift::where('date', $request->date)
-            ->where('shift', $request->shift)
-            ->first();
+        // Parse existing names (if any)
+        $existingNames = $labourShift->name ? explode(', ', $labourShift->name) : [];
 
-        // Get existing names as array
-        $existingNames = $existing ? explode(', ', $existing->name) : [];
-
-        // Merge and keep unique names
+        // Merge and deduplicate names
         $mergedNames = array_unique(array_merge($existingNames, $labourNames));
 
-        // Convert to comma-separated string
-        $finalNamesString = implode(', ', $mergedNames);
+        // Save the updated names
+        $labourShift->name = implode(', ', $mergedNames);
+        $labourShift->save();
 
-        // Save the merged result
-        LabourShift::updateOrCreate(
-            [
-                'date' => $request->date,
-                'shift' => $request->shift
-            ],
-            [
-                'name' => $finalNamesString,
-                'shift' => $request->shift,
-                'date' => $request->date
-            ]
-        );
         return response()->json([
             'status' => 'success',
-            'message' => 'Labour added successfully'
+            'message' => 'Labour added successfully',
         ]);
     }
     public function updateLabour(Request $request)
     {
         $request->validate([
             'shift' => 'required|in:day,night',
-            'labour' => 'required|string',
+            'labour' => 'nullable|string',
             'date' => 'required|date',
         ]);
 

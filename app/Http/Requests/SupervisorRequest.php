@@ -23,7 +23,7 @@ class SupervisorRequest extends FormRequest
     {
         return [
             'shift' => 'required|in:day,night',
-            'supervisor' => 'required|string',
+            'supervisor' => 'nullable|string',
             'date' => 'required|date',
         ];
     }
