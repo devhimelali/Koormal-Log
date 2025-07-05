@@ -131,23 +131,36 @@ class ShiftLogsDataTable extends DataTable
             })
             ->addColumn('action', function ($job) use ($role) {
                 $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
-
-                // if (!$isLocked) {
                 $url = route('supervisors-shift-log.show', $job->id);
-                return '
-                    <div class="btn-group">
-                        <a href="' . $url . '" class="btn btn-sm btn-info">
-                            <i class="bi bi-info-circle"></i> More
-                        </a>
 
-                        <button class="btn btn-warning btn-sm move-work-order-number-btn" data-id="' . $job->id . '" data-shift="' . $job->shift_name . '" data-date="' . $job->log_date . '" data-wo-number="' . $job->wo_number . '" ' . ($disabled ? 'disabled' : '') . '>
-                            <i class="bi bi-arrows-move me-2"></i> Move
-                        </button>
-                        <button class="btn btn-sm btn-danger deleteRowBtn" data-id="' . $job->id . '" ' . ($disabled ? 'disabled' : '') . '>
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
-                    </div>';
+                $buttons = '
+        <div class="btn-group">
+            <a href="' . $url . '" class="btn btn-sm btn-info">
+                <i class="bi bi-info-circle"></i> More
+            </a>
+
+            <button class="btn btn-warning btn-sm move-work-order-number-btn"
+                data-id="' . $job->id . '"
+                data-shift="' . $job->shift_name . '"
+                data-date="' . $job->log_date . '"
+                data-wo-number="' . $job->wo_number . '"
+                ' . $disabled . '>
+                <i class="bi bi-arrows-move me-2"></i> Move
+            </button>';
+
+                if ($role == 'admin') {
+                    $buttons .= '
+            <button class="btn btn-sm btn-danger deleteRowBtn"
+                data-id="' . $job->id . '" ' . $disabled . '>
+                <i class="bi bi-trash"></i> Delete
+            </button>';
+                }
+
+                $buttons .= '</div>';
+
+                return $buttons;
             })
+
             ->rawColumns(['line', 'requisition', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'progress', 'action']);
     }
 
