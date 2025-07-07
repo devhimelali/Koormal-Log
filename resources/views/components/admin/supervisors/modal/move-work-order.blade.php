@@ -1,5 +1,5 @@
-<div id="moveWorkOrderModal" data-bs-backdrop="static" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
-     style="display: none;">
+<div id="moveWorkOrderModal" data-bs-backdrop="static" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel"
+    aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <form id="moveWorkOrderForm">
             @csrf
@@ -7,6 +7,7 @@
             <input type="hidden" name="wo_number" id="wo_number">
             <input type="hidden" name="from_date" id="from_date">
             <input type="hidden" name="from_shift" id="from_shift">
+            <input type="hidden" name="asset_number" id="asset_number_display">
 
             <div class="modal-content">
                 <div class="modal-header">
@@ -16,7 +17,8 @@
 
                 <div class="modal-body">
                     <div class="form-step step-1">
-                        <label class="form-label">Why do you want to move Work Order <span id="workorder_number_display"></span>?</label>
+                        <label class="form-label">Why do you want to move Work Order <span
+                                id="workorder_number_display"></span>?</label>
                         <textarea class="form-control" name="reason" id="reason" rows="5" required></textarea>
                     </div>
 

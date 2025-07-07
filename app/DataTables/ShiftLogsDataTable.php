@@ -144,6 +144,7 @@ class ShiftLogsDataTable extends DataTable
                 data-shift="' . $job->shift_name . '"
                 data-date="' . $job->log_date . '"
                 data-wo-number="' . $job->wo_number . '"
+                data-asset-no="' . $job->asset_no . '"
                 ' . $disabled . '>
                 <i class="bi bi-arrows-move me-2"></i> Move
             </button>';

@@ -18,13 +18,16 @@ class WorkOrderMoveController extends Controller
             return DataTables::of($workOrderMoves)
                 ->addIndexColumn()
                 ->editColumn('wo_number', function ($workOrderMove) {
-                    return $workOrderMove->wo_number;
+                    return $workOrderMove->wo_number ?? 'N/A';
+                })
+                ->editColumn('asset_no', function ($workOrderMove) {
+                    return $workOrderMove->asset_no ?? 'N/A';
                 })
                 ->editColumn('reason', function ($workOrderMove) {
                     return nl2br($workOrderMove->reason);
                 })
                 ->addColumn('from_date_to_date', function ($workOrderMove) {
-                    return '<span class="badge bg-body-secondary border border-primary text-primary">' .$workOrderMove->from_date.'</span> <i class="ph ph-arrow-right text-secondary"></i> <span class="badge bg-body-secondary border border-secondary text-secondary">' . $workOrderMove->to_date . '</span>';
+                    return '<span class="badge bg-body-secondary border border-primary text-primary">' . $workOrderMove->from_date . '</span> <i class="ph ph-arrow-right text-secondary"></i> <span class="badge bg-body-secondary border border-secondary text-secondary">' . $workOrderMove->to_date . '</span>';
                 })
                 ->addColumn('from_shift_to_shift', function ($workOrderMove) {
                     return '<span class="badge bg-body-secondary border border-primary text-primary">' . ucfirst(strtolower($workOrderMove->from_shift)) . '</span> <i class="ph ph-arrow-right text-secondary"></i> <span class="badge bg-body-secondary border border-secondary text-secondary">' . ucfirst(strtolower($workOrderMove->to_shift));
@@ -40,6 +43,7 @@ class WorkOrderMoveController extends Controller
     {
         WorkOrderMove::create([
             'wo_number' => $request->wo_number,
+            'asset_no' => $request->asset_number,
             'from_date' => $request->from_date,
             'from_shift' => $request->from_shift,
             'to_date' => $request->to_date,

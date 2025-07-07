@@ -31,7 +31,8 @@
                             <thead class="table-light">
                                 <tr>
                                     <th scope="col" style="max-width: 40px; width: 40px;">S.No</th>
-                                    <th scope="col" style="min-width: 80px; width: 80px;">Work Order No</th>
+                                    <th scope="col" style="min-width: 120px; width: 120px;">Work Order No</th>
+                                    <th scope="col" style="min-width: 120px; width: 120px;">Asset Number</th>
                                     <th scope="col" style="min-width: 250px;">Reason</th>
                                     <th scope="col" style="min-width: 180px; width: 180px;">From Date → To Date</th>
                                     <th scope="col" style="min-width: 110px; width: 110px;">From Shift → To Shift</th>
@@ -62,6 +63,10 @@
                     {
                         data: 'wo_number',
                         name: 'wo_number'
+                    },
+                    {
+                        data: 'asset_no',
+                        name: 'asset_no'
                     },
                     {
                         data: 'reason',

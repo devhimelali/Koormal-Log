@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('work_order_moves', function (Blueprint $table) {
             $table->id();
             $table->string('wo_number');
+            $table->string('asset_no');
             $table->string('from_date');
             $table->string('from_shift');
             $table->string('to_date');

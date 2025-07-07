@@ -8,6 +8,7 @@ class WorkOrderMove extends Model
 {
     protected $fillable = [
         'wo_number',
+        'asset_no',
         'from_date',
         'from_shift',
         'to_date',

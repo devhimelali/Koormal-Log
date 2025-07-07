@@ -263,6 +263,7 @@
             const shift = $(this).data('shift');
             const date = $(this).data('date'); // dd-mm-yyyy
             const wo_number = $(this).data('wo-number');
+            const asset_no = $(this).data('asset-no');
             const fromDate = parseDMY(date);
 
             if (fromDate < today) {
@@ -281,6 +282,7 @@
             $('#from_shift').val(shift);
             $('#shift_log_id').val(id);
             $('#workorder_number_display').text(wo_number);
+            $('#asset_number_display').val(asset_no);
             $('#moveWorkOrderModal').modal('show');
 
             showStep(currentStep);
