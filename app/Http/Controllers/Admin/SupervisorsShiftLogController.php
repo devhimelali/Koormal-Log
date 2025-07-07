@@ -136,11 +136,11 @@ class SupervisorsShiftLogController extends Controller
                 ]);
             }
         }
-        $createdAt = Carbon::parse($shiftLog->created_at)->format('d-m-Y');
+
         return response()->json([
             'success' => true,
             'message' => 'Details updated successfully',
-            'date' => $createdAt
+            'date' => $shiftLog->log_date
         ]);
     }
 
