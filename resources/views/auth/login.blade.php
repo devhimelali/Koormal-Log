@@ -19,7 +19,7 @@
                                         <label for="email" class="form-label">Email <span
                                                 class="text-danger">*</span></label>
                                         <div class="position-relative ">
-                                            <input type="email" class="form-control  password-input" name="email"
+                                            <input type="text" class="form-control  password-input" name="email"
                                                 id="email" placeholder="Enter email">
                                             <div class="invalid-feedback"></div>
                                         </div>
