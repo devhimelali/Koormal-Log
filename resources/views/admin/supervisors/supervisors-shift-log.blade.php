@@ -643,6 +643,7 @@
                         $('#jobTable').DataTable().ajax.reload();
                         notify('success', response.message);
                         $('#addOpportuneJobForm')[0].reset();
+                        location.reload();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -779,6 +780,7 @@
                 success: function(response) {
                     notify('success', response.message);
                     reloadTableWithFilters();
+                    location.reload();
                 },
                 error: function() {
 
