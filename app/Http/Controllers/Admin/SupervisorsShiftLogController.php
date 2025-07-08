@@ -83,6 +83,7 @@ class SupervisorsShiftLogController extends Controller
         $nextPosition = ShiftLog::max('position') + 1;
         $validated['position'] = $nextPosition;
         $validated['log_date'] = $request->date;
+        $validated['shift_name'] = $request->shift_name ?? 'day';
         $log = ShiftLog::create($validated);
         $log->save();
 

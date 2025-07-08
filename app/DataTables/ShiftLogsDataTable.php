@@ -25,8 +25,10 @@ class ShiftLogsDataTable extends DataTable
             ])
             ->setRowId(fn($row) => 'row_' . $row->id)
             ->setRowClass(function ($job) {
-                if ($job->mark_as_complete == 1) {
-                    return 'row-complete';
+                if ($job->mark_as_complete == 1 && $job->shift_name === 'day') {
+                    return 'day-row-complete';
+                } else if ($job->mark_as_complete == 1 && $job->shift_name === 'night') {
+                    return 'night-row-complete';
                 }
 
                 if ($job->shift_name === 'night') {
@@ -49,7 +51,8 @@ class ShiftLogsDataTable extends DataTable
                 $selectedDay = $job->shift_name === 'day' ? 'selected' : '';
                 $selectedNight = $job->shift_name === 'night' ? 'selected' : '';
                 $style = match (true) {
-                    $job->mark_as_complete == 1 => 'background-color: #ffef3bc2;',
+                    $job->mark_as_complete == 1 && $job->shift_name === 'day' => 'background-color: #ffef3bc2;',
+                    $job->mark_as_complete == 1 && $job->shift_name === 'night' => 'background-color: #4a91e29d;',
                     $job->shift_name === 'night' => 'background-color: #939393a8;',
                     default => '',
                 };

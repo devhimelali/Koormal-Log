@@ -1094,8 +1094,12 @@
         }
 
         /* Special Row Styles */
-        .row-complete {
+        .day-row-complete {
             background-color: #ffef3bc2 !important;
+        }
+
+        .night-row-complete {
+            background-color: #4a91e29d !important;
         }
 
         .row-night {

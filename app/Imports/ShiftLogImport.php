@@ -44,7 +44,7 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
 
 
             ShiftLog::create([
-                'shift_name' => $shiftName,
+                'shift_name' => $shiftName ?? 'day',
                 'wo_number' => $row['wo_no'] ?? null,
                 'work_description' => $row['description'] ?? null,
                 'duration' => $row['duration'] ?? null,
@@ -82,7 +82,7 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
     private function parseExcelDate($value, $format = 'd-m-Y')
     {
         return isset($value)
-            ? Carbon::instance(Date::excelToDateTimeObject((float)$value))->format($format)
+            ? Carbon::instance(Date::excelToDateTimeObject((float) $value))->format($format)
             : null;
     }
 }
