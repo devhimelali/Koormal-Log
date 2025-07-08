@@ -44,7 +44,7 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
 
 
             ShiftLog::create([
-                'shift_name' => $shiftName ?? 'day',
+                'shift_name' => $shiftName,
                 'wo_number' => $row['wo_no'] ?? null,
                 'work_description' => $row['description'] ?? null,
                 'duration' => $row['duration'] ?? null,
