@@ -1152,6 +1152,24 @@
             z-index: 1001 !important;
         }
 
+        /* Chrome, Safari, Edge, Opera */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* Optional: Prevent the spinner on mobile browsers (iOS Safari, Android Chrome) */
+        input[type="number"] {
+            appearance: textfield;
+        }
+
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
 
