@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\DataTables\ShiftLogsDataTable;
+use App\Http\Requests\CopyLabourSupervisorRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -389,6 +390,68 @@ class SupervisorsShiftLogController extends Controller
             'status' => 'success',
             'message' => 'Progress reset successfully',
         ]);
+    }
+
+    public function copyToNextDays(CopyLabourSupervisorRequest $request)
+    {
+        $validated = $request->validated();
+
+        switch ($validated['copy_for']) {
+            case 'supervisor':
+                $this->copyAssignments($validated, 'supervisor');
+                break;
+            case 'labour':
+                $this->copyAssignments($validated, 'labour');
+                break;
+            case 'both':
+                $this->copyAssignments($validated, 'both');
+                break;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Assignments copied successfully',
+        ]);
+    }
+
+    private function copyAssignments(array $validated, string $type): void
+    {
+        $startDate = Carbon::createFromFormat('d-m-Y', $validated['copy_days_date']);
+        $howMany = (int) $validated['how_many'];
+        $newNames = array_unique(array_filter(array_map('trim', preg_split('/[\s,]+/', $validated['names']))));
+
+        for ($i = 0; $i < $howMany; $i++) {
+            $targetDate = $startDate->copy()->addDays($i)->format('d-m-Y');
+
+            if ($type === 'supervisor' || $type === 'both') {
+                $this->createOrMergeName(Supervisor::class, $newNames, $validated['shift'], $targetDate);
+            }
+
+            if ($type === 'labour' || $type === 'both') {
+                $this->createOrMergeName(LabourShift::class, $newNames, $validated['shift'], $targetDate);
+            }
+        }
+    }
+
+    private function createOrMergeName(string $modelClass, array $newNames, string $shift, string $date): void
+    {
+        $record = $modelClass::where('shift', $shift)
+            ->where('date', $date)
+            ->first();
+
+        if ($record) {
+            // Merge old and new names
+            $existingNames = array_filter(array_map('trim', preg_split('/[\s,]+/', $record->name)));
+            $mergedNames = implode(', ', array_unique(array_merge($existingNames, $newNames)));
+
+            $record->update(['name' => $mergedNames]);
+        } else {
+            $modelClass::create([
+                'name' => implode(', ', $newNames),
+                'shift' => $shift,
+                'date' => $date,
+            ]);
+        }
     }
 
     private function getUserRole()

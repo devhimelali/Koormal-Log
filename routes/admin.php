@@ -27,6 +27,7 @@ Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function
     Route::delete('/supervisors-shift-log/{id}', [SupervisorsShiftLogController::class, 'destroy'])->name('supervisors-shift-log.destroy');
     Route::post('/supervisors-shift-log/import-csv', [SupervisorsShiftLogController::class, 'importShiftLog'])->name('supervisors-shift-log.csv.import');
     Route::get('/export-shift-logs', [SupervisorsShiftLogController::class, 'export'])->name('supervisors-shift-log.export');
+    Route::post('/labour-supervisor/copy', [SupervisorsShiftLogController::class, 'copyToNextDays'])->name('labour-supervisor.copy');
 
     // Labourer routes
     Route::post('supervisor-shift/update', [SupervisorController::class, 'updateSupervisor'])->name('supervisor-shift.update');

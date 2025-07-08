@@ -39,14 +39,19 @@
                     $today = now()->startOfDay();
                     $isPast = $logDate->lt($today);
                 @endphp
+                <div class="mb-4">
+                    <!-- Center: Title and Shift Labour -->
+                    <h4 class="fw-bold fst-italic">
+                        SUPERVISORS SHIFT LOG –
+                        <input type="text" id="flatpickr-date" class="form-control d-inline-block w-75 mt-3 mt-md-0"
+                            value="{{ $selectedDate }}" placeholder="Select Date"
+                            style="font-weight: bold;font-size: 18px;font-style: italic;">
+                    </h4>
+                    <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#copyDaysModal">Add Labour to
+                        Next
+                        Days</button>
+                </div>
 
-                <!-- Center: Title and Shift Labour -->
-                <h4 class="fw-bold fst-italic mb-4">
-                    SUPERVISORS SHIFT LOG –
-                    <input type="text" id="flatpickr-date" class="form-control d-inline-block w-75 mt-3 mt-md-0"
-                        value="{{ $selectedDate }}" placeholder="Select Date"
-                        style="font-weight: bold;font-size: 18px;font-style: italic;">
-                </h4>
                 <div class="row">
                     <!-- Supervisor Shift -->
                     <div class="col-md-5 col-xl-4 px-0 mb-3 mb-md-0">
@@ -214,6 +219,8 @@
 
     <!-- Move Work Order Modal -->
     @include('components.admin.supervisors.modal.move-work-order')
+    <!--Copy Labour & Supervisors Modal-->
+    @include('components.admin.supervisors.modal.copy-labour-supervisor')
 
 @endsection
 @push('scripts')
@@ -252,6 +259,9 @@
 
         // Initialize date picker
         $('#to_date').flatpickr({
+            dateFormat: 'd-m-Y',
+        });
+        $('#copy-days-date').flatpickr({
             dateFormat: 'd-m-Y',
         });
 
