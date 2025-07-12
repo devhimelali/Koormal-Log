@@ -115,6 +115,18 @@ class ShiftLogsDataTable extends DataTable
                             <option value="yes" ' . $selected . '>Yes</option>
                         </select>';
             })
+            ->editColumn('scheduled', function ($job) {
+                $role = Auth::user()->roles()->pluck('name')->first();
+                $disabled = $role !== 'admin' ? 'disabled' : '';
+                return '
+        <select class="form-select form-select-sm shift_name scheduled" ' . $disabled . ' data-field="scheduled" style="text-transform: capitalize; width: 100%; font-size: 10px;">
+            <option value="">Select Scheduled</option>
+            <option value="yes" ' . ($job->scheduled == 'yes' ? 'selected' : '') . '>Yes</option>
+            <option value="no" ' . ($job->scheduled == 'no' ? 'selected' : '') . '>No</option>
+        </select>
+    ';
+            })
+
             ->addColumn('progress', function ($job) use ($role) {
                 $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
                 $resetClass = 'reset-progress' . ($disabled == 'disabled' ? '' : ' d-none');
@@ -165,7 +177,7 @@ class ShiftLogsDataTable extends DataTable
                 return $buttons;
             })
 
-            ->rawColumns(['line', 'requisition', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'progress', 'action']);
+            ->rawColumns(['line', 'requisition', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'scheduled', 'progress', 'action']);
     }
 
     public function query()
@@ -277,15 +289,32 @@ class ShiftLogsDataTable extends DataTable
                 ->searchable(false)
                 ->addClass('col-req'),
 
-            Column::make('progress')
-                ->title('% Complete')
-                ->orderable(false)
-                ->searchable(false)
-                ->addClass('align-content-center'),
-        ];
 
+        ];
         // Add action column conditionally
         $role = Auth::user()->roles()->pluck('name')->first();
+        $dayShiftLogs = ShiftLog::where('log_date', request('date'))->where('shift_name', 'day')->get()->toArray();
+        $dayShiftScheduledYesPercentage = $this->calculateScheduledYesPercentage($dayShiftLogs);
+        $nightShiftLogs = ShiftLog::where('log_date', request('date'))->where('shift_name', 'night')->get()->toArray();
+        $nightShiftScheduledYesPercentage = $this->calculateScheduledYesPercentage($nightShiftLogs);
+        if ($role == 'admin') {
+            $columns[] = Column::make('scheduled')
+                ->title('<div class="d-flex flex-column justify-content-center">
+                <span>Scheduled</span>
+                <span class="fw-light">Day: ' . $dayShiftScheduledYesPercentage . '%</span>
+                <span class="fw-light">Night: ' . $nightShiftScheduledYesPercentage . '%</span>
+                </div>')
+                ->orderable(false)
+                ->searchable(false)
+                ->addClass('align-content-center');
+        }
+
+        $columns[] = Column::make('progress')
+            ->title('% Complete')
+            ->orderable(false)
+            ->searchable(false)
+            ->addClass('align-content-center');
+
 
         if ($role === 'admin') {
             $columns[] = Column::computed('action')
@@ -313,6 +342,35 @@ class ShiftLogsDataTable extends DataTable
         }
 
         return $columns;
+    }
+
+    private function calculateScheduledYesPercentage(?array $jobs): float
+    {
+        // dd($jobs);
+        if (empty($jobs)) {
+            return 0.0;
+        }
+
+        // Filter jobs where 'scheduled' is 'yes'
+        $filteredJobs = array_filter($jobs, function ($job) {
+            return isset($job['scheduled'], $job['progress']) && strtolower($job['scheduled']) === 'yes';
+        });
+
+        $total = count($filteredJobs);
+
+        if ($total === 0) {
+            return 0.0;
+        }
+
+        // Sum the 'progress' values
+        $totalProgress = array_reduce($filteredJobs, function ($carry, $job) {
+            return $carry + (float) $job['progress'];
+        }, 0.0);
+
+        // Calculate percentage
+        $percentage = ($totalProgress / $total);
+
+        return round($percentage, 2);
     }
 
 }

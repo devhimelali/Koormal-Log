@@ -64,6 +64,7 @@ class ShiftLogImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                 'is_excel_upload' => 1,
                 'position' => $nextPosition++,
                 'log_date' => $this->log_date,
+                'scheduled' => 'yes',
             ]);
         }
     }

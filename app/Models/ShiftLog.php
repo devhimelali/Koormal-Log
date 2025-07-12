@@ -35,7 +35,8 @@ class ShiftLog extends Model
         'labour',
         'is_excel_upload',
         'log_date',
-        'requisition'
+        'requisition',
+        'scheduled'
     ];
 
     public function scopeDayShift($query)

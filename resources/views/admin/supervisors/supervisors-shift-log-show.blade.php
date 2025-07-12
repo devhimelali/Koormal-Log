@@ -175,6 +175,16 @@
                             </div>
                         </div>
                     </div>
+                    @if ($role == 'admin')
+                        <div class="col-md-6 mt-2">
+                            <label for="scheduled" class="form-label">Scheduled</label>
+                            <select name="scheduled" class="form-select" id="scheduled">
+                                <option value="">Select Scheduled</option>
+                                <option value="yes" {{ $log->scheduled == 'yes' ? 'selected' : '' }}>Yes</option>
+                                <option value="no" {{ $log->scheduled == 'no' ? 'selected' : '' }}>No</option>
+                            </select>
+                        </div>
+                    @endif
                 </div>
 
 
@@ -190,9 +200,6 @@
                                     <i class="bi bi-check-circle me-1"></i> Mark As Completed
                                 </a>
                             @else
-                                {{-- <button type="button" class="btn btn-success">
-                            <i class="bi bi-check-circle me-1"></i> Job Completed
-                        </button> --}}
                                 <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-success">
                                     <i class="bi bi-check-circle me-1"></i> Job Completed
                                 </a>

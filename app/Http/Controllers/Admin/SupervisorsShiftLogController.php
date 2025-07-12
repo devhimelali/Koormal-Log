@@ -69,6 +69,7 @@ class SupervisorsShiftLogController extends Controller
         $totalNightHandoverCompletionPercent = $this->calculateYesPercentage($nightHandoverCompletion->answers ?? []);
 
 
+
         return $dataTable->render('admin.supervisors.supervisors-shift-log', [
             'selectedDate' => $inputDate,
             'day_labours' => $day_labours,
@@ -78,7 +79,7 @@ class SupervisorsShiftLogController extends Controller
             'opportuneJobs' => OpportuneJob::get(),
             'isEditable' => $isEditable,
             'totalDayHandoverCompletionPercent' => $totalDayHandoverCompletionPercent,
-            'totalNightHandoverCompletionPercent' => $totalNightHandoverCompletionPercent
+            'totalNightHandoverCompletionPercent' => $totalNightHandoverCompletionPercent,
         ]);
     }
 
@@ -97,6 +98,7 @@ class SupervisorsShiftLogController extends Controller
         $validated['position'] = $nextPosition;
         $validated['log_date'] = $request->date;
         $validated['shift_name'] = $request->shift_name ?? 'day';
+        $validated['scheduled'] = 'no';
         $log = ShiftLog::create($validated);
         $log->save();
 
@@ -119,7 +121,7 @@ class SupervisorsShiftLogController extends Controller
             'field' => 'required|string',
             'value' => 'nullable|string'
         ]);
-        $allowedFields = ['shift_name', 'wo_number', 'asset_no', 'work_description', 'labour', 'supervisor_notes', 'asset_description', 'duration', 'department', 'priority', 'progress', 'note', 'requisition', 'note_id'];
+        $allowedFields = ['shift_name', 'wo_number', 'asset_no', 'work_description', 'labour', 'supervisor_notes', 'asset_description', 'duration', 'department', 'priority', 'progress', 'note', 'requisition', 'note_id', 'scheduled'];
 
         if (!in_array($request->field, $allowedFields)) {
             return response()->json(['error' => 'Invalid field'], 400);
@@ -426,6 +428,9 @@ class SupervisorsShiftLogController extends Controller
         ]);
     }
 
+
+
+
     private function calculateYesPercentage(?array $answers): float
     {
         if (empty($answers)) {
@@ -435,7 +440,7 @@ class SupervisorsShiftLogController extends Controller
         $total = count($answers);
         $yesCount = count(array_filter($answers, fn($answer) => strtolower($answer) === 'yes'));
 
-        return round(($yesCount / $total) * 100, 2);
+        return number_format(($yesCount / $total) * 100, 2);
     }
 
 

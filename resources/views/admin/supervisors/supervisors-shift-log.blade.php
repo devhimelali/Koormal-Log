@@ -838,6 +838,7 @@
                     setTimeout(() => td.css('background-color', ''), 1000);
                     if (table_reload) {
                         $('#jobTable').DataTable().ajax.reload(null, false);
+                        location.reload();
                     }
                 },
                 error: function() {
