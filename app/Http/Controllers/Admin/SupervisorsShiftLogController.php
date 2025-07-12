@@ -435,7 +435,7 @@ class SupervisorsShiftLogController extends Controller
         $total = count($answers);
         $yesCount = count(array_filter($answers, fn($answer) => strtolower($answer) === 'yes'));
 
-        return ($yesCount / $total) * 100;
+        return round(($yesCount / $total) * 100, 2);
     }
 
 
