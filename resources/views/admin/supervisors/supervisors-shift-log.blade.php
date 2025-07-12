@@ -67,10 +67,10 @@
                                 </p>
                                 @if ($isEditable || $role == 'admin')
                                     <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                        data-shift="day">Handover
-                                        Complete
+                                        data-shift="day">Handover Completion
                                     </button>
                                 @endif
+                                <span class="badge bg-primary">{{ $totalDayHandoverCompletionPercent }}%</span>
                             </div>
                             <div class="supervisor-editable" data-shift="day"
                                 contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
@@ -90,9 +90,10 @@
                                 </p>
                                 @if ($isEditable || $role == 'admin')
                                     <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                        data-shift="night">Handover Complete
+                                        data-shift="night">Handover Completion
                                     </button>
                                 @endif
+                                <span class="badge bg-primary">{{ $totalNightHandoverCompletionPercent }}%</span>
                             </div>
                             <div class="supervisor-editable" data-shift="night"
                                 contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">

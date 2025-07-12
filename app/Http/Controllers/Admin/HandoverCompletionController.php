@@ -16,6 +16,9 @@ class HandoverCompletionController extends Controller
             $data = HandoverCompletion::where('shift', $request->shift);
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->editColumn('shift', function ($row) {
+                    return ucfirst($row->shift);
+                })
                 ->addColumn('supervisor_name', function ($row) {
                     return $row?->supervisor_name;
                 })

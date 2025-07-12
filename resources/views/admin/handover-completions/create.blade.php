@@ -56,7 +56,7 @@
             success: function(res) {
                 if (res.status == 'success') {
                     $('#handoverCompletionModal').modal('hide');
-                    $('#jobTable').DataTable().ajax.reload(null, false);
+                    location.reload();
                 }
             },
             error: function(xhr) {

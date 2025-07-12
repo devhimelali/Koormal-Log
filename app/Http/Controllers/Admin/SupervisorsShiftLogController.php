@@ -59,6 +59,16 @@ class SupervisorsShiftLogController extends Controller
         $isLocked = $this->isLocked($inputDate);
         $isEditable = $role === 'supervisor' && !$isLocked;
 
+        $dayHandoverCompletion = HandoverCompletion::where('shift', 'day')
+            ->where('log_date', $inputDate)
+            ->first();
+        $nightHandoverCompletion = HandoverCompletion::where('shift', 'night')
+            ->where('log_date', $inputDate)
+            ->first();
+        $totalDayHandoverCompletionPercent = $this->calculateYesPercentage($dayHandoverCompletion->answers ?? []);
+        $totalNightHandoverCompletionPercent = $this->calculateYesPercentage($nightHandoverCompletion->answers ?? []);
+
+
         return $dataTable->render('admin.supervisors.supervisors-shift-log', [
             'selectedDate' => $inputDate,
             'day_labours' => $day_labours,
@@ -67,6 +77,8 @@ class SupervisorsShiftLogController extends Controller
             'supervisors_night' => (clone $supervisorQuery)->where('shift', 'night')->pluck('name')->toArray(),
             'opportuneJobs' => OpportuneJob::get(),
             'isEditable' => $isEditable,
+            'totalDayHandoverCompletionPercent' => $totalDayHandoverCompletionPercent,
+            'totalNightHandoverCompletionPercent' => $totalNightHandoverCompletionPercent
         ]);
     }
 
@@ -413,6 +425,19 @@ class SupervisorsShiftLogController extends Controller
             'message' => 'Assignments copied successfully',
         ]);
     }
+
+    private function calculateYesPercentage(?array $answers): float
+    {
+        if (empty($answers)) {
+            return 0;
+        }
+
+        $total = count($answers);
+        $yesCount = count(array_filter($answers, fn($answer) => strtolower($answer) === 'yes'));
+
+        return ($yesCount / $total) * 100;
+    }
+
 
     private function copyAssignments(array $validated, string $type): void
     {
