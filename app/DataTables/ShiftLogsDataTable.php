@@ -182,7 +182,7 @@ class ShiftLogsDataTable extends DataTable
 
     public function query()
     {
-        $query = ShiftLog::query();
+        $query = ShiftLog::orderBy('wo_number', 'asc');
 
         $orderColumnIndex = $this->request->input('order.0.column');
         $orderColumnName = $this->getColumns()[$orderColumnIndex]['data'] ?? null;
