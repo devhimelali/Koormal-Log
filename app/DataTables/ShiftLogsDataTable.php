@@ -182,17 +182,26 @@ class ShiftLogsDataTable extends DataTable
 
     public function query()
     {
-        $query = ShiftLog::orderBy('wo_number', 'asc');
+        $query = ShiftLog::query();
 
+        // Custom ordering: day shifts (first), then night shifts
+        $query->orderByRaw("
+        CASE 
+            WHEN shift_name = 'day' THEN 1
+            WHEN shift_name = 'night' THEN 2
+            ELSE 3
+        END
+    ")->orderBy('wo_number', 'asc');
+
+        // Extra order by 'position' when not ordering a specific column
         $orderColumnIndex = $this->request->input('order.0.column');
         $orderColumnName = $this->getColumns()[$orderColumnIndex]['data'] ?? null;
 
-        // Only apply default ordering if the order is not for a specific column
         if (!$orderColumnName || $orderColumnName === 'line') {
             $query->orderBy('position');
         }
 
-        // Filter by shift
+        // Filter by shift if requested
         if (request()->has('shift') && in_array(request('shift'), ['day', 'night'])) {
             $query->where('shift_name', request('shift'));
         }
@@ -214,6 +223,7 @@ class ShiftLogsDataTable extends DataTable
 
         return $query;
     }
+
 
 
     public function html()
