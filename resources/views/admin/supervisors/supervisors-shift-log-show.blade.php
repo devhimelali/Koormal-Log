@@ -193,15 +193,8 @@
                     @if ($isEditable || $role == 'admin')
                         <div>
                             @if ($log->mark_as_complete == 0)
-                                {{-- <button type="button" class="btn btn-primary">
-                            <i class="bi bi-check-circle me-1"></i> Mark As Completed
-                        </button> --}}
                                 <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-primary">
                                     <i class="bi bi-check-circle me-1"></i> Mark As Completed
-                                </a>
-                            @else
-                                <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-success">
-                                    <i class="bi bi-check-circle me-1"></i> Job Completed
                                 </a>
                             @endif
                             @if ($log->progress < 100)

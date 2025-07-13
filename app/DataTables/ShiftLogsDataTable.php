@@ -297,17 +297,17 @@ class ShiftLogsDataTable extends DataTable
         $dayShiftScheduledYesPercentage = $this->calculateScheduledYesPercentage($dayShiftLogs);
         $nightShiftLogs = ShiftLog::where('log_date', request('date'))->where('shift_name', 'night')->get()->toArray();
         $nightShiftScheduledYesPercentage = $this->calculateScheduledYesPercentage($nightShiftLogs);
-        if ($role == 'admin') {
-            $columns[] = Column::make('scheduled')
-                ->title('<div class="d-flex flex-column justify-content-center">
+
+        $columns[] = Column::make('scheduled')
+            ->title('<div class="d-flex flex-column justify-content-center" style="min-width: 100px; width: 100px">
                 <span>Scheduled</span>
                 <span class="fw-light">Day: ' . $dayShiftScheduledYesPercentage . '%</span>
                 <span class="fw-light">Night: ' . $nightShiftScheduledYesPercentage . '%</span>
                 </div>')
-                ->orderable(false)
-                ->searchable(false)
-                ->addClass('align-content-center');
-        }
+            ->orderable(false)
+            ->searchable(false)
+            ->addClass('align-content-center');
+
 
         $columns[] = Column::make('progress')
             ->title('% Complete')
