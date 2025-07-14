@@ -385,17 +385,21 @@
     @endif
     <script type="text/php">
     if (isset($pdf)) {
+        date_default_timezone_set('Australia/Perth'); // Set timezone
+
         $font = $fontMetrics->getFont('Helvetica', 'normal');
         $size = 8;
         $color = [0, 0, 0];
         $x = 35;
         $y = $pdf->get_height() - 35;
 
+        // Page number
         $pageText = "Page $PAGE_NUM of $PAGE_COUNT";
         $pdf->text($x, $y, $pageText, $font, $size, $color);
 
+        // Date/time
         $datetime = date('d-m-Y H:i:s A');
-        $rightText = "Generated at: $datetime";
+        $rightText = "Generated at: $datetime (Australia Perth Time)";
         $textWidth = $fontMetrics->getTextWidth($rightText, $font, $size);
         $pdf->text($pdf->get_width() - $textWidth - 35, $y, $rightText, $font, $size, $color);
     }
