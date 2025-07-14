@@ -99,11 +99,14 @@
                     <tr>
                         <td style="width: 30%; padding-right: 5px; vertical-align: top; border-right: 1px solid #ccc;">
                             <div class="labour-box" style="margin-bottom: 5px;">
-                                <strong>Supervisor for Dayshift:</strong><br>
+                                <strong>Supervisor for Dayshift:</strong>
+                                <strong
+                                    style="margin-left: 5px; color: red;">{{ $supervisorDayYesPercentage }}%</strong><br>
                                 {{ $daySupervisor ? implode(', ', $daySupervisor) : 'N/A' }}
                             </div>
                             <div class="labour-box">
-                                <strong>Supervisor for Nightshift:</strong><br>
+                                <strong>Supervisor for Nightshift:</strong><strong
+                                    style="margin-left: 5px; color: red;">{{ $supervisorNightYesPercentage }}%</strong><br>
                                 {{ $nightSupervisor ? implode(', ', $nightSupervisor) : 'N/A' }}
                             </div>
                         </td>
@@ -152,18 +155,22 @@
         <table class="data-table" style="margin-bottom: 30px">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Shift</th>
-                    <th>WO Number</th>
-                    <th>Asset No</th>
-                    <th>Asset Description</th>
-                    <th>Work Description</th>
-                    <th style="width: 100px;">Labour</th>
-                    <th>Notes</th>
-                    <th>Req</th>
-                    <th style="text-align: center">Complete (%)</th>
-                    <th>Duration</th>
-                    <th>Completed</th>
+                    <th style="vertical-align: middle;">#</th>
+                    <th style="vertical-align: middle;">Shift</th>
+                    <th style="vertical-align: middle;">WO Number</th>
+                    <th style="vertical-align: middle;">Asset No</th>
+                    <th style="vertical-align: middle;">Asset Description</th>
+                    <th style="vertical-align: middle;">Work Description</th>
+                    <th style="width: 100px; vertical-align: middle;">Labour</th>
+                    <th style="vertical-align: middle;">Notes</th>
+                    <th style="vertical-align: middle;">Req</th>
+                    <th style="vertical-align: middle;">
+                        <div style="line-height: 1.2;">Scheduled</div>
+                        <div style="line-height: 1.2; color:red;">Day: {{ $dayLogPercentage }}%</div>
+                    </th>
+                    <th style="text-align: center; vertical-align: middle;">Complete (%)</th>
+                    <th style="vertical-align: middle;">Duration</th>
+                    <th style="vertical-align: middle;">Completed</th>
                 </tr>
             </thead>
             <tbody>
@@ -182,6 +189,7 @@
                         <td style="vertical-align: middle;">{{ $log->labour }}</td>
                         <td style="vertical-align: middle;">{{ $log->note->note ?? '' }}</td>
                         <td style="vertical-align: middle;">{{ Str::ucfirst($log->requisition) }}</td>
+                        <td style="text-align: center; vertical-align: middle;">{{ ucfirst($log->scheduled) }}</td>
                         <td style="text-align: center; vertical-align: middle;">{{ $log->progress }}</td>
                         <td style="text-align: center; vertical-align: middle;">{{ $log->duration }}</td>
                         <td style="text-align: center; vertical-align: middle;">
@@ -231,18 +239,22 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Shift</th>
-                    <th>WO Number</th>
-                    <th>Asset No</th>
-                    <th>Asset Description</th>
-                    <th>Work Description</th>
-                    <th style="width: 100px;">Labour</th>
-                    <th>Notes</th>
-                    <th>Req</th>
-                    <th style="text-align: center">Complete (%)</th>
-                    <th>Duration</th>
-                    <th>Completed</th>
+                    <th style="vertical-align: middle">#</th>
+                    <th style="vertical-align: middle">Shift</th>
+                    <th style="vertical-align: middle">WO Number</th>
+                    <th style="vertical-align: middle">Asset No</th>
+                    <th style="vertical-align: middle">Asset Description</th>
+                    <th style="vertical-align: middle">Work Description</th>
+                    <th style="width: 100px; vertical-align: middle;">Labour</th>
+                    <th style="vertical-align: middle">Notes</th>
+                    <th style="vertical-align: middle">Req</th>
+                    <th style="vertical-align: middle">
+                        <div style="line-height: 1.2;">Scheduled</div>
+                        <div style="line-height: 1.2; color:red;">Night: {{ $nightLogPercentage }}%</div>
+                    </th>
+                    <th style="text-align: center; vertical-align: middle;">Complete (%)</th>
+                    <th style="vertical-align: middle">Duration</th>
+                    <th style="vertical-align: middle">Completed</th>
                 </tr>
             </thead>
             <tbody>
@@ -263,6 +275,7 @@
                         <td style="vertical-align: middle;">{{ $log->labour }}</td>
                         <td style="vertical-align: middle;">{{ $log->note->note ?? '' }}</td>
                         <td style="vertical-align: middle;">{{ Str::ucfirst($log->requisition) }}</td>
+                        <td style="text-align: center; vertical-align: middle;">{{ ucfirst($log->scheduled) }}</td>
                         <td style="text-align: center; vertical-align: middle;">{{ $log->progress }}</td>
                         <td style="text-align: center; vertical-align: middle;">{{ $log->duration }}</td>
                         <td style="text-align: center; vertical-align: middle;">
@@ -312,18 +325,22 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Shift</th>
-                    <th>WO Number</th>
-                    <th>Asset No</th>
-                    <th>Asset Description</th>
-                    <th>Work Description</th>
-                    <th style="width: 100px;">Labour</th>
-                    <th>Notes</th>
-                    <th>Req</th>
-                    <th style="text-align: center">Complete (%)</th>
-                    <th>Duration</th>
-                    <th>Completed</th>
+                    <th style="vertical-align: middle;">#</th>
+                    <th style="vertical-align: middle;">Shift</th>
+                    <th style="vertical-align: middle;">WO Number</th>
+                    <th style="vertical-align: middle;">Asset No</th>
+                    <th style="vertical-align: middle;">Asset Description</th>
+                    <th style="vertical-align: middle;">Work Description</th>
+                    <th style="width: 100px; vertical-align: middle;">Labour</th>
+                    <th style="vertical-align: middle;">Notes</th>
+                    <th style="vertical-align: middle;">Req</th>
+                    <th style="vertical-align: middle;">
+                        <div style="line-height: 1.2;">Scheduled</div>
+                        <div style="line-height: 1.2; color: red;">{{ ucfirst($shift) }}: {{ $logPercentage }}%</div>
+                    </th>
+                    <th style="text-align: center; vertical-align: middle;">Complete (%)</th>
+                    <th style="vertical-align: middle;">Duration</th>
+                    <th style="vertical-align: middle;">Completed</th>
                 </tr>
             </thead>
             <tbody>
@@ -349,6 +366,7 @@
                         <td>{{ $log->labour }}</td>
                         <td>{{ $log->note->note ?? '' }}</td>
                         <td>{{ Str::ucfirst($log->requisition) }}</td>
+                        <td>{{ Str::ucfirst($log->scheduled) }}</td>
                         <td style="text-align: center">{{ $log->progress }}</td>
                         <td style="text-align: center">{{ $log->duration }}</td>
                         <td style="text-align: center">{{ $log->mark_as_complete == 1 ? 'Yes' : 'No' }}</td>
@@ -367,25 +385,22 @@
     @endif
     <script type="text/php">
     if (isset($pdf)) {
-        $pdf->page_script('
-            $text = __("Page :pageNum/:pageCount", ["pageNum" => $PAGE_NUM, "pageCount" => $PAGE_COUNT]);
-            $font = null;
-            $size = 9;
-            $color = array(0,0,0);
-            $word_space = 0.0;  //  default
-            $char_space = 0.0;  //  default
-            $angle = 0.0;   //  default
+        $font = $fontMetrics->getFont('Helvetica', 'normal');
+        $size = 8;
+        $color = [0, 0, 0];
+        $x = 35;
+        $y = $pdf->get_height() - 35;
 
-            // Compute text width to center correctly
-            $textWidth = $fontMetrics->getTextWidth($text, $font, $size);
+        $pageText = "Page $PAGE_NUM of $PAGE_COUNT";
+        $pdf->text($x, $y, $pageText, $font, $size, $color);
 
-            $x = ($pdf->get_width() - $textWidth) - 38;
-            $y = $pdf->get_height() - 35;
-
-            $pdf->text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
-        ');
+        $datetime = date('d-m-Y H:i:s A');
+        $rightText = "Generated at: $datetime";
+        $textWidth = $fontMetrics->getTextWidth($rightText, $font, $size);
+        $pdf->text($pdf->get_width() - $textWidth - 35, $y, $rightText, $font, $size, $color);
     }
 </script>
+
 </body>
 
 </html>

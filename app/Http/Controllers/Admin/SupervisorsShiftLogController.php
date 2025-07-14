@@ -251,6 +251,17 @@ class SupervisorsShiftLogController extends Controller
                 ->where('shift', 'night')
                 ->first();
 
+            $handoverCompletions = HandoverCompletion::where('log_date', $request->date)
+                ->whereIn('shift', ['day', 'night'])
+                ->get()
+                ->keyBy('shift');
+
+            $dayHandoverCompletion = $handoverCompletions->get('day');
+            $nightHandoverCompletion = $handoverCompletions->get('night');
+
+            $supervisorDayYesPercentage = $this->calculateYesPercentage($dayHandoverCompletion->answers ?? []);
+            $supervisorNightYesPercentage = $this->calculateYesPercentage($nightHandoverCompletion->answers ?? []);
+
             $logs = $query->get();
             $daySupervisor = (clone $supervisorQuery)->where('shift', 'day')->pluck('name')->toArray();
             $nightSupervisor = (clone $supervisorQuery)->where('shift', 'night')->pluck('name')->toArray();
@@ -259,9 +270,14 @@ class SupervisorsShiftLogController extends Controller
                 $dayLogs = $logs->where('shift_name', 'day');
                 $nightLogs = $logs->where('shift_name', 'night');
 
+                $dayLogPercentage = $this->calculateScheduledYesPercentage($dayLogs->toArray());
+                $nightLogPercentage = $this->calculateScheduledYesPercentage($nightLogs->toArray());
+
                 $pdf = PDF::loadView('exports.shift-log', [
                     'dayLogs' => $dayLogs,
                     'nightLogs' => $nightLogs,
+                    'dayLogPercentage' => $dayLogPercentage,
+                    'nightLogPercentage' => $nightLogPercentage,
                     'shift' => 'both',
                     'date' => $request->date,
                     'dayLabour' => $day_labours,
@@ -270,6 +286,9 @@ class SupervisorsShiftLogController extends Controller
                     'nightSupervisor' => $nightSupervisor,
                     'supervisorDayShiftNotes' => $supervisorDayShiftNotes,
                     'supervisorNightShiftNotes' => $supervisorNightShiftNotes,
+                    'supervisorDayYesPercentage' => $supervisorDayYesPercentage,
+                    'supervisorNightYesPercentage' => $supervisorNightYesPercentage,
+
                 ])->setPaper('a4', 'portrait');
             } else {
                 $supervisorNotes = null;
@@ -278,8 +297,10 @@ class SupervisorsShiftLogController extends Controller
                 } elseif ($request->shift == 'night') {
                     $supervisorNotes = $supervisorNightShiftNotes;
                 }
+                $logPercentage = $this->calculateScheduledYesPercentage($logs->toArray());
                 $pdf = PDF::loadView('exports.shift-log', [
                     'logs' => $logs,
+                    'logPercentage' => $this->calculateScheduledYesPercentage($logs->toArray()),
                     'shift' => $request->shift,
                     'date' => $request->date,
                     'dayLabour' => $day_labours,
@@ -287,6 +308,8 @@ class SupervisorsShiftLogController extends Controller
                     'daySupervisor' => $daySupervisor,
                     'nightSupervisor' => $nightSupervisor,
                     'supervisorNotes' => $supervisorNotes,
+                    'supervisorDayYesPercentage' => $supervisorDayYesPercentage,
+                    'supervisorNightYesPercentage' => $supervisorNightYesPercentage,
                 ])->setPaper('a4', 'portrait');
             }
 
@@ -492,5 +515,33 @@ class SupervisorsShiftLogController extends Controller
     private function isLocked($log_date)
     {
         return $isLocked = now()->greaterThan(Carbon::parse($log_date)->addDay()->setTime(6, 0));
+    }
+
+    private function calculateScheduledYesPercentage(?array $jobs): float
+    {
+        if (empty($jobs)) {
+            return 0.0;
+        }
+
+        // Filter jobs where 'scheduled' is 'yes'
+        $filteredJobs = array_filter($jobs, function ($job) {
+            return isset($job['scheduled'], $job['progress']) && strtolower($job['scheduled']) === 'yes';
+        });
+
+        $total = count($filteredJobs);
+
+        if ($total === 0) {
+            return 0.0;
+        }
+
+        // Sum the 'progress' values
+        $totalProgress = array_reduce($filteredJobs, function ($carry, $job) {
+            return $carry + (float) $job['progress'];
+        }, 0.0);
+
+        // Calculate percentage
+        $percentage = ($totalProgress / $total);
+
+        return round($percentage, 2);
     }
 }
