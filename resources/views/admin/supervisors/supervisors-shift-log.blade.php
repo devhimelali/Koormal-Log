@@ -265,6 +265,9 @@
         $('#copy-days-date').flatpickr({
             dateFormat: 'd-m-Y',
         });
+        $('#end_date').flatpickr({
+            dateFormat: 'd-m-Y',
+        });
 
         // Open modal and initialize step 1
         $('body').on('click', '.move-work-order-number-btn', function() {

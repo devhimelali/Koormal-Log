@@ -470,11 +470,13 @@ class SupervisorsShiftLogController extends Controller
     private function copyAssignments(array $validated, string $type): void
     {
         $startDate = Carbon::createFromFormat('d-m-Y', $validated['copy_days_date']);
-        $howMany = (int) $validated['how_many'];
+        $endDate = Carbon::createFromFormat('d-m-Y', $validated['end_date']);
         $newNames = array_unique(array_filter(array_map('trim', preg_split('/[\s,]+/', $validated['names']))));
 
-        for ($i = 0; $i < $howMany; $i++) {
-            $targetDate = $startDate->copy()->addDays($i)->format('d-m-Y');
+        $period = Carbon::parse($startDate)->daysUntil($endDate->copy()->addDay()); // include end date
+
+        foreach ($period as $date) {
+            $targetDate = $date->format('d-m-Y');
 
             if ($type === 'supervisor' || $type === 'both') {
                 $this->createOrMergeName(Supervisor::class, $newNames, $validated['shift'], $targetDate);
