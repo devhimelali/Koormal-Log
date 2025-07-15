@@ -471,40 +471,37 @@ class SupervisorsShiftLogController extends Controller
     {
         $startDate = Carbon::createFromFormat('d-m-Y', $validated['copy_days_date']);
         $endDate = Carbon::createFromFormat('d-m-Y', $validated['end_date']);
-        $newNames = array_unique(array_filter(array_map('trim', preg_split('/[\s,]+/', $validated['names']))));
+        $copyFormDate = $validated['copy_days_date'];
 
-        $period = Carbon::parse($startDate)->daysUntil($endDate->copy()->addDay()); // include end date
+        $period = Carbon::parse($startDate)->daysUntil($endDate->copy());
 
         foreach ($period as $date) {
             $targetDate = $date->format('d-m-Y');
 
             if ($type === 'supervisor' || $type === 'both') {
-                $this->createOrMergeName(Supervisor::class, $newNames, $validated['shift'], $targetDate);
+                $this->createOrMergeName(Supervisor::class, $copyFormDate, $validated['shift'], $targetDate);
             }
 
             if ($type === 'labour' || $type === 'both') {
-                $this->createOrMergeName(LabourShift::class, $newNames, $validated['shift'], $targetDate);
+                $this->createOrMergeName(LabourShift::class, $copyFormDate, $validated['shift'], $targetDate);
             }
         }
     }
 
-    private function createOrMergeName(string $modelClass, array $newNames, string $shift, string $date): void
+    private function createOrMergeName(string $modelClass, string $copyFormDate, string $shift, string $date): void
     {
-        $record = $modelClass::where('shift', $shift)
-            ->where('date', $date)
+        $copyData = $modelClass::where('shift', $shift)
+            ->where('date', $copyFormDate)
             ->first();
 
-        if ($record) {
-            // Merge old and new names
-            $existingNames = array_filter(array_map('trim', preg_split('/[\s,]+/', $record->name)));
-            $mergedNames = implode(', ', array_unique(array_merge($existingNames, $newNames)));
-
-            $record->update(['name' => $mergedNames]);
-        } else {
-            $modelClass::create([
-                'name' => implode(', ', $newNames),
+        if ($copyData) {
+            $modelClass::updateOrCreate([
+                'date' => $date,
+                'shift' => $shift
+            ], [
                 'shift' => $shift,
                 'date' => $date,
+                'name' => $copyData->name
             ]);
         }
     }

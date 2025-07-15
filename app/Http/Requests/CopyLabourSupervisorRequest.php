@@ -26,16 +26,7 @@ class CopyLabourSupervisorRequest extends FormRequest
             'copy_for' => 'required|in:supervisor,labour,both',
             'copy_days_date' => 'required|date_format:d-m-Y',
             'end_date' => 'required|date_format:d-m-Y|after:copy_days_date',
-            'names' => [
-                'required',
-                'string',
-                function ($attribute, $value, $fail) {
-                    $count = count(preg_split('/[\s,]+/', $value));
-                    if ($count > 100) {
-                        $fail('You can copy to a maximum of 100 names.');
-                    }
-                },
-            ],
+            'copy_form_date' => 'required|date_format:d-m-Y',
         ];
     }
 
@@ -52,7 +43,6 @@ class CopyLabourSupervisorRequest extends FormRequest
             'copy_for.required' => 'Please choose the assignment type.',
             'copy_days_date.required' => 'Please select a start date.',
             'end_date.required' => 'Please select an end date.',
-            'names.required' => 'Please enter at least one name.',
         ];
     }
 }

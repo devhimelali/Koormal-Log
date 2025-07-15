@@ -47,9 +47,12 @@
                             value="{{ $selectedDate }}" placeholder="Select Date"
                             style="font-weight: bold;font-size: 18px;font-style: italic;">
                     </h4>
-                    <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#copyDaysModal">Add Labour to
-                        Next
-                        Days</button>
+                    @if (!$isPast)
+                        <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#copyDaysModal">Add
+                            Labour to
+                            Next
+                            Days</button>
+                    @endif
                 </div>
 
                 <div class="row">
@@ -264,10 +267,17 @@
         });
         $('#copy-days-date').flatpickr({
             dateFormat: 'd-m-Y',
+            minDate: 'today',
         });
+
         $('#end_date').flatpickr({
             dateFormat: 'd-m-Y',
+            minDate: new Date().fp_incr(1),
         });
+
+        let copyLogDate = $('#flatpickr-date').val()
+
+        $('#copy_form_date').val(copyLogDate);
 
         // Open modal and initialize step 1
         $('body').on('click', '.move-work-order-number-btn', function() {

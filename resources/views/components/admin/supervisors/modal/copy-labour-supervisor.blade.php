@@ -9,6 +9,7 @@
             </div>
             <form action="{{ route('labour-supervisor.copy') }}" method="post" class="copyDaysForm">
                 @csrf
+                <input type="hidden" name="copy_form_date" id="copy_form_date">
                 <div class="modal-body">
                     <div class="mb-2">
                         <label for="copy-days-shift" class="form-label">Shift <span class="text-danger">*</span></label>
@@ -41,12 +42,6 @@
                         <label for="end_date" class="form-label">End Date<span class="text-danger">*</span></label>
                         <input type="number" class="form-control" name="end_date" id="end_date" required
                             placeholder="Select ending date">
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <div class="mb-2">
-                        <label for="names" class="form-label">Names <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="names" id="names" required
-                            placeholder="Enter names separated by comma or enter. e.g., John, Jane">
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>
