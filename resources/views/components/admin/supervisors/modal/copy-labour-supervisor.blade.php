@@ -17,6 +17,7 @@
                             <option value="">Select shift</option>
                             <option value="day">Day Shift</option>
                             <option value="night">Night Shift</option>
+                            <option value="both">Both Shift</option>
                         </select>
                         <div class="invalid-feedback"></div>
                     </div>
@@ -39,9 +40,10 @@
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="mb-2">
-                        <label for="end_date" class="form-label">End Date<span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="end_date" id="end_date" required
-                            placeholder="Select ending date">
+                        <label for="how_many" class="form-label">Number of Days to Copy <span
+                                class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="how_many" id="how_many" required
+                            placeholder="e.g., 3">
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>

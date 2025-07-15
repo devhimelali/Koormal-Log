@@ -22,11 +22,12 @@ class CopyLabourSupervisorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'shift' => 'required|in:day,night',
+            'shift' => 'required|in:day,night,both',
             'copy_for' => 'required|in:supervisor,labour,both',
             'copy_days_date' => 'required|date_format:d-m-Y',
-            'end_date' => 'required|date_format:d-m-Y|after:copy_days_date',
+            // 'end_date' => 'required|date_format:d-m-Y|after:copy_days_date',
             'copy_form_date' => 'required|date_format:d-m-Y',
+            'how_many' => 'required|integer|min:1|max:31',
         ];
     }
 
@@ -42,7 +43,8 @@ class CopyLabourSupervisorRequest extends FormRequest
             'shift.required' => 'Please select a shift.',
             'copy_for.required' => 'Please choose the assignment type.',
             'copy_days_date.required' => 'Please select a start date.',
-            'end_date.required' => 'Please select an end date.',
+            'how_many.required' => 'Please specify how many days to copy.',
+            // 'end_date.required' => 'Please select an end date.',
         ];
     }
 }

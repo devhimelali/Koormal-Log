@@ -470,14 +470,13 @@ class SupervisorsShiftLogController extends Controller
     private function copyAssignments(array $validated, string $type): void
     {
         $startDate = Carbon::createFromFormat('d-m-Y', $validated['copy_days_date']);
-        $endDate = Carbon::createFromFormat('d-m-Y', $validated['end_date']);
-        $copyFormDate = $validated['copy_days_date'];
+        $howMany = (int) $validated['how_many'];
 
-        $period = Carbon::parse($startDate)->daysUntil($endDate->copy());
+        $copyFormDate = $validated['copy_form_date'];
 
-        foreach ($period as $date) {
-            $targetDate = $date->format('d-m-Y');
 
+        for ($i = 0; $i < $howMany; $i++) {
+            $targetDate = $startDate->copy()->addDays($i)->format('d-m-Y');
             if ($type === 'supervisor' || $type === 'both') {
                 $this->createOrMergeName(Supervisor::class, $copyFormDate, $validated['shift'], $targetDate);
             }
@@ -490,19 +489,19 @@ class SupervisorsShiftLogController extends Controller
 
     private function createOrMergeName(string $modelClass, string $copyFormDate, string $shift, string $date): void
     {
-        $copyData = $modelClass::where('shift', $shift)
-            ->where('date', $copyFormDate)
-            ->first();
+        $shifts = $shift === 'both' ? ['day', 'night'] : [$shift];
 
-        if ($copyData) {
-            $modelClass::updateOrCreate([
-                'date' => $date,
-                'shift' => $shift
-            ], [
-                'shift' => $shift,
-                'date' => $date,
-                'name' => $copyData->name
-            ]);
+        foreach ($shifts as $currentShift) {
+            $copyData = $modelClass::where('shift', $currentShift)
+                ->where('date', $copyFormDate)
+                ->first();
+
+            if ($copyData) {
+                $modelClass::updateOrCreate(
+                    ['date' => $date, 'shift' => $currentShift],
+                    ['name' => $copyData->name]
+                );
+            }
         }
     }
 

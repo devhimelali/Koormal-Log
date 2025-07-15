@@ -189,8 +189,8 @@
 
 
                 <!-- Buttons -->
-                <div class="mt-4 d-flex justify-content-between flex-wrap gap-2">
-                    @if ($isEditable || $role == 'admin')
+                <div class="mt-4 d-flex justify-content-end flex-wrap gap-2">
+                    {{-- @if ($isEditable || $role == 'admin')
                         <div>
                             @if ($log->mark_as_complete == 0)
                                 <a href="{{ route('shift-logs.markComplete', $log->id) }}" class="btn btn-primary">
@@ -203,7 +203,7 @@
                                 </a>
                             @endif
                         </div>
-                    @endif
+                    @endif --}}
 
                     <div class="d-flex gap-2">
                         <a href="{{ route('supervisors-shift-log.index', [

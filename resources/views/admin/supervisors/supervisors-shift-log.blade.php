@@ -169,12 +169,12 @@
                         </button>
                     @endif
 
-                    <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
+                    <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
                         data-type="day_shift">
                         Supervisor's Notes – Day Shift
                     </a>
 
-                    <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
+                    <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
                         data-type="night_shift">
                         Supervisor's Notes – Night Shift
                     </a>
@@ -270,10 +270,10 @@
             minDate: 'today',
         });
 
-        $('#end_date').flatpickr({
-            dateFormat: 'd-m-Y',
-            minDate: new Date().fp_incr(1),
-        });
+        // $('#end_date').flatpickr({
+        //     dateFormat: 'd-m-Y',
+        //     minDate: 'today',
+        // });
 
         let copyLogDate = $('#flatpickr-date').val()
 
