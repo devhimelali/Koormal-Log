@@ -542,4 +542,17 @@ class SupervisorsShiftLogController extends Controller
 
         return round($percentage, 2);
     }
+
+    public function updateCriticalWork($id)
+    {
+        $log = ShiftLog::find($id);
+
+        if (!$log) {
+            return response()->json(['error' => 'Job not found.'], 404);
+        }
+
+        $log->update(['critical_work' => !$log->critical_work]);
+
+        return response()->json(['status' => 'success', 'message' => 'Updated successfully']);
+    }
 }

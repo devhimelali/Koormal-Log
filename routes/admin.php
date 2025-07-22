@@ -29,6 +29,7 @@ Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function
     Route::get('/export-shift-logs', [SupervisorsShiftLogController::class, 'export'])->name('supervisors-shift-log.export');
     Route::post('/labour-supervisor/copy', [SupervisorsShiftLogController::class, 'copyToNextDays'])->name('labour-supervisor.copy');
 
+    Route::get('update-critical-work/{id}', [SupervisorsShiftLogController::class, 'updateCriticalWork'])->name('update-critical-work');
     // Labourer routes
     Route::post('supervisor-shift/update', [SupervisorController::class, 'updateSupervisor'])->name('supervisor-shift.update');
 

@@ -1022,6 +1022,21 @@
             })
         })
 
+        $('body').on('click', '.edit_critical_work', function() {
+            let id = $(this).data('id');
+            let url = "{{ route('update-critical-work', ['id' => ':id']) }}".replace(':id', id);
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function(res) {
+                    notify('success', res.message);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500);
+                }
+            })
+        })
+
         $(document).on('dblclick', '.reset-progress', function() {
             Swal.fire({
                 title: 'Are you sure you want to reset the progress?',
@@ -1061,6 +1076,12 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}">
     <style>
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #858585;
+        }
+
         /* Table Structure */
         #jobTable {
             /* width: 100% !important; */

@@ -62,6 +62,14 @@ class ShiftLogsDataTable extends DataTable
                         <option value="night" ' . $selectedNight . '>Night</option>
                     </select>';
             })
+            ->addColumn('critical_work', function ($job) use ($role) {
+                $isChecked = $job->critical_work == 1 ? 'checked' : '';
+                $isEditable = $role == 'admin' ? 'edit_critical_work' : '';
+                $isDisabled = $role == 'admin' ? '' : 'disabled';
+                return '<div class="form-check form-check-secondary d-flex justify-content-center align-items-center">
+                            <input data-id="' . $job->id . '" class="form-check-input ' . $isEditable . '" type="checkbox" ' . $isChecked . ' ' . $isDisabled . '>
+                        </div>';
+            })
             ->addColumn('wo_number', function ($job) {
                 $editable = $job->is_excel_upload === 0 ? 'contenteditable=true' : '';
                 return "<div {$editable} data-field='wo_number' class='py-3 m-0'>{$job->wo_number}</div>";
@@ -177,7 +185,7 @@ class ShiftLogsDataTable extends DataTable
                 return $buttons;
             })
 
-            ->rawColumns(['line', 'requisition', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'scheduled', 'progress', 'action']);
+            ->rawColumns(['line', 'critical_work', 'requisition', 'shift', 'wo_number', 'note', 'asset_no', 'work_description', 'labour', 'scheduled', 'progress', 'action']);
     }
 
     public function query()
@@ -259,6 +267,13 @@ class ShiftLogsDataTable extends DataTable
                 ->searchable(false)
                 ->width('60px')
                 ->addClass('align-content-center col-shift'),
+            Column::make('critical_work')
+                ->name('critical_work')
+                ->title('Critical Work')
+                ->orderable(true)
+                ->searchable(false)
+                ->width('60px')
+                ->addClass('align-content-center col-critical-work'),
 
             Column::make('wo_number')
                 ->title('WO Number')

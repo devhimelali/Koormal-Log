@@ -2519,6 +2519,7 @@ namespace App\Models {
      *
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
+     * @property bool $critical_work
      * @property mixed $scheduled
      * @property int|null $note_id
      * @property string|null $log_date
@@ -2581,6 +2582,7 @@ namespace App\Models {
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereLogDate($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereNoteId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereScheduled($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereCriticalWork($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog dayShift()
