@@ -130,6 +130,8 @@ class SupervisorsShiftLogController extends Controller
         $log = ShiftLog::find($id);
         if ($request->field == 'progress' && $request->value == 100) {
             $log->mark_as_complete = 1;
+        } else if ($request->field == 'scheduled' && $log->progress == 100) {
+            $log->mark_as_complete = 1;
         } else {
             $log->mark_as_complete = 0;
         }
