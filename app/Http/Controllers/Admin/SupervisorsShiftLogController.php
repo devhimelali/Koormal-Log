@@ -132,7 +132,7 @@ class SupervisorsShiftLogController extends Controller
             $log->mark_as_complete = 1;
         } else if ($request->field == 'scheduled' && $log->progress == 100) {
             $log->mark_as_complete = 1;
-        } else {
+        } else if($log->progress != 100){
             $log->mark_as_complete = 0;
         }
         $log->{$request->field} = $request->value;

@@ -95,7 +95,7 @@ class ShiftLogsDataTable extends DataTable
                     $shortText = strlen($note->note) > 25 ? substr($note->note, 0, 25) . '...' : $note->note;
                     $options .= "<option value=\"{$note->id}\" {$selected}>{$shortText}</option>";
                 }
-                $disabled = (($role != 'admin' && $job->isLocked) || $job->mark_as_complete == 1) ? 'disabled' : '';
+                $disabled = ($role != 'admin' && ($job->isLocked || $job->mark_as_complete == 1)) ? 'disabled' : '';
                 return '
                     <select
                         class="form-select form-select-sm shift_name" ' . $disabled . '
@@ -194,7 +194,7 @@ class ShiftLogsDataTable extends DataTable
 
         // Custom ordering: day shifts (first), then night shifts
         $query->orderByRaw("
-        CASE 
+        CASE
             WHEN shift_name = 'day' THEN 1
             WHEN shift_name = 'night' THEN 2
             ELSE 3
