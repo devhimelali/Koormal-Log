@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Imports\ShiftLogFromWorkOrderImport;
 use Carbon\Carbon;
 use App\Models\Labour;
 use App\Models\ShiftLog;
@@ -21,6 +22,7 @@ use App\DataTables\ShiftLogsDataTable;
 use App\Http\Requests\CopyLabourSupervisorRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\HeadingRowImport;
 
 class SupervisorsShiftLogController extends Controller
 {
@@ -67,7 +69,6 @@ class SupervisorsShiftLogController extends Controller
             ->first();
         $totalDayHandoverCompletionPercent = $this->calculateYesPercentage($dayHandoverCompletion->answers ?? []);
         $totalNightHandoverCompletionPercent = $this->calculateYesPercentage($nightHandoverCompletion->answers ?? []);
-
 
 
         return $dataTable->render('admin.supervisors.supervisors-shift-log', [
@@ -121,7 +122,11 @@ class SupervisorsShiftLogController extends Controller
             'field' => 'required|string',
             'value' => 'nullable|string'
         ]);
-        $allowedFields = ['shift_name', 'wo_number', 'asset_no', 'work_description', 'labour', 'supervisor_notes', 'asset_description', 'duration', 'department', 'priority', 'progress', 'note', 'requisition', 'note_id', 'scheduled'];
+        $allowedFields = [
+            'shift_name', 'wo_number', 'asset_no', 'work_description', 'labour', 'supervisor_notes',
+            'asset_description', 'duration', 'department', 'priority', 'progress', 'note', 'requisition', 'note_id',
+            'scheduled'
+        ];
 
         if (!in_array($request->field, $allowedFields)) {
             return response()->json(['error' => 'Invalid field'], 400);
@@ -130,10 +135,14 @@ class SupervisorsShiftLogController extends Controller
         $log = ShiftLog::find($id);
         if ($request->field == 'progress' && $request->value == 100) {
             $log->mark_as_complete = 1;
-        } else if ($request->field == 'scheduled' && $log->progress == 100) {
-            $log->mark_as_complete = 1;
-        } else if($log->progress != 100){
-            $log->mark_as_complete = 0;
+        } else {
+            if ($request->field == 'scheduled' && $log->progress == 100) {
+                $log->mark_as_complete = 1;
+            } else {
+                if ($log->progress != 100) {
+                    $log->mark_as_complete = 0;
+                }
+            }
         }
         $log->{$request->field} = $request->value;
         $log->save();
@@ -214,10 +223,54 @@ class SupervisorsShiftLogController extends Controller
     {
         $request->validate([
             'csv_file' => 'required|file|mimes:csv,txt,xlsx',
-            'log_date' => 'required',
+            'log_date' => 'required|date',
+            'import_type' => 'required|in:scheduler,workorder'
         ]);
 
-        Excel::import(new ShiftLogImport($request->log_date), $request->file('csv_file'));
+        // Extract headings from the uploaded Excel file
+        $headingsArray = (new HeadingRowImport)->toArray($request->file('csv_file'));
+        $headers = $headingsArray[0][0] ?? [];
+
+        // Define expected headers for each type
+        $expectedScheduler = [
+            'W/O No', 'Description', 'Duration', 'Asset No', 'Trades',
+            'Due Start', 'Work Order Status Description', 'Raised',
+            'Start Date', 'Priority', 'Job Type', 'Department',
+            'Materials Cost', 'Labour Cost', 'Other Cost', 'Asset Description'
+        ];
+
+        $expectedWorkorder = [
+            'Printed', 'W/O No', 'Asset No', 'Description', 'Asset Description',
+            'Status', 'Due Start', 'Due Finish', 'Job Type', 'Reference No',
+            'Priority', 'Raised', 'Start Date', 'Finished Date', 'Duration',
+            'Account Code', 'Department', 'Parent Asset', 'Material Costs',
+            'Other Costs ', 'Policy Number', 'Group Number', 'Document Count',
+            'Permits Outstanding', 'Risk Type', 'Hazard Description',
+            'Risk Score', 'Risk Rating'
+        ];
+
+        // Select the expected format
+        $expected = $request->import_type === 'scheduler'
+            ? $expectedScheduler
+            : $expectedWorkorder;
+
+        // Check if any expected headers are missing
+        $missing = array_diff($expected, $headers);
+
+        if (!empty($missing)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'The uploaded file does not match the expected format for '.ucfirst($request->import_type).'.',
+                'missing_columns' => array_values($missing)
+            ], 422);
+        }
+
+        // Run appropriate import
+        if ($request->import_type === 'scheduler') {
+            Excel::import(new ShiftLogImport($request->log_date), $request->file('csv_file'));
+        } else {
+            Excel::import(new ShiftLogFromWorkOrderImport($request->log_date), $request->file('csv_file'));
+        }
 
         return response()->json([
             'status' => 'success',
@@ -242,8 +295,10 @@ class SupervisorsShiftLogController extends Controller
                 $query->where('shift_name', $request->shift);
             }
 
-            $supervisorDayShiftNotes = SupervisorNote::with('media')->where('log_date', $request->date)->where('note_type', 'day_shift')->first();
-            $supervisorNightShiftNotes = SupervisorNote::with('media')->where('log_date', $request->date)->where('note_type', 'night_shift')->first();
+            $supervisorDayShiftNotes = SupervisorNote::with('media')->where('log_date',
+                $request->date)->where('note_type', 'day_shift')->first();
+            $supervisorNightShiftNotes = SupervisorNote::with('media')->where('log_date',
+                $request->date)->where('note_type', 'night_shift')->first();
             $day_labours = LabourShift::where('date', $request->date)
                 ->where('shift', 'day')
                 ->first();
@@ -315,13 +370,13 @@ class SupervisorsShiftLogController extends Controller
                 ])->setPaper('a4', 'portrait');
             }
 
-            return $pdf->stream('shift_log_' . $request->date . '.pdf');
+            return $pdf->stream('shift_log_'.$request->date.'.pdf');
         }
 
 
         if ($request->export == 'xlsx' || $request->export == 'csv') {
             $ext = $request->export;
-            $fileName = 'shift_logs_' . date('Y-m-d') . '.' . $ext;
+            $fileName = 'shift_logs_'.date('Y-m-d').'.'.$ext;
             return Excel::download(new ShiftLogCsvExport($request->date, $request->shift), $fileName);
         }
     }
@@ -345,7 +400,7 @@ class SupervisorsShiftLogController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Work Order deleted successfully for date: ' . $logDate,
+            'message' => 'Work Order deleted successfully for date: '.$logDate,
         ]);
     }
 
@@ -454,8 +509,6 @@ class SupervisorsShiftLogController extends Controller
     }
 
 
-
-
     private function calculateYesPercentage(?array $answers): float
     {
         if (empty($answers)) {
@@ -463,7 +516,7 @@ class SupervisorsShiftLogController extends Controller
         }
 
         $total = count($answers);
-        $yesCount = count(array_filter($answers, fn($answer) => strtolower($answer) === 'yes'));
+        $yesCount = count(array_filter($answers, fn ($answer) => strtolower($answer) === 'yes'));
 
         return number_format(($yesCount / $total) * 100, 2);
     }

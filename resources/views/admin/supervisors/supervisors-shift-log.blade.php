@@ -14,7 +14,7 @@
                 class="col-xl-2 mb-3 mb-lg-0 d-flex d-lg-block flex-column flex-sm-row gap-md-5 gap-lg-0 align-items-center">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/koormal-logo.png') }}" style="width: 170px;" alt="Koormal Logo"
-                        class="mb-2">
+                         class="mb-2">
                 </div>
                 <div class="w-100 d-flex flex-sm-row flex-md-column gap-2 gap-md-0">
                     <select name="filter" class="form-select w-75 mt-2" id="filter">
@@ -44,14 +44,15 @@
                     <h4 class="fw-bold fst-italic">
                         SUPERVISORS SHIFT LOG –
                         <input type="text" id="flatpickr-date" class="form-control d-inline-block w-75 mt-3 mt-md-0"
-                            value="{{ $selectedDate }}" placeholder="Select Date"
-                            style="font-weight: bold;font-size: 18px;font-style: italic;">
+                               value="{{ $selectedDate }}" placeholder="Select Date"
+                               style="font-weight: bold;font-size: 18px;font-style: italic;">
                     </h4>
                     @if (!$isPast)
                         <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#copyDaysModal">Add
                             Labour to
                             Next
-                            Days</button>
+                            Days
+                        </button>
                     @endif
                 </div>
 
@@ -70,13 +71,13 @@
                                 </p>
                                 @if ($isEditable || $role == 'admin')
                                     <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                        data-shift="day">Handover Completion
+                                            data-shift="day">Handover Completion
                                     </button>
                                 @endif
                                 <span class="badge bg-primary">{{ $totalDayHandoverCompletionPercent }}%</span>
                             </div>
                             <div class="supervisor-editable" data-shift="day"
-                                contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
+                                 contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
                                 {{ implode(', ', $supervisors_day) }}
                             </div>
                         </div>
@@ -93,13 +94,13 @@
                                 </p>
                                 @if ($isEditable || $role == 'admin')
                                     <button class="btn btn-sm btn-success addCompletion" style="line-height: 1;"
-                                        data-shift="night">Handover Completion
+                                            data-shift="night">Handover Completion
                                     </button>
                                 @endif
                                 <span class="badge bg-primary">{{ $totalNightHandoverCompletionPercent }}%</span>
                             </div>
                             <div class="supervisor-editable" data-shift="night"
-                                contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
+                                 contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
                                 {{ implode(', ', $supervisors_night) }}
                             </div>
                         </div>
@@ -112,16 +113,17 @@
                                 <strong><u>Labour for Day Shift</u></strong><br>
                                 @if ($isEditable || $role == 'admin')
                                     <button class="btn btn-sm btn-primary loadCrew" data-shift="day"
-                                        style="line-height: 1;">
+                                            style="line-height: 1;">
                                         Load a Crew
                                     </button>
                                     <button class="btn btn-sm btn-secondary allNames" data-shift="day"
-                                        style="line-height: 1;">All
-                                        Names</button>
+                                            style="line-height: 1;">All
+                                        Names
+                                    </button>
                                 @endif
                             </div>
                             <div class="editable" data-shift="day"
-                                contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
+                                 contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
                                 {{ $day_labours?->name }}
                             </div>
                         </div>
@@ -131,17 +133,18 @@
                                 <strong><u>Labour for Night Shift</u></strong><br>
                                 @if ($isEditable || $role == 'admin')
                                     <button class="btn btn-sm btn-primary loadCrew" data-shift="night"
-                                        style="line-height: 1;">
+                                            style="line-height: 1;">
                                         Load a Crew
                                     </button>
                                     <button class="btn btn-sm btn-secondary allNames" data-shift="night"
-                                        style="line-height: 1;">All
-                                        Names</button>
+                                            style="line-height: 1;">All
+                                        Names
+                                    </button>
                                 @endif
                             </div>
 
                             <div class="editable" data-shift="night"
-                                contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
+                                 contenteditable="{{ $isEditable || $role == 'admin' ? 'true' : 'false' }}">
                                 {{ $night_labours?->name }}
                             </div>
                         </div>
@@ -155,27 +158,28 @@
                 class="col-xl-2 mb-3 mt-2 mt-lg-0 mb-md-0 d-flex flex-lg-column flex-md-row align-items-center justify-content-between gap-md-5 gap-lg-0">
                 <div class="py-3 text-center">
                     <img src="{{ asset('assets/logos/4emus-logo.png') }}" style="width: 180px;" alt="4EMUS Logo"
-                        class="mb-2">
+                         class="mb-2">
                 </div>
                 <div class="text-center">
                     @hasrole('admin')
-                        <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
+                    <button class="btn btn-sm btn-success w-75" data-bs-toggle="modal"
                             data-bs-target="#supervisorsShiftLogModal" style="line-height: 1;">Upload Excel
-                            Sheet
-                        </button>
+                        Sheet
+                    </button>
                     @endhasrole
                     @if ($role === 'admin' || ($role === 'supervisor' && !$isPast))
-                        <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a Job
+                        <button id="addJobBtn" class="btn btn-sm btn-primary mt-1 w-75" style="line-height: 1;">Add a
+                            Job
                         </button>
                     @endif
 
                     <a href="#" class="btn btn-sm btn-warning mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
-                        data-type="day_shift">
+                       data-type="day_shift">
                         Supervisor's Notes – Day Shift
                     </a>
 
                     <a href="#" class="btn btn-sm btn-secondary mt-1 w-75 supervisor-note-btn" style="line-height: 1;"
-                        data-type="night_shift">
+                       data-type="night_shift">
                         Supervisor's Notes – Night Shift
                     </a>
                 </div>
@@ -187,20 +191,30 @@
 
     <!-- Modal -->
     <div class="modal fade" id="supervisorsShiftLogModal" tabindex="-1" aria-labelledby="supervisorsShiftLogModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-primary-subtle pb-3">
+                <div class="modal-header bg-light py-2">
                     <h1 class="modal-title fs-5" id="supervisorsShiftLogModalLabel">Upload Excel Sheet</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('supervisors-shift-log.csv.import') }}" method="POST"
-                    enctype="multipart/form-data" id="csvImportForm">
-                    <div class="modal-body p-3 mb-3">
-                        @csrf
-                        <label for="csv_file" class="form-label fw-semibold">Upload File <span
-                                class="text-danger">*</span></label>
-                        <input type="file" name="csv_file" class="form-control" required>
+                      enctype="multipart/form-data" id="csvImportForm">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label for="import_type" class="form-label">Import Type</label>
+                            <select name="import_type" id="import_type" class="form-select" required>
+                                <option value="">Select import type</option>
+                                <option value="scheduler">Upload from Scheduler</option>
+                                <option value="workorder">Upload from Workorder</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label for="csv_file" class="form-label fw-semibold">Upload File <span
+                                    class="text-danger">*</span></label>
+                            <input type="file" name="csv_file" class="form-control" required>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -280,7 +294,7 @@
         $('#copy_form_date').val(copyLogDate);
 
         // Open modal and initialize step 1
-        $('body').on('click', '.move-work-order-number-btn', function() {
+        $('body').on('click', '.move-work-order-number-btn', function () {
             const today = new Date();
             today.setHours(0, 0, 0, 0); // remove time
             const id = $(this).data('id');
@@ -332,7 +346,7 @@
         }
 
         // Handle next step
-        $('#nextStep').on('click', function() {
+        $('#nextStep').on('click', function () {
             if (currentStep === 1 && !$('#reason').val().trim()) {
                 notify('error', 'Please enter a reason.');
                 $('#reason').addClass('is-invalid');
@@ -386,7 +400,7 @@
         });
 
         // Handle previous step
-        $('#prevStep').on('click', function() {
+        $('#prevStep').on('click', function () {
             if (currentStep > 1) {
                 currentStep--;
                 showStep(currentStep);
@@ -394,31 +408,30 @@
         });
 
         // Submit form
-        $('#moveWorkOrderForm').on('submit', function(e) {
+        $('#moveWorkOrderForm').on('submit', function (e) {
             e.preventDefault();
 
             $.ajax({
                 url: "{{ route('work-order-moves.store') }}",
                 type: 'POST',
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     $('#moveWorkOrderModal').modal('hide');
                     location.reload(); // Optional: Reload the table/list
                     notify('success', 'Work Order moved successfully!');
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     notify('error', 'An error occurred while moving the work order.');
                 }
             });
         });
 
 
-
         function setupShiftToggle(selector = '#shiftSelector') {
             const $container = $(selector);
 
             // On page load: set the initial states based on checked input
-            $container.find('input[name="to_shift"]').each(function() {
+            $container.find('input[name="to_shift"]').each(function () {
                 let label = $(this).closest('label');
                 if ($(this).is(':checked')) {
                     activateLabel(label);
@@ -428,8 +441,8 @@
             });
 
             // On change: toggle active classes and button styles
-            $container.on('change', 'input[name="to_shift"]', function() {
-                $container.find('input[name="to_shift"]').each(function() {
+            $container.on('change', 'input[name="to_shift"]', function () {
+                $container.find('input[name="to_shift"]').each(function () {
                     let label = $(this).closest('label');
                     if ($(this).is(':checked')) {
                         activateLabel(label);
@@ -459,11 +472,11 @@
         }
 
         // Initialize after DOM is ready or modal shown
-        $(function() {
+        $(function () {
             setupShiftToggle();
         });
 
-        $('#moveWorkOrderModal').on('hidden.bs.modal', function() {
+        $('#moveWorkOrderModal').on('hidden.bs.modal', function () {
             // Reset the form fields
             $('#moveWorkOrderForm')[0].reset();
 
@@ -488,9 +501,9 @@
             return str.replace(/\n/g, '<br>');
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-            $('#job_id').on('change', function() {
+            $('#job_id').on('change', function () {
                 let jobName = $(this).find(':selected').data('tooltip');
                 let formattedJobName = js_nl2br(jobName);
                 $('#jobDetails').html('<span class="fw-bold text-danger">Work Description: </span>' +
@@ -499,7 +512,7 @@
 
         });
 
-        $('#csvImportForm').submit(function(e) {
+        $('#csvImportForm').submit(function (e) {
             e.preventDefault();
 
             let log_date = $('#flatpickr-date').val();
@@ -513,13 +526,13 @@
                 processData: false,
                 contentType: false,
                 dataType: 'json',
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#csvImportBtn').attr('disabled', true);
                     $('#csvImportBtn').html(
                         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...'
                     );
                 },
-                success: function(res) {
+                success: function (res) {
                     if (res.status == 'success') {
                         Swal.fire({
                             icon: 'success',
@@ -540,28 +553,73 @@
                         });
                     }
                 },
-                error: function(xhr, status, error) {
-                    let errors = xhr.responseJSON.errors;
-                    $.each(errors, function(key, value) {
-                        notify('error', value);
-                    });
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        // Laravel validation error or column mismatch
+                        let response = xhr.responseJSON;
+
+                        if (response.missing_columns) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Invalid Format',
+                                html: `
+        <p style="margin-bottom: 10px;">${response.message}</p>
+        <strong>Missing Columns:</strong>
+        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;">
+            ${response.missing_columns.map(col => `
+                <span style="
+                    background-color: #f8d7da;
+                    color: #721c24;
+                    border: 1px solid #f5c6cb;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 13px;
+                ">${col}</span>`).join('')}
+        </div>
+    `,
+                                width: 600
+                            });
+
+                        } else if (response.errors) {
+                            // Laravel form validation errors
+                            let errors = Object.values(response.errors).flat();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                html: errors.join('<br>'),
+                                width: 600
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'Unprocessable request.',
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server Error',
+                            text: 'An unexpected error occurred. Please try again.',
+                        });
+                    }
                 },
-                complete: function() {
+                complete: function () {
                     $('#csvImportBtn').attr('disabled', false);
                     $('#csvImportBtn').html('Import');
                 }
             });
         });
 
-        $('#filter').on('change', function() {
+        $('#filter').on('change', function () {
             reloadTableWithFilters();
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             flatpickr("#flatpickr-date", {
                 dateFormat: "d-m-Y",
                 defaultDate: "{{ $selectedDate ?? now()->format('d-m-Y') }}",
-                onChange: function(selectedDates, dateStr, instance) {
+                onChange: function (selectedDates, dateStr, instance) {
                     window.location.href =
                         "{{ route('supervisors-shift-log.index', ['role' => $role]) }}?date=" +
                         dateStr;
@@ -569,19 +627,19 @@
             });
         });
 
-        $(document).on('draw.dt', function() {
+        $(document).on('draw.dt', function () {
             $('#jobTable tbody').sortable({
                 items: "tr",
                 handle: ".drag-handle",
                 helper: fixHelper,
                 cancel: '[contenteditable]',
-                start: function(e, ui) {
+                start: function (e, ui) {
                     ui.placeholder.height(ui.item.height());
                 },
-                update: function() {
+                update: function () {
                     updateLineNumbers();
                     let order = [];
-                    $('#jobTable tbody tr').each(function(index) {
+                    $('#jobTable tbody tr').each(function (index) {
                         order.push({
                             id: $(this).data('id'),
                             position: index + 1
@@ -594,10 +652,10 @@
                             order: order,
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             console.log('Order updated successfully');
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error('Failed to update order');
                         }
                     });
@@ -605,7 +663,7 @@
             });
         });
 
-        $('#export').on('change', function() {
+        $('#export').on('change', function () {
             let selectedValue = $(this).val();
             if (selectedValue) {
                 let date = $('#flatpickr-date').val();
@@ -618,7 +676,7 @@
 
         })
 
-        $('#jobTable').on('blur', '[contenteditable="true"]', function() {
+        $('#jobTable').on('blur', '[contenteditable="true"]', function () {
             let td = $(this);
             let field = td.data('field');
             let value = td.text().trim();
@@ -628,7 +686,7 @@
 
         });
 
-        $('#addJobBtn').on('click', function() {
+        $('#addJobBtn').on('click', function () {
             Swal.fire({
                 title: 'Add a Job',
                 text: 'Choose how you want to add a job:',
@@ -648,7 +706,7 @@
             });
         })
 
-        $('#addOpportuneJobForm').on('submit', function(e) {
+        $('#addOpportuneJobForm').on('submit', function (e) {
             e.preventDefault();
             let log_date = $('#flatpickr-date').val();
             let formData = new FormData(this);
@@ -661,7 +719,7 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     if (response.status == 'success') {
                         $('#addOpportuneJobModal').modal('hide');
                         $('#jobTable').DataTable().ajax.reload();
@@ -670,10 +728,10 @@
                         location.reload();
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     if (xhr.status == 422) {
                         let errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, value) {
+                        $.each(errors, function (key, value) {
                             notify('error', value);
                             let input = $('[name="' + key + '"]');
                             input.addClass('is-invalid');
@@ -685,8 +743,8 @@
         });
 
 
-        $(document).ready(function() {
-            $('.editable').on('blur', function() {
+        $(document).ready(function () {
+            $('.editable').on('blur', function () {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -700,18 +758,19 @@
                         labour: content,
                         date: date
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
-                    error: function() {}
+                    error: function () {
+                    }
                 });
             });
         });
 
-        $(document).ready(function() {
-            $('.supervisor-editable').on('blur', function() {
+        $(document).ready(function () {
+            $('.supervisor-editable').on('blur', function () {
                 let content = $(this).text().trim();
                 let shift = $(this).data('shift');
                 let date = $('#flatpickr-date').val();
@@ -725,19 +784,19 @@
                         supervisor: content,
                         date: date
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res.status == 'success') {
                             notify('success', res.message);
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.log(xhr);
                     }
                 });
             });
         });
 
-        $('#jobTable').on('change', '.shift_name', function() {
+        $('#jobTable').on('change', '.shift_name', function () {
             let select = $(this);
             let field = select.data('field'); // should be "shift_name"
             let value = select.val();
@@ -746,7 +805,7 @@
             editField(select, field, value, id, true);
         });
 
-        $('#jobTable').on('change', '.complete_progress', function() {
+        $('#jobTable').on('change', '.complete_progress', function () {
             let select = $(this);
             let field = select.data('field');
             let value = select.val();
@@ -756,7 +815,7 @@
         });
 
 
-        $(document).on('click', '.deleteRowBtn', function() {
+        $(document).on('click', '.deleteRowBtn', function () {
             let id = $(this).data('id');
             Swal.fire({
                 title: 'Are you sure?',
@@ -783,11 +842,11 @@
                     _method: 'DELETE',
                     _token: '{{ csrf_token() }}',
                 },
-                success: function() {
+                success: function () {
                     reloadTableWithFilters();
                     notify('success', 'Work Order deleted successfully');
                 },
-                error: function() {
+                error: function () {
                     reloadTableWithFilters();
                 }
             });
@@ -801,12 +860,12 @@
                     _token: '{{ csrf_token() }}',
                     date: $('#flatpickr-date').val(),
                 },
-                success: function(response) {
+                success: function (response) {
                     notify('success', response.message);
                     reloadTableWithFilters();
                     location.reload();
                 },
-                error: function() {
+                error: function () {
 
                 }
             });
@@ -830,8 +889,8 @@
         }
 
 
-        const fixHelper = function(e, ui) {
-            ui.children().each(function() {
+        const fixHelper = function (e, ui) {
+            ui.children().each(function () {
                 $(this).width($(this).width());
             });
             return ui;
@@ -846,7 +905,7 @@
                     field: field,
                     value: value
                 },
-                success: function(res) {
+                success: function (res) {
                     td.css('background-color', '#d4edda');
                     setTimeout(() => td.css('background-color', ''), 1000);
                     if (table_reload) {
@@ -854,21 +913,21 @@
                         location.reload();
                     }
                 },
-                error: function() {
+                error: function () {
                     td.css('background-color', '#f8d7da');
                 }
             });
         }
 
         function updateLineNumbers() {
-            $('#jobTable tbody tr').each(function(index) {
+            $('#jobTable tbody tr').each(function (index) {
                 $(this).find('.line-no-text').text(index + 1);
             });
         }
 
         implementAutoAjaxLoading();
 
-        $('.supervisor-note-btn').on('click', function(e) {
+        $('.supervisor-note-btn').on('click', function (e) {
             e.preventDefault();
 
             const logDate = $('#flatpickr-date').val();
@@ -886,7 +945,7 @@
             window.location.href = url;
         });
 
-        $(document).on('click', '#delete-selected', function() {
+        $(document).on('click', '#delete-selected', function () {
             Swal.fire({
                 title: 'Are you sure you want to delete all work orders from this shift log?',
                 icon: 'warning',
@@ -905,13 +964,13 @@
                             _token: '{{ csrf_token() }}',
                             log_date: log_date
                         },
-                        success: function(res) {
+                        success: function (res) {
                             if (res.status == 'success') {
                                 notify('success', res.message);
                                 $('#jobTable').DataTable().ajax.reload(null, false);
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.log(xhr)
                             if (xhr.status == 404) {
                                 notify('error', xhr.responseJSON.message ||
@@ -930,53 +989,53 @@
             });
         });
 
-        $('.addCompletion').on('click', function() {
+        $('.addCompletion').on('click', function () {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('handover-completions.create') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(res) {
+                success: function (res) {
                     $('#handoverCompletionModal .modal-content').html(res);
                     $('#handoverCompletionModal').modal('show');
                 }
             })
         })
 
-        $('body').on('click', '.loadCrew', function() {
+        $('body').on('click', '.loadCrew', function () {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('load-crew.index') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(res) {
+                success: function (res) {
                     $('#loadCrewModal .modal-content').html(res);
                     $('#loadCrewModal').modal('show');
                 }
             })
         })
 
-        $('body').on('change', '#crew_id', function() {
+        $('body').on('change', '#crew_id', function () {
             let crew_id = $(this).val();
 
             $.ajax({
                 url: "{{ route('get-labour-by-crew', ':crew_id') }}".replace(':crew_id', crew_id),
                 method: 'GET',
-                beforeSend: function() {
+                beforeSend: function () {
                     $('.labour-container').html(
                         '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>'
                     );
                 },
-                success: function(res) {
+                success: function (res) {
                     $('.labour-container').html('');
                     let html = '';
                     html += '<label for="labour" class="form-label">Labour</label>';
                     html +=
                         '<select name="labours[]" id="labour" class="form-select" multiple required>';
                     html += '<option value="">Select Labour</option>';
-                    $.each(res.data, function(index, value) {
+                    $.each(res.data, function (index, value) {
                         html += '<option value="' + value.id + '">' + value.name + '</option>';
                     });
                     html += '</select>';
@@ -992,7 +1051,7 @@
                         });
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     $('.labour-container').html('');
                     notify('error', xhr.responseJSON?.message ||
                         'Something went wrong. Please try again.');
@@ -1000,14 +1059,14 @@
             });
         });
 
-        $('body').on('click', '.allNames', function() {
+        $('body').on('click', '.allNames', function () {
             let shift = $(this).data('shift');
             let date = $('#flatpickr-date').val();
             let url = "{{ route('load-labour.index') }}?shift=" + shift + "&date=" + date;
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(res) {
+                success: function (res) {
                     $('#loadCrewModal .modal-content').html(res);
                     if (typeof Choices !== 'undefined') {
                         new Choices('#labour_ids', {
@@ -1022,13 +1081,13 @@
             })
         })
 
-        $('body').on('click', '.edit_critical_work', function() {
+        $('body').on('click', '.edit_critical_work', function () {
             let id = $(this).data('id');
             let url = "{{ route('update-critical-work', ['id' => ':id']) }}".replace(':id', id);
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(res) {
+                success: function (res) {
                     notify('success', res.message);
                     setTimeout(() => {
                         location.reload();
@@ -1037,7 +1096,7 @@
             })
         })
 
-        $(document).on('dblclick', '.reset-progress', function() {
+        $(document).on('dblclick', '.reset-progress', function () {
             Swal.fire({
                 title: 'Are you sure you want to reset the progress?',
                 icon: 'warning',
@@ -1055,7 +1114,7 @@
                     $.ajax({
                         url: url,
                         method: 'GET',
-                        success: function(res) {
+                        success: function (res) {
                             if (res.status === 'success') {
                                 notify('success', res.message);
                                 $('#jobTable').DataTable().ajax.reload(null, false);
@@ -1063,7 +1122,7 @@
                                 notify('error', res.message || 'Something went wrong');
                             }
                         },
-                        error: function(err) {
+                        error: function (err) {
                             notify('error', 'AJAX request failed');
                         }
                     });
@@ -1241,7 +1300,7 @@
             background-color: #ffffff;
         }
 
-        .btn-group-toggle .btn input[type="radio"]:checked+span {
+        .btn-group-toggle .btn input[type="radio"]:checked + span {
             font-weight: bold;
         }
 
