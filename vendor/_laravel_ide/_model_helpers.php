@@ -5,8 +5,8 @@ namespace App\Models {
     /**
      * App\Models\Crew
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon $updated_at
+     * @property \Illuminate\Support\Carbon $created_at
      * @property string $name
      * @property int $id
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Labour> $labours
@@ -314,10 +314,10 @@ namespace App\Models {
     /**
      * App\Models\HandoverCompletion
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon $updated_at
+     * @property \Illuminate\Support\Carbon $created_at
      * @property array $answers
-     * @property mixed $shift
+     * @property string $shift
      * @property string $log_date
      * @property int $id
      * @property-read mixed $supervisor_name
@@ -626,8 +626,8 @@ namespace App\Models {
     /**
      * App\Models\HandoverCompletionQuestion
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon $updated_at
+     * @property \Illuminate\Support\Carbon $created_at
      * @property int $sort_by
      * @property string $question
      * @property int $id
@@ -1247,8 +1247,8 @@ namespace App\Models {
     /**
      * App\Models\LabourShift
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon $updated_at
+     * @property \Illuminate\Support\Carbon $created_at
      * @property \App\Enum\ShiftEnum $shift
      * @property string $date
      * @property string|null $name
@@ -1875,7 +1875,7 @@ namespace App\Models {
      *
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
-     * @property int $sort_by
+     * @property int|null $sort_by
      * @property string $note
      * @property int $id
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ShiftLog> $shiftLogs
@@ -2517,15 +2517,14 @@ namespace App\Models {
     /**
      * App\Models\ShiftLog
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
      * @property bool $critical_work
      * @property mixed $scheduled
-     * @property int|null $note_id
      * @property string|null $log_date
-     * @property mixed $requisition
      * @property string $progress
+     * @property mixed $requisition
      * @property bool $mark_as_complete
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property \Illuminate\Support\Carbon|null $created_at
      * @property string|null $supervisor_notes
      * @property int|null $position
      * @property bool $is_excel_upload
@@ -2547,6 +2546,7 @@ namespace App\Models {
      * @property string|null $asset_no
      * @property string|null $wo_number
      * @property string|null $shift_name
+     * @property int|null $note_id
      * @property int $id
      * @property-read mixed $is_locked
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
@@ -2555,6 +2555,7 @@ namespace App\Models {
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SupervisorNote> $supervisorNotes
      * @property-read int|null $supervisorNotes_count
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereNoteId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereShiftName($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereWoNumber($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereAssetNo($value)
@@ -2576,15 +2577,14 @@ namespace App\Models {
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereIsExcelUpload($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog wherePosition($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereSupervisorNotes($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereMarkAsComplete($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereProgress($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereRequisition($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereLogDate($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereNoteId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereScheduled($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereCriticalWork($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereMarkAsComplete($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereRequisition($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereProgress($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereLogDate($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereScheduled($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog whereCriticalWork($value)
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog dayShift()
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog nightShift()
      * @method static \Illuminate\Database\Eloquent\Builder<ShiftLog>|ShiftLog newModelQuery()
@@ -2886,8 +2886,8 @@ namespace App\Models {
     /**
      * App\Models\Supervisor
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon $updated_at
+     * @property \Illuminate\Support\Carbon $created_at
      * @property \App\Enum\ShiftEnum $shift
      * @property string $date
      * @property string|null $name
@@ -3197,17 +3197,17 @@ namespace App\Models {
     /**
      * App\Models\SupervisorNote
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon $updated_at
+     * @property \Illuminate\Support\Carbon $created_at
      * @property mixed $note_type
-     * @property string $log_date
      * @property string $note
+     * @property string|null $log_date
      * @property int $id
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Media> $media
      * @property-read int|null $media_count
      * @method static \Illuminate\Database\Eloquent\Builder<SupervisorNote>|SupervisorNote whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<SupervisorNote>|SupervisorNote whereNote($value)
      * @method static \Illuminate\Database\Eloquent\Builder<SupervisorNote>|SupervisorNote whereLogDate($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<SupervisorNote>|SupervisorNote whereNote($value)
      * @method static \Illuminate\Database\Eloquent\Builder<SupervisorNote>|SupervisorNote whereNoteType($value)
      * @method static \Illuminate\Database\Eloquent\Builder<SupervisorNote>|SupervisorNote whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<SupervisorNote>|SupervisorNote whereUpdatedAt($value)
@@ -3845,8 +3845,8 @@ namespace App\Models {
     /**
      * App\Models\WorkOrderMove
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon $updated_at
+     * @property \Illuminate\Support\Carbon $created_at
      * @property string|null $moved_by
      * @property string $reason
      * @property string $to_shift

@@ -558,28 +558,36 @@
                         // Laravel validation error or column mismatch
                         let response = xhr.responseJSON;
 
-                        if (response.missing_columns) {
+                        if (response.missing_columns && Array.isArray(response.missing_columns)) {
+                            const humanize = str => str
+                                .replace(/_/g, ' ')               // replace underscores with spaces
+                                .replace(/\s+/g, ' ')             // collapse multiple spaces
+                                .trim()                           // remove leading/trailing spaces
+                                .replace(/\b\w/g, char => char.toUpperCase()); // capitalize each word
+
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Invalid Format',
+                                title: 'Invalid File Format',
                                 html: `
-        <p style="margin-bottom: 10px;">${response.message}</p>
-        <strong>Missing Columns:</strong>
-        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;">
-            ${response.missing_columns.map(col => `
-                <span style="
-                    background-color: #f8d7da;
-                    color: #721c24;
-                    border: 1px solid #f5c6cb;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    font-size: 13px;
-                ">${col}</span>`).join('')}
-        </div>
-    `,
-                                width: 600
+            <p style="margin-bottom: 10px;">${response.message}</p>
+            <strong style="display: block; margin-bottom: 5px;">Missing Columns:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                ${response.missing_columns.map(col => `
+                    <span style="
+                        background-color: #f8d7da;
+                        color: #721c24;
+                        border: 1px solid #f5c6cb;
+                        padding: 5px 10px;
+                        border-radius: 4px;
+                        font-size: 13px;
+                        white-space: nowrap;
+                    ">${humanize(col)}</span>
+                `).join('')}
+            </div>
+        `,
+                                width: 600,
+                                confirmButtonText: 'OK'
                             });
-
                         } else if (response.errors) {
                             // Laravel form validation errors
                             let errors = Object.values(response.errors).flat();

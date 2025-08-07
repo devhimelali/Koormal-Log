@@ -233,20 +233,20 @@ class SupervisorsShiftLogController extends Controller
 
         // Define expected headers for each type
         $expectedScheduler = [
-            'W/O No', 'Description', 'Duration', 'Asset No', 'Trades',
-            'Due Start', 'Work Order Status Description', 'Raised',
-            'Start Date', 'Priority', 'Job Type', 'Department',
-            'Materials Cost', 'Labour Cost', 'Other Cost', 'Asset Description'
+            'wo_no', 'description', 'duration', 'asset_no', 'trades',
+            'due_start', 'work_order_status_description', 'raised',
+            'start_date', 'priority', 'job_type', 'department',
+            'materials_cost', 'labour_cost', 'other_cost', 'asset_description'
         ];
 
         $expectedWorkorder = [
-            'Printed', 'W/O No', 'Asset No', 'Description', 'Asset Description',
-            'Status', 'Due Start', 'Due Finish', 'Job Type', 'Reference No',
-            'Priority', 'Raised', 'Start Date', 'Finished Date', 'Duration',
-            'Account Code', 'Department', 'Parent Asset', 'Material Costs',
-            'Other Costs ', 'Policy Number', 'Group Number', 'Document Count',
-            'Permits Outstanding', 'Risk Type', 'Hazard Description',
-            'Risk Score', 'Risk Rating'
+            'printed', 'wo_no', 'asset_no', 'description', 'asset_description',
+            'status', 'due_start', 'due_finish', 'job_type', 'reference_no',
+            'priority', 'raised', 'start_date', 'finished_date', 'duration',
+            'account_code', 'department', 'parent_asset', 'material_costs',
+            'other_costs', 'policy_number', 'group_number', 'document_count',
+            'permits_outstanding', 'risk_type', 'hazard_description',
+            'risk_score', 'risk_rating'
         ];
 
         // Select the expected format
