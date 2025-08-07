@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\LabourController;
 use App\Http\Controllers\Admin\LabourShiftController;
 use App\Http\Controllers\Admin\NoteController;
 use App\Http\Controllers\Admin\OpportuneJobController;
+use App\Http\Controllers\Admin\ScheduleComplianceController;
 use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Admin\SupervisorNoteController;
 use App\Http\Controllers\Admin\SupervisorsShiftLogController;
@@ -63,4 +64,6 @@ Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function
     Route::get('load-labour', [CrewController::class, 'getLabours'])->name('load-labour.index');
     Route::post('load-labour', [CrewController::class, 'storeLabourShift'])->name('load-labour.store');
     Route::get('reset-progress/{id}', [SupervisorsShiftLogController::class, 'resetJobProgress'])->name('reset-progress');
+    Route::get('/shift-log/progress-graph', [ScheduleComplianceController::class, 'dailyProgressGraph'])->name('shift-log.progress-graph');
+    Route::get('/schedule-compliance', [ScheduleComplianceController::class, 'index'])->name('schedule-compliance.index');
 });

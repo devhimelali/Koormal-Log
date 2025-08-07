@@ -108,6 +108,14 @@
                         <span data-key="t-move-work-orders">Move Work Orders</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('schedule-compliance.index') }}"
+                        class="nav-link menu-link @if (Route::current()->getName() == 'schedule-compliance.index') active @endif"
+                        aria-expanded="false">
+                        <i class="ph ph-arrow-up-right"></i>
+                        <span data-key="t-schedule-compliance">Schedule Compliance</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->
