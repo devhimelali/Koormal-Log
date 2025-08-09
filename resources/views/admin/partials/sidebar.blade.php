@@ -112,7 +112,7 @@
                     <a href="{{ route('schedule-compliance.index') }}"
                         class="nav-link menu-link @if (Route::current()->getName() == 'schedule-compliance.index') active @endif"
                         aria-expanded="false">
-                        <i class="ph ph-arrow-up-right"></i>
+                        <i class="ph ph-calendar"></i>
                         <span data-key="t-schedule-compliance">Schedule Compliance</span>
                     </a>
                 </li>
