@@ -116,6 +116,14 @@
                         <span data-key="t-schedule-compliance">Schedule Compliance</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('supervisor-completion-compliance.index') }}"
+                        class="nav-link menu-link @if (Route::current()->getName() == 'supervisor-completion-compliance.index') active @endif"
+                        aria-expanded="false">
+                        <i class="ph ph-calendar-check"></i>
+                        <span data-key="t-supervisor-completion-compliance">Supervisor Completion Compliance</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->
