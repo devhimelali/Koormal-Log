@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\LabourShiftController;
 use App\Http\Controllers\Admin\NoteController;
 use App\Http\Controllers\Admin\OpportuneJobController;
 use App\Http\Controllers\Admin\ScheduleComplianceController;
-use App\Http\Controllers\admin\SupervisorCompletionComplianceController;
+use App\Http\Controllers\Admin\SupervisorCompletionComplianceController;
 use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Admin\SupervisorNoteController;
 use App\Http\Controllers\Admin\SupervisorsShiftLogController;

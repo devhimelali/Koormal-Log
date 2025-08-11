@@ -23,11 +23,6 @@
             margin-bottom: 25px;
         }
 
-        .meta {
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -62,6 +57,7 @@
     </style>
 </head>
 <body>
+
 <div class="header">
     <table style="width: 100%; border-collapse: collapse;">
         <tr>
@@ -69,11 +65,18 @@
                 <img src="{{ $logo1 }}" alt="Logo" style="width: 100px;">
             </td>
             <td style="width: 68%; border: none;">
-                <h1 style="margin-bottom: 2px; padding: 0; line-height: 1; font-size: 16px; font-weight: 700; color: #222;">
+                <h1 style="font-size: 16px; font-weight: 700; color: #222; margin-bottom: 4px;">
                     Supervisor Completion Compliance Report
                 </h1>
-                <h2 style="margin-bottom: 2px; padding: 0; line-height: 1; font-size: 13px; font-weight: normal; color: #222;">Supervisor: {{ $supervisor ?? 'N/A' }}</h2>
-                <h2 style="margin-bottom: 2px; padding: 0; line-height: 1; font-size: 13px; font-weight: normal; color: #222;">Date Range: {{ $start_date }} to {{ $end_date }}</h2>
+                <h2 style="font-size: 13px; font-weight: normal; color: #222; margin-bottom: 1px;">
+                    <span style="font-weight: bold;">Shift:</span> {{ $shift ? ucfirst($shift->value) : 'N/A' }}
+                </h2>
+                <h2 style="font-size: 13px; font-weight: normal; color: #222; margin-bottom: 1px;">
+                    <span style="font-weight: bold;">Supervisor:</span> {{ $supervisor ?? 'N/A' }}
+                </h2>
+                <h2 style="font-size: 13px; font-weight: normal; color: #222;">
+                    <span style="font-weight: bold;">Date Range:</span> {{ $start_date }} to {{ $end_date }}
+                </h2>
             </td>
             <td style="width: 16%; border: none;">
                 <img src="{{ $logo2 }}" alt="Logo" style="width: 100px;">
@@ -86,25 +89,21 @@
     <thead>
     <tr>
         <th>Date</th>
-        <th>Day Shift %</th>
-        <th>Night Shift %</th>
+        <th>Completion %</th>
     </tr>
     </thead>
     <tbody>
-    <tbody>
-    @foreach ($reportData as $date => $shifts)
+    @foreach ($reportData as $date => $progress)
         <tr>
-            <td>{{ \Carbon\Carbon::createFromFormat('d-M-Y', $date)->format('d-m-Y') }}</td>
-            <td>{{ isset($shifts['day']) ? $shifts['day'] . '%' : '-' }}</td>
-            <td>{{ isset($shifts['night']) ? $shifts['night'] . '%' : '-' }}</td>
+            <td>{{ \Carbon\Carbon::parse($date)->format('d-m-Y') }}</td>
+            <td>{{ $progress !== null ? $progress . '%' : '-' }}</td>
         </tr>
     @endforeach
     </tbody>
     <tfoot>
     <tr>
         <td>Average</td>
-        <td>{{ isset($averageProgress['day']) ? $averageProgress['day'] . '%' : '-' }}</td>
-        <td>{{ isset($averageProgress['night']) ? $averageProgress['night'] . '%' : '-' }}</td>
+        <td>{{ $averageProgress !== null ? $averageProgress . '%' : '-' }}</td>
     </tr>
     </tfoot>
 </table>
@@ -112,5 +111,6 @@
 <div style="font-size: 10px; color: #888; position: fixed; bottom: 10px; left: 20px;">
     Generated on {{ \Carbon\Carbon::now('Australia/Perth')->format('d-m-Y h:i a') }} Australia/Perth Timezone.
 </div>
+
 </body>
 </html>

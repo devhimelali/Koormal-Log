@@ -72,6 +72,7 @@
                         $('#loadPdf').attr('disabled', true).html('<i class="bi bi-arrow-repeat spin"></i> Generating...');
                     },
                     success: function (data) {
+                        console.log(data);
                         // Create a blob URL and open in new tab
                         let blob = new Blob([data], { type: 'application/pdf' });
                         let link = document.createElement('a');
@@ -81,8 +82,21 @@
 
 
                     },
-                    error: function () {
-                        notify('error', 'Something went wrong while generating the PDF.');
+                    error: function (xhr, status, error) {
+                        console.error(xhr, status, error);
+                        if (xhr.status == 422) {
+                            let errors = xhr.responseJSON.errors;
+                            $.each(errors, function (key, value) {
+                                notify('error', value);
+                                let input = $('[name="' + key + '"]');
+                                input.addClass('is-invalid');
+                                input.next('.invalid-feedback').text(value);
+                            });
+                        }else if(xhr.status == 404){
+                            notify('error', 'Supervisor not found');
+                        } else if (xhr.status == 500) {
+                            notify('error', 'Internal Server Error');
+                        }
                     },
                     complete: function () {
                         $('#loadPdf').attr('disabled', false).html('<i class="bi bi-filetype-pdf me-1"></i> Export PDF');
