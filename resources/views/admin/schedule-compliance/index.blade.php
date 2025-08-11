@@ -30,6 +30,7 @@
 @section('page-script')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
     <script>
         flatpickr("#start_date", {
             dateFormat: "d-m-Y"
@@ -83,7 +84,26 @@
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: `Schedule Compliance (${labels[0]} - ${labels[labels.length - 1]})`
+                                    text: `Schedule Compliance (${labels[0]} - ${labels[labels.length - 1]})`,
+                                    font: {
+                                        size: 20
+                                    }
+                                },
+                                annotation: {
+                                    annotations: {
+                                        line1: {
+                                            type: 'line',
+                                            yMin: 80,
+                                            yMax: 80,
+                                            borderColor: 'red',
+                                            borderWidth: 1,
+                                            label: {
+                                                content: '80% Target',
+                                                enabled: true,
+                                                position: 'end'
+                                            }
+                                        }
+                                    }
                                 }
                             },
                             responsive: true,
@@ -97,7 +117,8 @@
                                     }
                                 }
                             }
-                        }
+                        },
+                        plugins: [Chart.registry.getPlugin('annotation')]
                     });
                 },
                 error: function (xhr) {
