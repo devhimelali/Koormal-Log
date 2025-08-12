@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Supervisor Completion Compliance Report</title>
+    <title>All Supervisors Completion Compliance Report</title>
     <style>
         body {
             font-family: 'DejaVu Sans', sans-serif;
@@ -20,13 +20,12 @@
 
         .header {
             text-align: center;
-            margin-bottom: 25px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         thead th {
@@ -39,7 +38,7 @@
 
         tbody td {
             border: 1px solid #ccc;
-            padding: 6px;
+            padding: 4px;
             text-align: center;
         }
 
@@ -70,53 +69,65 @@
 <div class="header">
     <table style="width: 100%; border-collapse: collapse;">
         <tr>
-            <td style="width: 10%; border: none; text-align: left;">
-                <img src="{{ $logo1 }}" alt="Logo" style="width: 80px;">
+            <td style="width: 16%; border: none; text-align: left;">
+                <img src="{{ $logo1 }}" alt="Logo" style="width: 100px;">
             </td>
-            <td style="width: 80%; border: none; text-align: center;">
-                <h1 style="font-size: 16px; font-weight: bold; margin-bottom: 4px;">
-                    Supervisor Completion Compliance Report
+            <td style="width: 68%; border: none; text-align: center;">
+                <h1 style="font-size: 18px; font-weight: bold; margin-bottom: 6px;">
+                    All Supervisors Completion Compliance Report
                 </h1>
-                <h2 style="font-size: 14px; font-weight: normal; margin-bottom: 2px;">
-                    <strong>Supervisor:</strong> {{ $supervisor ?? 'N/A' }}
-                </h2>
                 <h2 style="font-size: 14px; font-weight: normal;">
                     <strong>Date Range:</strong> {{ $start_date }} to {{ $end_date }}
                 </h2>
             </td>
-            <td style="width: 10%; border: none; text-align: right;">
-                <img src="{{ $logo2 }}" alt="Logo" style="width: 80px;">
+            <td style="width: 16%; border: none; text-align: right;">
+                <img src="{{ $logo2 }}" alt="Logo" style="width: 100px;">
             </td>
         </tr>
     </table>
 </div>
+<!-- Show overall average completion percentage -->
+<h2 style="font-size: 12px; font-weight: bold;">1. Overall Average Supervisors Completion Percentage:</h2>
+<table style="margin-bottom: 30px;">
+    <thead>
+    <th>Supervisor Name</th>
+    <th>Average Completion %</th>
+    </thead>
+    <tbody>
+    @forelse($averageProgressData as $supervisor => $averageProgress)
+        <tr>
+            <td>{{ $supervisor }}</td>
+            <td>{{ $averageProgress !== null ? $averageProgress . '%' : '-' }}</td>
+        </tr>
+    @empty
+    @endforelse
+    </tbody>
+</table>
 
+<h2 style="font-size: 12px; font-weight: bold;">2. Supervisors Completion Compliance Report:</h2>
 <table>
     <thead>
     <tr>
+        <th>Supervisor Name</th>
         <th>Date</th>
         <th>Completion %</th>
     </tr>
     </thead>
     <tbody>
-    @forelse ($reportData as $data)
+    @forelse ($reportData as $row)
         <tr>
-            <td>{{ \Carbon\Carbon::parse($data['date'])->format('d-m-Y') }}</td>
-            <td>{{ $data['percentage'] !== null ? $data['percentage'] . '%' : '-' }}</td>
+            <td>{{ $row['supervisor'] }}</td>
+            <td>{{ \Carbon\Carbon::parse($row['date'])->format('d-m-Y') }}</td>
+            <td>{{ $row['percentage'] !== null ? $row['percentage'] . '%' : '-' }}</td>
         </tr>
     @empty
         <tr>
-            <td colspan="2">No data available for this supervisor in the given date range.</td>
+            <td colspan="3">No supervisors found for the given date range.</td>
         </tr>
     @endforelse
     </tbody>
-    <tfoot>
-    <tr>
-        <td>Average</td>
-        <td>{{ $averageProgress !== null ? $averageProgress . '%' : '-' }}</td>
-    </tr>
-    </tfoot>
 </table>
+
 
 <div class="footer-note">
     Generated on {{ \Carbon\Carbon::now('Australia/Perth')->format('d-m-Y h:i a') }} (Australia/Perth Timezone)

@@ -8,12 +8,12 @@
             <div class="card-body">
                 <div class="row align-items-end">
                     <div class="col-md-5">
-                        <label for="supervisor" class="form-label fw-semibold">Supervisor Name</label>
+                        <label for="supervisor" class="form-label fw-semibold">Supervisor Name <span class="text-danger">(Leave it blank for all supervisors)</span></label>
                         <input type="text" name="supervisor" id="supervisor" class="form-control shadow-sm"
                                placeholder="Enter supervisor name">
                     </div>
                     <div class="col-md-5">
-                        <label for="date_range" class="form-label fw-semibold">Date Range</label>
+                        <label for="date_range" class="form-label fw-semibold">Date Range <span class="text-danger">*</span></label>
                         <input type="text" name="date_range" id="date_range" class="form-control shadow-sm"
                                placeholder="Select date range">
                     </div>
@@ -45,8 +45,8 @@
                 let supervisor = $('#supervisor').val().trim();
                 let dateRange = $('#date_range').val().trim();
 
-                if (!supervisor || !dateRange) {
-                    alert('Please enter supervisor name and select a date range.');
+                if (!dateRange) {
+                    alert('Please enter select a date range.');
                     return;
                 }
 
