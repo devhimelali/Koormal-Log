@@ -326,8 +326,8 @@ class ShiftLogsDataTable extends DataTable
         $columns[] = Column::make('scheduled')
             ->title('<div class="d-flex flex-column align-items-center justify-content-center" style="min-width: 100px; width: 100px">
                 <span>Scheduled</span>
-                <span class="fw-light" style="font-size: 12px; color: red;">Day: ' . $dayShiftScheduledYesPercentage . '%</span>
-                <span class="fw-light" style="font-size: 12px; color: red;">Night: ' . $nightShiftScheduledYesPercentage . '%</span>
+                <span class="fw-light day-percentage" style="font-size: 12px; color: red;">Day: ' . $dayShiftScheduledYesPercentage . '%</span>
+                <span class="fw-light night-percentage" style="font-size: 12px; color: red;">Night: ' . $nightShiftScheduledYesPercentage . '%</span>
                 </div>')
             ->orderable(false)
             ->searchable(false)

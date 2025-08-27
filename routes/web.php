@@ -34,3 +34,5 @@ Route::get('user/dashboard', function () {
 Route::middleware(['auth', 'role:admin|supervisor', 'verified'])->group(function () {
     Route::get('{role}/supervisors-shift-log', [SupervisorsShiftLogController::class, 'index'])->name('supervisors-shift-log.index');
 });
+
+Route::get('/get-total-percentage', [SupervisorsShiftLogController::class, 'getTotalPercentage'])->name('get-total-percentage');

@@ -905,6 +905,7 @@
         };
 
         function editField(td, field, value, id, table_reload = false) {
+            let date = $('#flatpickr-date').val();
             $.ajax({
                 url: `{{ route('supervisors-shift-log.update', ':id') }}`.replace(':id', id),
                 method: 'PUT',
@@ -918,13 +919,34 @@
                     setTimeout(() => td.css('background-color', ''), 1000);
                     if (table_reload) {
                         $('#jobTable').DataTable().ajax.reload(null, false);
-                        location.reload();
                     }
+                    getTotalPercentage(date)
                 },
                 error: function () {
                     td.css('background-color', '#f8d7da');
                 }
             });
+        }
+
+        function getTotalPercentage(date)
+        {
+            $.ajax({
+                url: "{{route('get-total-percentage')}}",
+                method: "GET",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    date: date
+                },
+                success: function (res) {
+                    if(res.status == 'success'){
+                        $('.day-percentage').text('Day: '+ res.day_percentage +'%');
+                        $('.night-percentage').text('Night: '+ res.night_percentage +'%');
+                    }
+                },
+                error: function (xhr) {
+                    console.error(xhr)
+                }
+            })
         }
 
         function updateLineNumbers() {

@@ -610,4 +610,18 @@ class SupervisorsShiftLogController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Updated successfully']);
     }
+
+    public function getTotalPercentage(Request $request)
+    {
+        $dayShiftLogs = ShiftLog::where('log_date', $request->date)->where('shift_name', 'day')->get()->toArray();
+        $nightShiftLogs = ShiftLog::where('log_date', $request->date)->where('shift_name', 'night')->get()->toArray();
+        $dayShiftScheduledYesPercentage = $this->calculateScheduledYesPercentage($dayShiftLogs);
+        $nightShiftScheduledYesPercentage = $this->calculateScheduledYesPercentage($nightShiftLogs);
+
+        return response()->json([
+            'status' => 'success',
+            'day_percentage' => $dayShiftScheduledYesPercentage,
+            'night_percentage' => $nightShiftScheduledYesPercentage
+        ]);
+    }
 }
