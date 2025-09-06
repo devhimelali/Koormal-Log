@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    /**
+     * The secret key used to sign API requests.
+     *
+     * @see \App\Http\Middleware\VerifyApiSignature::handle
+     *
+     * @var string
+     */
+    'api_secret_key' => env('API_SECRET_KEY', 'CBb18WEQqPSgBSlaGtvMlAt5dAyOPshCr6ZkAiz3OZI3wiK7AkCaO1gYdIpnOdh2H6PjBiUV8uALiDEVcnAcDbClNRz1hkbmk7owaLtWp8ISpt1FaVmFGw76'),
+
 ];
